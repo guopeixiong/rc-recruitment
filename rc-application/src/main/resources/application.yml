@@ -1,0 +1,69 @@
+spring:
+  application:
+    name: rc-recruitment
+  profiles:
+    active: @env@
+    include: druid
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driverClassName: com.mysql.cj.jdbc.Driver
+# mybatis-plus
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath*:mapper/**/*Mapper.xml
+  global-config:
+    db-config:
+      # 全局使用雪花id
+      id-type: assign_id
+      # 逻辑删除字段
+      logic-delete-field: isDelete
+      # 未删除字段值
+      logic-not-delete-value: 0
+      # 已删除字段值
+      logic-delete-value: 1
+# knife4j
+knife4j:
+  openapi:
+    title: Rc Recruitment Interface Document
+    description: 软创招新平台接口文档
+    email: peixiongguo@163.com
+    concat: guopeixiong
+    version: v0.0.1
+    group:
+      h5:
+        group-name: h5端接口
+        api-rule: package
+        # 基于这个包下扫描接口
+        api-rule-resources:
+          - com.ruanchuang.controller.h5
+      admin:
+        group-name: 后台接口
+        api-rule: package
+        api-rule-resources:
+          - com.ruanchuang.controller.admin
+  setting:
+    enable-footer-custom: true
+    footer-custom-content: Software Innovation
+    enable-debug: true
+    enable-open-api: false
+# sa-token
+sa-token:
+  # token名称 (同时也是cookie名称)
+  token-name: Authorization
+  # token风格
+  token-style: random-128
+  # 不从cookie中读取token
+  is-read-cookie: false
+  # 不从请求体中读取token
+  isReadBody: false
+  # 是否打开自动续签 （如果此值为true, 框架会在每次直接或间接调用 getLoginId() 时进行一次过期检查与续签操作）
+  autoRenew: true
+# 系统已经配置了如果接口路径中包含 /auth均拦截校验是否登录, 如 /auth/getUserInfo 或者 /xxx/auth/test 或者 aaa/bbb/auth
+# 如果还有需要校验登录但是接口路径不是以/auth开头的, 请加在下方的配置中, 按格式, 英文逗号隔开, 下面已经给出了示例
+api:
+  need-auth:
+    /example1,
+    /example2,
+    /example3

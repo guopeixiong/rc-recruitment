@@ -1,0 +1,42 @@
+package com.ruanchuang.service;
+
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.ruanchuang.domain.SysUser;
+import com.ruanchuang.domain.dto.LoginDto;
+import com.ruanchuang.domain.dto.RegisterDto;
+
+import javax.servlet.http.HttpServletRequest;
+
+/**
+ * <p>
+ * 用户信息表 服务类
+ * </p>
+ *
+ * @author guopeixiong
+ * @since 2023-07-30
+ */
+public interface SysUserService extends IService<SysUser> {
+
+    /**
+     * 手机号密码登录方式
+     *
+     * @param loginDto
+     * @param request
+     * @return
+     */
+    String loginByPhoneAndPassword(LoginDto loginDto, HttpServletRequest request);
+
+    /**
+     * 邮箱验证码登录
+     * @param loginDto
+     * @param request
+     * @return
+     */
+    String loginByEmailCode(LoginDto loginDto, HttpServletRequest request);
+
+    /**
+     * 用户注册
+     * @param registerDto
+     */
+    void userRegister(RegisterDto registerDto);
+}

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.ruanchuang</groupId>
+        <artifactId>rc-recruitment-backend</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>rc-application</artifactId>
+    <description>Web服务模块</description>
+    <packaging>jar</packaging>
+    <!-- 项目部署只需打包完使用本模块的jar包部署即可 -->
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>com.ruanchuang</groupId>
+            <artifactId>rc-common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ruanchuang</groupId>
+            <artifactId>rc-system</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ruanchuang</groupId>
+            <artifactId>rc-framework</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+    <profiles>
+        <!-- 开发环境 默认激活此环境 打包时请注意环境配置 -->
+        <profile>
+            <id>dev</id>
+            <properties>
+                <env>dev</env>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <!-- 测试环境 -->
+        <profile>
+            <id>test</id>
+            <properties>
+                <env>test</env>
+            </properties>
+        </profile>
+        <!-- 生产环境 -->
+        <profile>
+            <id>prod</id>
+            <properties>
+                <env>test</env>
+            </properties>
+        </profile>
+    </profiles>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.6.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <nonFilteredFileExtensions>
+                        <!-- 避免 https 证书文件被修改 -->
+                        <nonFilteredFileExtension>jks</nonFilteredFileExtension>
+                    </nonFilteredFileExtensions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.7.14</version>
+                <configuration>
+                    <mainClass>com.ruanchuang.Main</mainClass>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>repackage</id>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <!-- 这里使用占位符进行动态引用以确定具体的打包文件 -->
+                    <include>application-${env}.yml</include>
+                    <include>application.yml</include>
+                    <include>application-druid.yml</include>
+                    <include>logback-spring.xml</include>
+                </includes>
+                <!-- 开启过滤 在打包时application.yml中配置的@env@将被确定到底是什么变量 -->
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
+</project>

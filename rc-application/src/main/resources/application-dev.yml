@@ -1,0 +1,93 @@
+# 开发环境配置
+server:
+  # 服务器的HTTP端口
+  port: 18080
+  servlet:
+    # 应用的访问路径
+    context-path: /
+  tomcat:
+    # tomcat的URI编码
+    uri-encoding: UTF-8
+    # 连接数满后的排队数，默认为1000
+    accept-count: 1000
+    threads:
+      # Tomcat最大线程数，默认为200
+      max: 800
+      # Tomcat启动初始化的线程数，默认值10
+      min-spare: 100
+  # 开启响应压缩 减少网络传输的数据量
+  compression:
+    enabled: true
+    # 超过这个值时才启用压缩 单位: KB
+    min-response-size: 1024
+user:
+  password:
+    # 密码最大错误次数
+    maxRetryCount: 5
+    # 密码锁定时间（默认10分钟）
+    lockTime: 10
+# spring配置
+spring:
+  servlet:
+    multipart:
+      # 单个文件大小限制
+      max-file-size: 10MB
+      # 总上传文件大小
+      max-request-size: 20MB
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/rc_recruitment?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+  # redis配置
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 6
+    password: 194536@px
+    timeout: 10S
+    lettuce:
+      pool:
+        min-idle: 0
+        max-idle: 8
+        max-active: 8
+        max-wait: -1ms
+  # 邮件配置
+  mail:
+    username: lxzforever99@163.com
+    password: xxxxxxxxxxx
+    host: smtp.163.com
+    default-encoding: UTF-8
+    protocol: smtps
+    port: 465
+# knife4j
+knife4j:
+  enable: true
+# sa-token
+sa-token:
+  # token有效期，单位s  当前配置86400 = 1天
+  timeout: 86400
+  # token临时有效期 (指定时间内无操作就视为token过期) 单位: 秒 当前设置为不过期
+  activity-timeout: -1
+  # 是否允许同一账号并发登录 (为true时允许一起登录, 为false时新登录挤掉旧登录)
+  is-concurrent: true
+  # 在多人登录同一账号时，是否共用一个token (为true时所有登录共用一个token, 为false时每次登录新建一个token)
+  is-share: false
+  # 同一账号最大登录数量，-1代表不限
+  maxLoginCount: 2
+  # 是否输出操作日志
+  is-log: true
+  # jwt密钥
+  jwt-secret-key: 2b1smY9XxuDk4tvnh4AbZkqBJJVMlHbu
+  # 前端密码解密密钥
+  pwd-secret-key: 8JjlaheNd3Kw4Mr6X2niFGeBi7E5LrdK
+# 文件上传后存储地址
+file:
+  store-address: /Desktop/rc-recruitment
+# 放行的接口
+not-intercept-api:
+  - '/login'
+  - '/register'
+  - '/doc.html#/**'
+  - '/release/**'
