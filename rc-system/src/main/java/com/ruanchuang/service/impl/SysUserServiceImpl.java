@@ -18,6 +18,7 @@ import com.ruanchuang.service.SysUserService;
 import com.ruanchuang.utils.IpUtils;
 import com.ruanchuang.utils.JSONUtils;
 import com.ruanchuang.utils.LoginUtils;
+import com.ruanchuang.utils.RSAUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -58,8 +59,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      */
     @Override
     public String loginByPhoneAndPassword(LoginDto loginDto, HttpServletRequest request) {
-        // TODO 测试阶段 关闭前端解密
-//        loginDto.setPassword(RSAUtils.decryptByRsa(loginDto.getPassword()));
+        loginDto.setPassword(RSAUtils.decryptByRsa(loginDto.getPassword()));
         SysUser user = this.baseMapper.selectOne(Wrappers.<SysUser>lambdaQuery().eq(SysUser::getPhone, loginDto.getAccount()));
         if (user == null) {
             user = this.baseMapper.selectOne(Wrappers.<SysUser>lambdaQuery().eq(SysUser::getStuNum, loginDto.getAccount()));
@@ -104,7 +104,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      */
     @Override
     public void userRegister(RegisterDto registerDto) {
-        // TODO 此处还需处理前端密码解密
         String code = (String) redisTemplate.opsForValue().get(CacheConstants.CAPTCHA_CODE_KEY_REGISTER + registerDto.getEmail());
         if (!registerDto.getCode().equals(code)) {
             throw new ServiceException("验证码无效");
@@ -118,6 +117,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         if (count.longValue() > 0) {
             throw new ServiceException("该邮箱已被注册");
         }
+        registerDto.setPassword(RSAUtils.decryptByRsa(registerDto.getPassword()));
         String salt = RandomUtil.randomString(6);
         String password = SaSecureUtil.md5BySalt(registerDto.getPassword(), salt);
         SysUser user = new SysUser();
