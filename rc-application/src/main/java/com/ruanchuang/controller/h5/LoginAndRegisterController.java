@@ -32,14 +32,14 @@ public class LoginAndRegisterController {
     private SysUserService sysUserService;
 
     @ApiOperation("账号密码登录")
-    @RepeatSubmit(interval = 6000)
+    @RepeatSubmit(interval = 6000, message = "请勿重复提交, 6秒后再重试")
     @PostMapping("/login")
     public CommonResult login(@Validated({LoginDto.LoginByPhoneOrStuNum.class}) @RequestBody LoginDto loginDto, HttpServletRequest request) {
         return CommonResult.ok(sysUserService.loginByPhoneAndPassword(loginDto, request));
     }
 
     @ApiOperation("邮箱验证码登录")
-    @RepeatSubmit(interval = 6000)
+    @RepeatSubmit(interval = 6000, message = "请勿重复提交, 6秒后再重试")
     @PostMapping("/loginByCode")
     public CommonResult loginByEmailCode(@Validated({LoginDto.LoginByEmail.class}) @RequestBody LoginDto loginDto, HttpServletRequest request) {
         return CommonResult.ok(sysUserService.loginByEmailCode(loginDto, request));

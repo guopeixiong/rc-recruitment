@@ -4,6 +4,7 @@ import com.ruanchuang.annotation.RateLimiter;
 import com.ruanchuang.enums.LimitType;
 import com.ruanchuang.exception.ServiceException;
 import com.ruanchuang.utils.IpUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -48,6 +49,9 @@ public class RateLimiterAspect {
         try {
             Long number = redisTemplate.execute(limitScript, keys, count, time);
             if (number == null || number.intValue() > count) {
+                if (StringUtils.isNoneBlank(rateLimiter.message())) {
+                    throw new ServiceException(rateLimiter.message());
+                }
                 throw new ServiceException("访问过于频繁，请稍候再试");
             }
             log.info("限制请求'{}',当前请求'{}',缓存key'{}'", count, number.intValue(), combineKey);

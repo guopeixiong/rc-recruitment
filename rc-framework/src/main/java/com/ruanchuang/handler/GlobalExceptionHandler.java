@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import java.util.Optional;
 
 /**
  * @Author guopeixiong
@@ -78,7 +81,7 @@ public class GlobalExceptionHandler {
     public CommonResult handleRuntimeException(RuntimeException e, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
         log.error("请求地址'{}',发生未知异常, 异常信息'{}'.", requestURI, e.getMessage());
-        return CommonResult.fail(e.getMessage());
+        return CommonResult.fail("系统异常");
     }
 
     /**
@@ -109,6 +112,16 @@ public class GlobalExceptionHandler {
         log.error(e.getMessage(), e);
         String message = e.getBindingResult().getFieldError().getDefaultMessage();
         return CommonResult.fail(message);
+    }
+
+    /**
+     * 拦截参数校验不通过异常
+     */
+    @ExceptionHandler(value = {ConstraintViolationException.class})
+    public Object handleConstraintViolationException(ConstraintViolationException e) {
+        Optional<ConstraintViolation<?>> first = e.getConstraintViolations().stream().findFirst();
+        log.error(e.getMessage(), e);
+        return CommonResult.fail(first.isPresent() ? first.get().getMessage() : "参数不合法");
     }
 
 }

@@ -35,4 +35,6 @@ public @interface RateLimiter {
      */
     LimitType limitType() default LimitType.DEFAULT;
 
+    String message() default "";
+
 }

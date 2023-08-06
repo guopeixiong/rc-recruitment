@@ -1,0 +1,19 @@
+package com.ruanchuang.service;
+
+/**
+ * 验证码服务类
+ * @Author guopeixiong
+ * @Date 2023/8/6
+ * @Email peixiongguo@163.com
+ */
+public interface CodeService {
+
+    /**
+     * 发送验证码
+     * @param email
+     * @param CodeType
+     * @return
+     */
+    String sendCode(String email, String CodeType);
+
+}

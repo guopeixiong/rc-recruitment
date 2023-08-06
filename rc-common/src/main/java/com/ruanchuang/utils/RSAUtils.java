@@ -1,10 +1,13 @@
 package com.ruanchuang.utils;
 
-import cn.hutool.crypto.SecureUtil;
-import cn.hutool.crypto.asymmetric.KeyType;
-import cn.hutool.crypto.asymmetric.RSA;
+import com.ruanchuang.exception.SystemException;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.binary.Base64;
 
-import java.nio.charset.StandardCharsets;
+import javax.crypto.Cipher;
+import java.security.KeyFactory;
+import java.security.PrivateKey;
+import java.security.spec.PKCS8EncodedKeySpec;
 
 /**
  * RSA加密工具类
@@ -12,6 +15,7 @@ import java.nio.charset.StandardCharsets;
  * @Date 2023/8/4
  * @Email peixiongguo@163.com
  */
+@Slf4j
 public class RSAUtils {
 
     /**
@@ -75,13 +79,23 @@ public class RSAUtils {
             "B80UJrcbfryEKrgNkjoy+YA=";
 
     /**
-     * 使用RSA公钥加密
+     * 使用RSA私钥加密
      * @param data
      * @return
      */
     public static String encryptByRsa(String data) {
-        RSA rsa = SecureUtil.rsa(null, PUBLIC_KEY);
-        return rsa.encryptBase64(data, StandardCharsets.UTF_8, KeyType.PublicKey);
+        try {
+            PKCS8EncodedKeySpec pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(Base64.decodeBase64(PRIVATE_KEY));
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            PrivateKey privateKey = keyFactory.generatePrivate(pkcs8EncodedKeySpec);
+            Cipher cipher = Cipher.getInstance("RSA");
+            cipher.init(Cipher.ENCRYPT_MODE, privateKey);
+            byte[] result = cipher.doFinal(data.getBytes());
+            return Base64.encodeBase64String(result);
+        } catch (Exception e) {
+            log.error("密码加密异常, 异常信息: '{}'", e.getMessage());
+            throw new SystemException("密码加密异常");
+        }
     }
 
     /**
@@ -90,8 +104,19 @@ public class RSAUtils {
      * @return
      */
     public static String decryptByRsa(String data) {
-        RSA rsa = SecureUtil.rsa(PRIVATE_KEY, null);
-        return rsa.decryptStr(data, KeyType.PrivateKey, StandardCharsets.UTF_8);
+        byte[] result;
+        try {
+            PKCS8EncodedKeySpec pkcs8EncodedKeySpec5 = new PKCS8EncodedKeySpec(Base64.decodeBase64(PRIVATE_KEY));
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            PrivateKey privateKey = keyFactory.generatePrivate(pkcs8EncodedKeySpec5);
+            Cipher cipher = Cipher.getInstance("RSA");
+            cipher.init(Cipher.DECRYPT_MODE, privateKey);
+            result = cipher.doFinal(Base64.decodeBase64(data));
+        } catch (Exception e) {
+            log.error("密码解密异常, 异常信息: '{}'", e.getMessage());
+            throw new SystemException("密码解密异常");
+        }
+        return result == null ? null : new String(result);
     }
 
 }

@@ -60,15 +60,15 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public String loginByPhoneAndPassword(LoginDto loginDto, HttpServletRequest request) {
         loginDto.setPassword(RSAUtils.decryptByRsa(loginDto.getPassword()));
-        SysUser user = this.baseMapper.selectOne(Wrappers.<SysUser>lambdaQuery().eq(SysUser::getPhone, loginDto.getAccount()));
+        SysUser user = this.baseMapper.selectOne(Wrappers.<SysUser>lambdaQuery().eq(SysUser::getStuNum, loginDto.getAccount()));
         if (user == null) {
-            user = this.baseMapper.selectOne(Wrappers.<SysUser>lambdaQuery().eq(SysUser::getStuNum, loginDto.getAccount()));
+            user = this.baseMapper.selectOne(Wrappers.<SysUser>lambdaQuery().eq(SysUser::getPhone, loginDto.getAccount()));
         }
         if (user == null) {
             throw new ServiceException("账号不存在");
         }
         String password = SaSecureUtil.md5BySalt(loginDto.getPassword(), user.getSalt());
-        if (!password.equals(loginDto.getPassword())) {
+        if (!password.equals(user.getPassword())) {
             saveLoginLog(loginDto, null, request, false);
             throw new ServiceException("密码错误");
         }
