@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Api(tags = "登录注册相关接口")
 @RestController
-@RequestMapping("/5")
+@RequestMapping("/h5")
 public class LoginAndRegisterController {
 
     @Autowired
