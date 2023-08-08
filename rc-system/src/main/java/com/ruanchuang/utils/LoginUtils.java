@@ -23,6 +23,7 @@ public class LoginUtils {
 
     /**
      * 用户登录
+     *
      * @param user
      */
     public static String login(SysUser user) {
@@ -37,6 +38,7 @@ public class LoginUtils {
 
     /**
      * 基于多级缓存获取登录用户
+     *
      * @return
      */
     public static SysUser getLoginUser() {
@@ -54,7 +56,17 @@ public class LoginUtils {
     }
 
     /**
+     * 更新缓存的用户信息
+     * @param user
+     */
+    public static void updateUserInfo(SysUser user) {
+        SaHolder.getStorage().set(LOGIN_USER_KEY, user);
+        StpUtil.getTokenSession().set(LOGIN_USER_KEY, user);
+    }
+
+    /**
      * 基于token获取登录用户信息
+     *
      * @param token
      * @return
      */
@@ -82,6 +94,7 @@ public class LoginUtils {
 
     /**
      * 忽略敏感信息
+     *
      * @param user
      */
     public static void ignoreSensitiveInformation(SysUser user) {

@@ -1,6 +1,7 @@
 package com.ruanchuang.service.impl;
 
 import cn.dev33.satoken.secure.SaSecureUtil;
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -9,6 +10,7 @@ import com.ruanchuang.domain.SysLog;
 import com.ruanchuang.domain.SysUser;
 import com.ruanchuang.domain.dto.LoginDto;
 import com.ruanchuang.domain.dto.RegisterDto;
+import com.ruanchuang.domain.dto.UpdateUserInfoDto;
 import com.ruanchuang.enums.BusinessStatus;
 import com.ruanchuang.enums.UserType;
 import com.ruanchuang.exception.ServiceException;
@@ -20,6 +22,7 @@ import com.ruanchuang.utils.JSONUtils;
 import com.ruanchuang.utils.LoginUtils;
 import com.ruanchuang.utils.RSAUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -128,6 +131,29 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                 .setPassword(password)
                 .setSalt(salt);
         this.save(user);
+    }
+
+    /**
+     * 用户修改个人信息
+     * @param user
+     * @return
+     */
+    @Override
+    public boolean updateUserInfo(UpdateUserInfoDto user) {
+        if (StringUtils.isNotBlank(user.getPhone())) {
+            if (!user.getPhone().matches("1[3-9]\\d{9}")) {
+                throw new ServiceException("手机号格式错误");
+            }
+        }
+        SysUser loginUser = LoginUtils.getLoginUser();
+        SysUser sysUser = new SysUser();
+        sysUser.setId(loginUser.getId());
+        BeanUtil.copyProperties(user, sysUser);
+        boolean result = this.updateById(sysUser);
+        if (result) {
+            LoginUtils.updateUserInfo(this.getById(sysUser.getId()));
+        }
+        return result;
     }
 
     /**

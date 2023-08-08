@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruanchuang.domain.SysUser;
 import com.ruanchuang.domain.dto.LoginDto;
 import com.ruanchuang.domain.dto.RegisterDto;
+import com.ruanchuang.domain.dto.UpdateUserInfoDto;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -39,4 +40,11 @@ public interface SysUserService extends IService<SysUser> {
      * @param registerDto
      */
     void userRegister(RegisterDto registerDto);
+
+    /**
+     * 用户修改个人信息
+     * @param user
+     * @return
+     */
+    boolean updateUserInfo(UpdateUserInfoDto user);
 }
