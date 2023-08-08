@@ -7,14 +7,12 @@ import com.ruanchuang.domain.dto.RegisterDto;
 import com.ruanchuang.enums.BusinessType;
 import com.ruanchuang.model.CommonResult;
 import com.ruanchuang.service.SysUserService;
+import com.ruanchuang.utils.LoginUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -51,6 +49,13 @@ public class LoginAndRegisterController {
     @PostMapping("/register")
     public CommonResult userRegister(@Validated @RequestBody RegisterDto registerDto) {
         sysUserService.userRegister(registerDto);
+        return CommonResult.ok();
+    }
+
+    @ApiOperation("退出登录")
+    @GetMapping("/logout")
+    public CommonResult userLogout() {
+        LoginUtils.logout();
         return CommonResult.ok();
     }
 

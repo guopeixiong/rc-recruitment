@@ -66,4 +66,35 @@ public class LoginUtils {
         return (SysUser) session.get(LOGIN_USER_KEY);
     }
 
+    /**
+     * 退出登录
+     */
+    public static void logout() {
+        SaStorage storage = SaHolder.getStorage();
+        storage.delete(LOGIN_USER_KEY);
+        storage.delete(USER_KEY);
+        SaSession session = StpUtil.getTokenSession();
+        if (session != null) {
+            session.delete(LOGIN_USER_KEY);
+        }
+        StpUtil.logout();
+    }
+
+    /**
+     * 忽略敏感信息
+     * @param user
+     */
+    public static void ignoreSensitiveInformation(SysUser user) {
+        user.setPassword(null)
+                .setSalt(null)
+                .setType(null)
+                .setStatus(null)
+                .setCreateBy(null)
+                .setCreateTime(null)
+                .setUpdateBy(null)
+                .setUpdateTime(null)
+                .setIsDelete(null)
+                .setVersion(null);
+    }
+
 }
