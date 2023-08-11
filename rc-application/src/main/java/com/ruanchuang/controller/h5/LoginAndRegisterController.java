@@ -2,6 +2,7 @@ package com.ruanchuang.controller.h5;
 
 import com.ruanchuang.annotation.Log;
 import com.ruanchuang.annotation.RepeatSubmit;
+import com.ruanchuang.domain.dto.ForgetPasswordDto;
 import com.ruanchuang.domain.dto.LoginDto;
 import com.ruanchuang.domain.dto.RegisterDto;
 import com.ruanchuang.enums.BusinessType;
@@ -56,6 +57,15 @@ public class LoginAndRegisterController {
     @GetMapping("/logout")
     public CommonResult userLogout() {
         LoginUtils.logout();
+        return CommonResult.ok();
+    }
+
+    @ApiOperation("忘记密码")
+    @RepeatSubmit
+    @Log(title = "用户重置密码", businessType = BusinessType.UPDATE, saveRequestParam = true)
+    @PostMapping("/resetPwd")
+    public CommonResult userResetPwd(@Validated @RequestBody ForgetPasswordDto forgetPasswordDto) {
+        sysUserService.resetPwd(forgetPasswordDto);
         return CommonResult.ok();
     }
 

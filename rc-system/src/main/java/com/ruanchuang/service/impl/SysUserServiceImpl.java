@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruanchuang.constant.CacheConstants;
 import com.ruanchuang.domain.SysLog;
 import com.ruanchuang.domain.SysUser;
+import com.ruanchuang.domain.dto.ForgetPasswordDto;
 import com.ruanchuang.domain.dto.LoginDto;
 import com.ruanchuang.domain.dto.RegisterDto;
 import com.ruanchuang.domain.dto.UpdateUserInfoDto;
@@ -154,6 +155,34 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             LoginUtils.updateUserInfo(this.getById(sysUser.getId()));
         }
         return result;
+    }
+
+    /**
+     * 用户重置密码
+     * @param forgetPasswordDto
+     */
+    @Override
+    public void resetPwd(ForgetPasswordDto forgetPasswordDto) {
+        String code = (String) redisTemplate.opsForValue().get(CacheConstants.CAPTCHA_CODE_KEY_FORGET_PWD + forgetPasswordDto.getEmail());
+        if (code == null || !code.equals(forgetPasswordDto.getCode())) {
+            throw new ServiceException("验证码无效");
+        }
+        SysUser user = this.baseMapper.selectOne(
+                Wrappers.<SysUser>lambdaQuery()
+                .eq(SysUser::getEmail, forgetPasswordDto.getEmail())
+                .select(SysUser::getId)
+        );
+        if (user == null) {
+            throw new ServiceException("账户不存在");
+        }
+        String newPassword = RSAUtils.decryptByRsa(forgetPasswordDto.getPassword());
+        String newSalt = RandomUtil.randomString(6);
+        newPassword = SaSecureUtil.md5BySalt(newPassword, newSalt);
+        SysUser userInfo = new SysUser()
+                .setId(user.getId())
+                .setSalt(newSalt)
+                .setPassword(newPassword);
+        this.updateById(userInfo);
     }
 
     /**

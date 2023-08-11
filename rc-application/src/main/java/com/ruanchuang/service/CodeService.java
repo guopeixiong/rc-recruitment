@@ -16,4 +16,9 @@ public interface CodeService {
      */
     String sendCode(String email, String CodeType);
 
+    /**
+     * 发送忘记密码验证码
+     * @param email
+     */
+    void sendForgetPwdCode(String email);
 }

@@ -2,6 +2,7 @@ package com.ruanchuang.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruanchuang.domain.SysUser;
+import com.ruanchuang.domain.dto.ForgetPasswordDto;
 import com.ruanchuang.domain.dto.LoginDto;
 import com.ruanchuang.domain.dto.RegisterDto;
 import com.ruanchuang.domain.dto.UpdateUserInfoDto;
@@ -47,4 +48,10 @@ public interface SysUserService extends IService<SysUser> {
      * @return
      */
     boolean updateUserInfo(UpdateUserInfoDto user);
+
+    /**
+     * 用户重置密码
+     * @param forgetPasswordDto
+     */
+    void resetPwd(ForgetPasswordDto forgetPasswordDto);
 }

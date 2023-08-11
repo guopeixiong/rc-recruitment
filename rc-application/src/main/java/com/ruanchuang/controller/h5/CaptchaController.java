@@ -52,4 +52,12 @@ public class CaptchaController {
         return CommonResult.ok();
     }
 
+    @ApiOperation("获取忘记密码验证码")
+    @RateLimiter(key = "getForgetPwdCode", count = 1, limitType = LimitType.IP, message = "一分钟内只能获取一次验证码, 请稍后再试")
+    @GetMapping("/getForgetPwdCode/{email}")
+    public CommonResult getForgetPwdCode(@Email(message = "邮箱格式错误") @PathVariable("email") String email) {
+        codeService.sendForgetPwdCode(email);
+        return CommonResult.ok();
+    }
+
 }
