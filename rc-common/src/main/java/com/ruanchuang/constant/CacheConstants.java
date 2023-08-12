@@ -28,6 +28,11 @@ public class CacheConstants {
     public static final String CAPTCHA_CODE_KEY_FORGET_PWD = "captcha_codes_forget_pwd:";
 
     /**
+     * 修改密码验证码 redis key
+     */
+    public static final String CAPTCHA_CODE_KEY_UPDATE_PWD = "captcha_codes_update_pwd:";
+
+    /**
      * 防重提交 redis key
      */
     public static final String REPEAT_SUBMIT_KEY = "repeat_submit:";

@@ -60,4 +60,12 @@ public class CaptchaController {
         return CommonResult.ok();
     }
 
+    @ApiOperation("获取修改密码验证码")
+    @RateLimiter(key = "getUpdatePwdCode", count = 1, limitType = LimitType.IP, message = "一分钟内只能获取一次验证码, 请稍后再试")
+    @GetMapping("/getUpdatePwdCode/{email}")
+    public CommonResult getUpdatePwdCode(@Email(message = "邮箱格式错误") @PathVariable("email") String email) {
+        codeService.sendUpdatePwdCode(email);
+        return CommonResult.ok();
+    }
+
 }

@@ -8,10 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruanchuang.constant.CacheConstants;
 import com.ruanchuang.domain.SysLog;
 import com.ruanchuang.domain.SysUser;
-import com.ruanchuang.domain.dto.ForgetPasswordDto;
-import com.ruanchuang.domain.dto.LoginDto;
-import com.ruanchuang.domain.dto.RegisterDto;
-import com.ruanchuang.domain.dto.UpdateUserInfoDto;
+import com.ruanchuang.domain.dto.*;
 import com.ruanchuang.enums.BusinessStatus;
 import com.ruanchuang.enums.UserType;
 import com.ruanchuang.exception.ServiceException;
@@ -167,20 +164,43 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         if (code == null || !code.equals(forgetPasswordDto.getCode())) {
             throw new ServiceException("验证码无效");
         }
-        SysUser user = this.baseMapper.selectOne(
-                Wrappers.<SysUser>lambdaQuery()
-                .eq(SysUser::getEmail, forgetPasswordDto.getEmail())
-                .select(SysUser::getId)
-        );
-        if (user == null) {
-            throw new ServiceException("账户不存在");
-        }
+        redisTemplate.delete(CacheConstants.CAPTCHA_CODE_KEY_FORGET_PWD + forgetPasswordDto.getEmail());
+        SysUser user = getUserByEmail(forgetPasswordDto.getEmail());
         String newPassword = RSAUtils.decryptByRsa(forgetPasswordDto.getPassword());
         String newSalt = RandomUtil.randomString(6);
         newPassword = SaSecureUtil.md5BySalt(newPassword, newSalt);
         SysUser userInfo = new SysUser()
                 .setId(user.getId())
                 .setSalt(newSalt)
+                .setPassword(newPassword);
+        this.updateById(userInfo);
+    }
+
+    /**
+     * 用户修改密码
+     * @param updatePwdDto
+     */
+    @Override
+    public void updatePwd(UpdatePwdDto updatePwdDto) {
+        String code = (String) redisTemplate.opsForValue().get(CacheConstants.CAPTCHA_CODE_KEY_UPDATE_PWD + updatePwdDto.getEmail());
+        if (code == null || !code.equals(updatePwdDto.getCode())) {
+            throw new ServiceException("验证码无效");
+        }
+        redisTemplate.delete(CacheConstants.CAPTCHA_CODE_KEY_UPDATE_PWD + updatePwdDto.getEmail());
+        SysUser user = getUserByEmail(updatePwdDto.getEmail());
+        String oldPassword = RSAUtils.decryptByRsa(updatePwdDto.getOldPassword());
+        String newPassword = RSAUtils.decryptByRsa(updatePwdDto.getNewPassword());
+        if (!SaSecureUtil.md5BySalt(oldPassword, user.getSalt()).equals(user.getPassword())) {
+            throw new ServiceException("原密码错误");
+        }
+        if (oldPassword.equals(newPassword)) {
+            throw new ServiceException("新密码与旧密码一致");
+        }
+        String salt = RandomUtil.randomString(6);
+        newPassword = SaSecureUtil.md5BySalt(newPassword, salt);
+        SysUser userInfo = new SysUser()
+                .setId(user.getId())
+                .setSalt(salt)
                 .setPassword(newPassword);
         this.updateById(userInfo);
     }
@@ -214,6 +234,20 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         });
     }
 
-
+    /**
+     * 通过邮箱获取对应的用户
+     * @param email
+     * @return
+     */
+    private SysUser getUserByEmail(String email) {
+        SysUser user = this.baseMapper.selectOne(
+                Wrappers.<SysUser>lambdaQuery()
+                        .eq(SysUser::getEmail, email)
+        );
+        if (user == null) {
+            throw new ServiceException("账户不存在");
+        }
+        return user;
+    }
 
 }

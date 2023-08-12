@@ -21,4 +21,10 @@ public interface CodeService {
      * @param email
      */
     void sendForgetPwdCode(String email);
+
+    /**
+     * 发送修改密码验证码
+     * @param email
+     */
+    void sendUpdatePwdCode(String email);
 }

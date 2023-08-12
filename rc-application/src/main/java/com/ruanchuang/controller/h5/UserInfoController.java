@@ -3,6 +3,7 @@ package com.ruanchuang.controller.h5;
 import com.ruanchuang.annotation.Log;
 import com.ruanchuang.annotation.RepeatSubmit;
 import com.ruanchuang.domain.SysUser;
+import com.ruanchuang.domain.dto.UpdatePwdDto;
 import com.ruanchuang.domain.dto.UpdateUserInfoDto;
 import com.ruanchuang.enums.BusinessType;
 import com.ruanchuang.model.CommonResult;
@@ -42,6 +43,15 @@ public class UserInfoController {
     public CommonResult updateUserInfo(@Validated @RequestBody UpdateUserInfoDto user) {
         boolean success = sysUserService.updateUserInfo(user);
         return success ? CommonResult.ok() : CommonResult.fail("修改失败, 请稍后再试");
+    }
+
+    @ApiOperation("用户修改密码")
+    @RepeatSubmit(interval = 10000, message = "重复提交, 请10秒后再试")
+    @Log(title = "用户修改密码", businessType = BusinessType.UPDATE)
+    @PutMapping("/auth/updatePwd")
+    public CommonResult updatePwd(@Validated @RequestBody UpdatePwdDto updatePwdDto) {
+        sysUserService.updatePwd(updatePwdDto);
+        return CommonResult.ok();
     }
 
 }
