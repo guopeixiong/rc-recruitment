@@ -6,13 +6,16 @@ import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruanchuang.constant.CacheConstants;
+import com.ruanchuang.domain.SysFile;
 import com.ruanchuang.domain.SysLog;
 import com.ruanchuang.domain.SysUser;
 import com.ruanchuang.domain.dto.*;
 import com.ruanchuang.enums.BusinessStatus;
 import com.ruanchuang.enums.UserType;
 import com.ruanchuang.exception.ServiceException;
+import com.ruanchuang.exception.SystemException;
 import com.ruanchuang.mapper.SysUserMapper;
+import com.ruanchuang.service.SysFileService;
 import com.ruanchuang.service.SysLogService;
 import com.ruanchuang.service.SysUserService;
 import com.ruanchuang.utils.IpUtils;
@@ -22,12 +25,17 @@ import com.ruanchuang.utils.RSAUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
 
 /**
@@ -45,11 +53,20 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Resource(name = "systemThreadPool")
     private ThreadPoolTaskExecutor systemThreadPool;
 
+    @Resource(name = "businessThreadPool")
+    private ThreadPoolTaskExecutor businessThreadPool;
+
     @Autowired
     private SysLogService sysLogService;
 
     @Autowired
+    private SysFileService sysFileService;
+
+    @Autowired
     private RedisTemplate redisTemplate;
+
+    @Value("${file.store-address}")
+    private String rootPath;
 
     /**
      * 手机号或者学号密码登录方式
@@ -61,9 +78,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public String loginByPhoneAndPassword(LoginDto loginDto, HttpServletRequest request) {
         loginDto.setPassword(RSAUtils.decryptByRsa(loginDto.getPassword()));
-        SysUser user = this.baseMapper.selectOne(Wrappers.<SysUser>lambdaQuery().eq(SysUser::getStuNum, loginDto.getAccount()));
+        SysUser user = this.baseMapper.selectOne(Wrappers.<SysUser>lambdaQuery().eq(SysUser::getStuNum, loginDto.getStuNum()));
         if (user == null) {
-            user = this.baseMapper.selectOne(Wrappers.<SysUser>lambdaQuery().eq(SysUser::getPhone, loginDto.getAccount()));
+            user = this.baseMapper.selectOne(Wrappers.<SysUser>lambdaQuery().eq(SysUser::getPhone, loginDto.getStuNum()));
         }
         if (user == null) {
             throw new ServiceException("账号不存在");
@@ -206,6 +223,50 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     /**
+     * 用户上传头像
+     * @param file
+     */
+    @Override
+    public String uploadAvatar(MultipartFile file) {
+        File path = new File(rootPath + File.separator + "userAvatar");
+        if (!path.exists()) {
+            path.mkdirs();
+        }
+        SysUser user = LoginUtils.getLoginUser();
+        String fileName = user.getId().longValue() + "_" + System.currentTimeMillis() + "_" + file.getOriginalFilename();
+        File targetFile = new File(path.getPath() + File.separator + fileName);
+        try {
+            FileCopyUtils.copy(file.getBytes(), targetFile);
+        } catch (IOException e) {
+            log.error("用户上传头像异常, 异常信息: '{}'", e.getMessage());
+            throw new  SystemException("用户上传头像异常");
+        }
+        String imgUrl = "/userAvatar/" + fileName;
+        String oldAvatar = user.getAvatar();
+        businessThreadPool.execute(() -> {
+            SysFile sysFile = new SysFile()
+                    .setPath(targetFile.getPath())
+                    .setLinkPath(imgUrl)
+                    .setOldFileName(file.getOriginalFilename())
+                    .setRemark("用户头像");
+            sysFileService.save(sysFile);
+            if (StringUtils.isBlank(user.getAvatar())) {
+                return;
+            }
+            SysFile oldFile = sysFileService.getBaseMapper().selectOne(Wrappers.<SysFile>lambdaQuery().eq(SysFile::getLinkPath, oldAvatar));
+            if (oldFile == null) {
+                return;
+            }
+            new File(oldFile.getPath()).delete();
+            sysFileService.removeById(oldFile.getId());
+        });
+        user.setAvatar(imgUrl);
+        this.updateById(user);
+        LoginUtils.updateUserInfo(user);
+        return imgUrl;
+    }
+
+    /**
      * 日志记录
      *
      * @param param
@@ -229,7 +290,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                     .setStatus(loginSuccess ? BusinessStatus.SUCCESS : BusinessStatus.FAIL);
             sysLogService.save(sysLog);
             if (!loginSuccess) {
-                log.info("账号: '{}', 尝试登录失败", param.getAccount() == null ? param.getEmail() : param.getAccount());
+                log.info("账号: '{}', 尝试登录失败", param.getStuNum() == null ? param.getEmail() : param.getStuNum());
             }
         });
     }

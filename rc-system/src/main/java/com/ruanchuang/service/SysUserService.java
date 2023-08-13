@@ -3,6 +3,7 @@ package com.ruanchuang.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruanchuang.domain.SysUser;
 import com.ruanchuang.domain.dto.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -57,4 +58,10 @@ public interface SysUserService extends IService<SysUser> {
      * @param updatePwdDto
      */
     void updatePwd(UpdatePwdDto updatePwdDto);
+
+    /**
+     * 用户上传头像
+     * @param file
+     */
+    String uploadAvatar(MultipartFile file);
 }

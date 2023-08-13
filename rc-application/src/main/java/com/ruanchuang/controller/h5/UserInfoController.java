@@ -1,11 +1,13 @@
 package com.ruanchuang.controller.h5;
 
 import com.ruanchuang.annotation.Log;
+import com.ruanchuang.annotation.RateLimiter;
 import com.ruanchuang.annotation.RepeatSubmit;
 import com.ruanchuang.domain.SysUser;
 import com.ruanchuang.domain.dto.UpdatePwdDto;
 import com.ruanchuang.domain.dto.UpdateUserInfoDto;
 import com.ruanchuang.enums.BusinessType;
+import com.ruanchuang.enums.LimitType;
 import com.ruanchuang.model.CommonResult;
 import com.ruanchuang.service.SysUserService;
 import com.ruanchuang.utils.LoginUtils;
@@ -14,6 +16,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @Author guopeixiong
@@ -52,6 +55,15 @@ public class UserInfoController {
     public CommonResult updatePwd(@Validated @RequestBody UpdatePwdDto updatePwdDto) {
         sysUserService.updatePwd(updatePwdDto);
         return CommonResult.ok();
+    }
+
+    @ApiOperation("用户头像上传")
+    @RateLimiter(key = "uploadAvatar", count = 60, limitType = LimitType.DEFAULT, message = "系统繁忙, 请稍后再试")
+    @Log(title = "用户修改头像", businessType = BusinessType.UPDATE)
+    @PostMapping("/auth/avatar")
+    public CommonResult uploadAvatar(@RequestParam("avatarFile") MultipartFile file) {
+        String imgUrl = sysUserService.uploadAvatar(file);
+        return CommonResult.ok(imgUrl);
     }
 
 }

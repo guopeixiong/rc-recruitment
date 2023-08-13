@@ -8,6 +8,7 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 /**
  * @Author guopeixiong
@@ -20,6 +21,7 @@ import javax.validation.constraints.NotNull;
 public class RegisterDto {
 
     @NotNull(message = "学号不能为空")
+    @Pattern(regexp = "^(202[0-9])(\\d){8}$", message = "学号格式错误")
     @ApiModelProperty("学号")
     private String stuNum;
 

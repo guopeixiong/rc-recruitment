@@ -37,6 +37,9 @@ public class SysFile implements Serializable {
     @ApiModelProperty("文件存储路径")
     private String path;
 
+    @ApiModelProperty("外部访问路径")
+    private String linkPath;
+
     @ApiModelProperty("文件备注")
     private String remark;
 
