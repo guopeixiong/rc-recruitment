@@ -43,6 +43,9 @@ public class SignUpFormQuestion implements Serializable {
     @ApiModelProperty("问题类型;0.文本填空题 1.单项选择题 2.多项选择题")
     private Integer type;
 
+    @ApiModelProperty("是否必填;0.否 1.是")
+    private Integer isRequire;
+
     @ApiModelProperty("创建人")
     @TableField(fill = FieldFill.INSERT)
     private String createBy;
