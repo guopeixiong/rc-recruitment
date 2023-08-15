@@ -82,6 +82,9 @@ public class LoginUtils {
      * 退出登录
      */
     public static void logout() {
+        if (!StpUtil.isLogin()) {
+            return;
+        }
         SaStorage storage = SaHolder.getStorage();
         storage.delete(LOGIN_USER_KEY);
         storage.delete(USER_KEY);
