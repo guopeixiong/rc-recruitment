@@ -4,7 +4,7 @@
   "avatar": "",
   "version": "4.6.2",
   "createdTime": "2023-7-27 19:51:30",
-  "updatedTime": "2023-7-30 15:16:50",
+  "updatedTime": "2023-8-15 20:54:17",
   "dbConns": [],
   "profile": {
     "default": {
@@ -1327,7 +1327,7 @@
         {
           "defKey": "oper_type",
           "defName": "操作类型",
-          "comment": "0.其他 1.新增 2.修改 3.删除",
+          "comment": "0.其他 1.新增 2.修改 3.删除 4.导出 5.导入",
           "type": "int",
           "len": 16,
           "scale": "",
@@ -1427,11 +1427,28 @@
           "id": "373B04A8-8A72-4DF4-BA0E-49DF3B70D5BC"
         },
         {
+          "defKey": "response_result",
+          "defName": "响应结果",
+          "comment": "",
+          "type": "varchar",
+          "len": 2000,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "extProps": {},
+          "domain": "",
+          "id": "B40B142C-06CC-43E4-B4DC-564544961248"
+        },
+        {
           "defKey": "status",
           "defName": "操作结果",
           "comment": "0.正常 1.异常",
-          "type": "",
-          "len": "",
+          "type": "int",
+          "len": 1,
           "scale": "",
           "primaryKey": false,
           "notNull": false,
@@ -1440,7 +1457,7 @@
           "hideInGraph": false,
           "refDict": "",
           "extProps": {},
-          "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
+          "domain": "",
           "id": "48632E0B-AD1C-4CEA-8CF9-0B0A670ADA7E"
         },
         {
@@ -1696,6 +1713,23 @@
           "extProps": {},
           "domain": "",
           "id": "E060949B-898B-4045-AE35-A6D70D78FA53"
+        },
+        {
+          "defKey": "link_path",
+          "defName": "外部访问路径",
+          "comment": "",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "extProps": {},
+          "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
+          "id": "97601238-4296-43B0-8397-8EE4F0131EAA"
         },
         {
           "defKey": "remark",
@@ -4518,6 +4552,23 @@
           "extProps": {},
           "domain": "",
           "id": "B5915CAD-907A-4BA1-97DF-7916533A560D"
+        },
+        {
+          "defKey": "is_require",
+          "defName": "是否必填",
+          "comment": "0.否 1.是",
+          "type": "int",
+          "len": 1,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "0",
+          "hideInGraph": false,
+          "refDict": "",
+          "extProps": {},
+          "domain": "",
+          "id": "6B2BBE1E-0B9B-442F-ADE3-CCBA57F72376"
         },
         {
           "defKey": "create_by",
