@@ -2,7 +2,7 @@ spring:
   application:
     name: rc-recruitment
   profiles:
-    active: @env@
+    active: '@env@'
     include: druid
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
@@ -67,3 +67,7 @@ api:
     /example1,
     /example2,
     /example3
+jasypt:
+  encryptor:
+    algorithm: PBEWithMD5AndDES
+    password:

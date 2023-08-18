@@ -36,14 +36,14 @@ spring:
       max-request-size: 20MB
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/rc_recruitment?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=Asia/Shanghai
-    username: root
-    password: 123456
+    username: ENC(root)
+    password: ENC(123456)
   # redis配置
   redis:
     host: 127.0.0.1
     port: 6379
     database: 6
-    password: 194536@px
+    password: ENC(194536@px)
     timeout: 10S
     lettuce:
       pool:
@@ -53,8 +53,8 @@ spring:
         max-wait: -1ms
   # 邮件配置
   mail:
-    username: lxzforever99@163.com
-    password: xxxxxxxxxxx
+    username: ENC(lxzforever99@163.com)
+    password: ENC(194536@px)
     host: smtp.163.com
     default-encoding: UTF-8
     protocol: smtps
@@ -77,9 +77,9 @@ sa-token:
   # 是否输出操作日志
   is-log: true
   # jwt密钥
-  jwt-secret-key: HAL7dRgbsYign18D3xZ2cc8Pu10DuNZN
+  jwt-secret-key: ENC(HAL7dRgbsYign18D3xZ2cc8Pu10DuNZN)
   # 前端密码解密密钥
-  pwd-secret-key: lmPlRKbZSJOg7KKCaHWkq0fgbhNgbdhW
+  pwd-secret-key: ENC(lmPlRKbZSJOg7KKCaHWkq0fgbhNgbdhW)
 # 文件上传后存储地址
 file:
   store-address: /home/app/rc-recruitment/uploadFile

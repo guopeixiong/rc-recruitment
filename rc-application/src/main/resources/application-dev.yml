@@ -38,14 +38,14 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     driverClassName: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/rc_recruitment?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=Asia/Shanghai
-    username: root
-    password: 123456
+    username: ENC(5Bq1eMn2YZ03ztWDa0CI2g==)
+    password: ENC(6SbaCP4E+CnbWKE62dHM3w==)
   # redis配置
   redis:
     host: 127.0.0.1
     port: 6379
     database: 6
-    password: 194536@px
+    password: ENC(zcC1NjVqNJkA/wJiHrgQfXY2xTgESBQC)
     timeout: 10S
     lettuce:
       pool:
@@ -55,8 +55,8 @@ spring:
         max-wait: -1ms
   # 邮件配置
   mail:
-    username: lxzforever99@163.com
-    password: xxxxxxxxxxx
+    username: ENC(OGrdeVsC4dF/iui91bhDS0m13mApAuuMbgkinRzWp2U=)
+    password: ENC(h3M247lO3Vh3BZJ5HA+GCAnYzVnQSP9JP7JuMzbUzo8=)
     host: smtp.163.com
     default-encoding: UTF-8
     protocol: smtps
@@ -79,9 +79,9 @@ sa-token:
   # 是否输出操作日志
   is-log: true
   # jwt密钥
-  jwt-secret-key: 2b1smY9XxuDk4tvnh4AbZkqBJJVMlHbu
+  jwt-secret-key: ENC(2bqs+sU+uALLsZF2zbRlI3moi6pUE5WRzarT8NV3VMwr0XFcSEcpnh0+yYIVyktI)
   # 前端密码解密密钥
-  pwd-secret-key: 8JjlaheNd3Kw4Mr6X2niFGeBi7E5LrdK
+  pwd-secret-key: ENC(UDPV6VXDt/jHQ1KaeABA4OJjLeaeX9fHFPe0BNdzqJCJz/S27v6pApE5hsdqdnyZ)
 # 文件上传后存储地址
 file:
   store-address: /Desktop/rc-recruitment
