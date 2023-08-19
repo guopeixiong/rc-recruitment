@@ -47,4 +47,9 @@ public class CacheConstants {
      */
     public static final String PWD_ERR_CNT_KEY = "pwd_err_cnt:";
 
+    /**
+     * 报名表缓存 redis key
+     */
+    public static final String SIGN_UP_FORM_CACHE_KEY = "sign_up_form_cache";
+
 }

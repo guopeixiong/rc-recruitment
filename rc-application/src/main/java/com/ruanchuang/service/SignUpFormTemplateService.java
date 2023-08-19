@@ -1,7 +1,10 @@
 package com.ruanchuang.service;
 
+import com.ruanchuang.domain.SignUpFormQuestion;
 import com.ruanchuang.domain.SignUpFormTemplate;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
  * <p>
@@ -12,5 +15,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2023-08-01
  */
 public interface SignUpFormTemplateService extends IService<SignUpFormTemplate> {
+
+    /**
+     * 获取报名表单
+     * @return
+     */
+    List<SignUpFormQuestion> getForm();
 
 }

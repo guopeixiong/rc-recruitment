@@ -52,9 +52,9 @@ public class RateLimiterAspect {
                 if (StringUtils.isNoneBlank(rateLimiter.message())) {
                     throw new ServiceException(rateLimiter.message());
                 }
+                log.info("限流器-{}-限流中", count, number.intValue(), combineKey);
                 throw new ServiceException("访问过于频繁，请稍候再试");
             }
-            log.info("限制请求'{}',当前请求'{}',缓存key'{}'", count, number.intValue(), combineKey);
         } catch (ServiceException e) {
             throw e;
         } catch (Exception e) {

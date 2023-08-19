@@ -61,6 +61,10 @@ spring:
     default-encoding: UTF-8
     protocol: smtps
     port: 465
+#mybatis plus
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 # knife4j
 knife4j:
   enable: true

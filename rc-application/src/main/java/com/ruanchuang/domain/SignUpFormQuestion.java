@@ -9,6 +9,7 @@ import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * <p>
@@ -42,6 +43,10 @@ public class SignUpFormQuestion implements Serializable {
 
     @ApiModelProperty("问题类型;0.文本填空题 1.单项选择题 2.多项选择题")
     private Integer type;
+
+    @ApiModelProperty("选择题选项")
+    @TableField(exist = false)
+    private List<TemplateQuestionOptions> options;
 
     @ApiModelProperty("是否必填;0.否 1.是")
     private Integer isRequire;

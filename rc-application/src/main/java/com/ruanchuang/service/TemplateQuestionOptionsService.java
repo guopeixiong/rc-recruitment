@@ -1,7 +1,11 @@
 package com.ruanchuang.service;
 
-import com.ruanchuang.domain.TemplateQuestionOptions;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ruanchuang.domain.TemplateQuestionOptions;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -13,4 +17,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface TemplateQuestionOptionsService extends IService<TemplateQuestionOptions> {
 
+    /**
+     * 根据多个问题id获取问题id下的选项
+     * @param questionIds
+     * @return
+     */
+    Map<Long, List<TemplateQuestionOptions>> getOptionsByQuestionIds(Collection<Long> questionIds);
 }
