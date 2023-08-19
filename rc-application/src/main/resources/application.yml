@@ -67,7 +67,8 @@ api:
     /example1,
     /example2,
     /example3
+# 配置文件密码加密
 jasypt:
   encryptor:
     algorithm: PBEWithMD5AndDES
-    password:
+    password: ${RC-RECRUITMENT-PASSWORD}
