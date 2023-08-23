@@ -4,6 +4,7 @@ import cn.dev33.satoken.interceptor.SaInterceptor;
 import cn.dev33.satoken.router.SaRouter;
 import cn.dev33.satoken.stp.StpUtil;
 import com.ruanchuang.interceptor.RepeatSubmitInterceptor;
+import com.ruanchuang.interceptor.UserTokenInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -41,6 +42,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(repeatSubmitInterceptor).addPathPatterns("/**");
+        registry.addInterceptor(new UserTokenInterceptor()).addPathPatterns("/**");
         registry.addInterceptor(new SaInterceptor(handle -> {
             SaRouter.match("/**/auth/**", r -> StpUtil.checkLogin());
             SaRouter.match(authApi.split(","))
