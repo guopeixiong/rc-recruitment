@@ -15,6 +15,8 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
@@ -38,6 +40,8 @@ public class LogAspect {
 
     @Resource(name = "systemThreadPool")
     private ThreadPoolTaskExecutor threadPoolTaskExecutor;
+
+    private static final Logger logger = LoggerFactory.getLogger(LogAspect.class);
 
     @Autowired
     private SysLogService sysLogService;
@@ -75,6 +79,11 @@ public class LogAspect {
         log.setMethod(joinPoint.getSignature().getName())
                 .setRequestMethod(attributes.getRequest().getMethod());
         getControllerMethodDescription(joinPoint, controllerLog, log, jsonResult);
+        if (e != null) {
+            logger.error(JSONUtils.toJsonString(log));
+        } else {
+            logger.info(JSONUtils.toJsonString(log));
+        }
         threadPoolTaskExecutor.execute(() -> sysLogService.save(log));
     }
 
