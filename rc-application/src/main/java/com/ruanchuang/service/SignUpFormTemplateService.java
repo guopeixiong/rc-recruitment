@@ -3,6 +3,7 @@ package com.ruanchuang.service;
 import com.ruanchuang.domain.SignUpFormQuestion;
 import com.ruanchuang.domain.SignUpFormTemplate;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ruanchuang.domain.dto.SubmitFormDto;
 
 import java.util.List;
 
@@ -21,5 +22,11 @@ public interface SignUpFormTemplateService extends IService<SignUpFormTemplate> 
      * @return
      */
     List<SignUpFormQuestion> getForm();
+
+    /**
+     * 提交报名表
+     * @param formDto
+     */
+    void submitForm(List<SubmitFormDto> formDto);
 
 }

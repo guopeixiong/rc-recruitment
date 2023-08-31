@@ -33,4 +33,23 @@ public interface Constants {
      */
     Integer SIGN_UP_FORM_QUESTION_TYPE_MULTIPLE_CHOICE = 2;
 
+    /**
+     * 问题类型-必答
+     */
+    Integer QUESTION_TYPE_REQUIRE = 1;
+
+    /**
+     * 问题类型-非必答
+     */
+    Integer QUESTION_TYPE_NO_REQUIRE = 0;
+
+    /**
+     * 答案类型-文本
+     */
+    Integer QUESTION_ANSWER_TYPE_TEXT = 0;
+
+    /**
+     * 答案类型-选项
+     */
+    Integer QUESTION_ANSWER_TYPE_OPTION = 1;
 }

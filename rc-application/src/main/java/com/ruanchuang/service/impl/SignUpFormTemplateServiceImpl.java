@@ -1,22 +1,30 @@
 package com.ruanchuang.service.impl;
 
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruanchuang.constant.CacheConstants;
-import com.ruanchuang.domain.SignUpFormQuestion;
-import com.ruanchuang.domain.SignUpFormTemplate;
+import com.ruanchuang.domain.*;
+import com.ruanchuang.domain.dto.SubmitFormDto;
 import com.ruanchuang.enums.Constants;
 import com.ruanchuang.exception.ServiceException;
 import com.ruanchuang.mapper.SignUpFormTemplateMapper;
 import com.ruanchuang.service.SignUpFormQuestionService;
 import com.ruanchuang.service.SignUpFormTemplateService;
+import com.ruanchuang.service.SignUpFromAnswerService;
+import com.ruanchuang.service.SignUpRecordInfoService;
+import com.ruanchuang.utils.LoginUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -35,6 +43,12 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
 
     @Autowired
     private RedisTemplate redisTemplate;
+
+    @Autowired
+    private SignUpRecordInfoService signUpRecordInfoService;
+
+    @Autowired
+    private SignUpFromAnswerService signUpFromAnswerService;
 
     /**
      * 获取报名表单
@@ -68,4 +82,75 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
         }
         return signUpForm;
     }
+
+    /**
+     * 提交报名表单
+     * @param formDto
+     */
+    @Override
+    public void submitForm(List<SubmitFormDto> formDto) {
+        Long templateId = formDto.get(0).getTemplateId();
+        boolean exists = this.baseMapper.exists(Wrappers.<SignUpFormTemplate>lambdaQuery().eq(SignUpFormTemplate::getId, templateId));
+        if (!exists) {
+            throw new ServiceException("表单不存在");
+        }
+        SysUser user = LoginUtils.getLoginUser();
+        boolean alreadySignUp = signUpRecordInfoService.getBaseMapper().exists(Wrappers.<SignUpRecordInfo>lambdaQuery().eq(SignUpRecordInfo::getTemplateId, templateId).eq(SignUpRecordInfo::getUserId, user.getId()));
+        if (alreadySignUp) {
+            throw new ServiceException("您已经填写过此报名表, 可前往个人中心-报名记录修改");
+        }
+        // 必答问题id
+        Set<Long> requireQuestionIds = signUpFormQuestionService.lambdaQuery()
+                .eq(SignUpFormQuestion::getTemplateId, templateId)
+                .eq(SignUpFormQuestion::getIsRequire, Constants.QUESTION_TYPE_REQUIRE)
+                .select(SignUpFormQuestion::getId)
+                .list().stream()
+                .map(SignUpFormQuestion::getId)
+                .collect(Collectors.toSet());
+        SubmitFormDto question = formDto.stream().filter(o ->
+                requireQuestionIds.contains(o.getId()) && StringUtils.isBlank(o.getAnswer())
+        ).findFirst().orElse(null);
+        if (question != null) {
+            throw new ServiceException("请回答所有必答问题");
+        }
+        // 保存用户填写记录
+        SignUpRecordInfo signUpRecordInfo = new SignUpRecordInfo()
+                .setUserId(user.getId())
+                .setUserName(user.getFullName())
+                .setTemplateId(templateId);
+        // 保存答案
+        List<SignUpFromAnswer> answers = new ArrayList<>();
+        formDto.stream().forEach(o -> {
+            SignUpFromAnswer answer = new SignUpFromAnswer()
+                    .setUserId(user.getId())
+                    .setTemplateId(templateId)
+                    .setQuestionId(o.getId());
+            if (o.getType().equals(Constants.SIGN_UP_FORM_QUESTION_TYPE_TEXT)) {
+                answer.setType(Constants.QUESTION_ANSWER_TYPE_TEXT)
+                        .setTextAnswer(o.getAnswer());
+            } else {
+                answer.setType(Constants.QUESTION_ANSWER_TYPE_OPTION)
+                        .setOptionsAnswer(o.getAnswer());
+            }
+            answers.add(answer);
+        });
+        this.saveFormAnswer(signUpRecordInfo, answers);
+    }
+
+    /**
+     * 保存用户提交报名表答案
+     */
+    @Transactional(rollbackFor = ServiceException.class)
+    public void saveFormAnswer(SignUpRecordInfo signUpRecordInfo, List<SignUpFromAnswer> answers) {
+        boolean success = signUpRecordInfoService.save(signUpRecordInfo);
+        if (!success) {
+            throw new ServiceException("系统异常, 提交失败");
+
+        }
+        success = signUpFromAnswerService.saveBatch(answers);
+        if (!success) {
+            throw new ServiceException("系统异常, 提交失败");
+        }
+    }
+
 }
