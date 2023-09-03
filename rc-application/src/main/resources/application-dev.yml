@@ -89,9 +89,3 @@ sa-token:
 # 文件上传后存储地址
 file:
   store-address: /Desktop/rc-recruitment
-# 放行的接口
-not-intercept-api:
-  - '/login'
-  - '/register'
-  - '/doc.html#/**'
-  - '/release/**'
