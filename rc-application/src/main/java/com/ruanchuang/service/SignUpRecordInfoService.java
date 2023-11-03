@@ -1,7 +1,9 @@
 package com.ruanchuang.service;
 
-import com.ruanchuang.domain.SignUpRecordInfo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ruanchuang.domain.SignUpRecordInfo;
+import com.ruanchuang.domain.dto.BaseQueryDto;
 
 /**
  * <p>
@@ -13,4 +15,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface SignUpRecordInfoService extends IService<SignUpRecordInfo> {
 
+    /**
+     * 用户分页查询报名记录列表
+     * @param baseQueryDto
+     * @return
+     */
+    IPage<SignUpRecordInfo> queryUserSignUpRecord(BaseQueryDto baseQueryDto);
 }
