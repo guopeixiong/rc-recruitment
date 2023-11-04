@@ -21,9 +21,11 @@ import javax.validation.constraints.Pattern;
 public class UpdateUserInfoDto {
 
     @ApiModelProperty("昵称")
+    @Length(min = 1, max = 20, message = "昵称长度为1到20位")
     private String nickName;
 
     @ApiModelProperty("用户姓名")
+    @Length(min = 2, max = 20, message = "姓名长度为2到20位")
     private String fullName;
 
     @ApiModelProperty("学号")
@@ -31,7 +33,7 @@ public class UpdateUserInfoDto {
     private String stuNum;
 
     @ApiModelProperty("手机号")
-    @Length(min = 11, max = 11, message = "手机号格式错误")
+    @Pattern(regexp = "^1[34578]\\d{9}$", message = "手机号格式错误")
     private String phone;
 
     @ApiModelProperty("邮箱")

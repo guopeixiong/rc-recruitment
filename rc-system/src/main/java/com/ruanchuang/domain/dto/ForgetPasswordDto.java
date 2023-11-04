@@ -25,6 +25,7 @@ public class ForgetPasswordDto {
     private String email;
 
     @NotNull(message = "密码不能为空")
+    @Length(min = 6, max = 20, message = "密码为6-20位")
     private String password;
 
     @NotNull(message = "验证码不能为空")

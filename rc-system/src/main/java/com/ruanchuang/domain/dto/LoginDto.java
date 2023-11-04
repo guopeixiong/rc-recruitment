@@ -26,6 +26,7 @@ public class LoginDto {
     private String stuNum;
 
     @NotNull(groups = LoginByPhoneOrStuNum.class, message = "密码不能为空")
+    @Length(min = 6, max = 20, groups = LoginByPhoneOrStuNum.class, message = "密码格式错误")
     @ApiModelProperty("密码")
     private String password;
 

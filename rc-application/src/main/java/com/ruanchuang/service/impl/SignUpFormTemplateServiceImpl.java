@@ -107,12 +107,19 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
                 .list().stream()
                 .map(SignUpFormQuestion::getId)
                 .collect(Collectors.toSet());
-        SubmitFormDto question = formDto.stream().filter(o ->
+        formDto.stream().filter(o ->
                 requireQuestionIds.contains(o.getId()) && StringUtils.isBlank(o.getAnswer())
-        ).findFirst().orElse(null);
-        if (question != null) {
+        ).findFirst().ifPresent(question -> {
             throw new ServiceException("请回答所有必答问题");
-        }
+        });
+        // 过滤选择题选项是否有非法提交内容
+        formDto.stream().filter(o -> o.getType().equals(Constants.SIGN_UP_FORM_QUESTION_TYPE_SINGLE_CHOICE) || o.getType().equals(Constants.SIGN_UP_FORM_QUESTION_TYPE_MULTIPLE_CHOICE))
+                .map(SubmitFormDto::getAnswer)
+                .filter(answer -> answer.matches("\\d+(,\\d+)*"))
+                .findFirst()
+                .ifPresent(answer -> {
+                    throw new ServiceException("非法提交内容");
+                });
         // 保存用户填写记录
         SignUpRecordInfo signUpRecordInfo = new SignUpRecordInfo()
                 .setUserId(user.getId())
@@ -142,13 +149,10 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
      */
     @Transactional(rollbackFor = ServiceException.class)
     public void saveFormAnswer(SignUpRecordInfo signUpRecordInfo, List<SignUpFromAnswer> answers) {
-        boolean success = signUpRecordInfoService.save(signUpRecordInfo);
-        if (!success) {
+        if (!signUpRecordInfoService.save(signUpRecordInfo)) {
             throw new ServiceException("系统异常, 提交失败");
-
         }
-        success = signUpFromAnswerService.saveBatch(answers);
-        if (!success) {
+        if (!signUpFromAnswerService.saveBatch(answers)) {
             throw new ServiceException("系统异常, 提交失败");
         }
     }

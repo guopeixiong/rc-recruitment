@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 /**
  * @Author guopeixiong
@@ -18,10 +19,12 @@ import javax.validation.constraints.NotNull;
 public class SubmitFormDto {
 
     @NotNull(message = "模板id不能为空")
+    @Pattern(regexp = "\\d{1,20}", message = "非法提交内容")
     @ApiModelProperty("模板id")
     private Long templateId;
 
     @NotNull(message = "问题id不能为空")
+    @Pattern(regexp = "\\d{1,20}", message = "非法提交内容")
     @ApiModelProperty("问题id")
     private Long id;
 
