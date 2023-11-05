@@ -37,4 +37,14 @@ public class SignUpRecordInfoServiceImpl extends ServiceImpl<SignUpRecordInfoMap
                 .page(new Page<>(baseQueryDto.getPageNum(), baseQueryDto.getPageSize()));
     }
 
+    /**
+     * 查询报名详情
+     * @param id
+     * @return
+     */
+    @Override
+    public Object querySignUpDetail(Long id) {
+        return null;
+    }
+
 }

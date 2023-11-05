@@ -38,7 +38,6 @@ public class RegisterDto implements Serializable {
     private String code;
 
     @NotNull(message = "密码不能为空")
-    @Length(min = 6, max = 20, message = "密码长度为6-20位")
     private String password;
 
 }

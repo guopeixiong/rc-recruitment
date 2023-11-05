@@ -28,12 +28,10 @@ public class UpdatePwdDto implements Serializable {
     private String email;
 
     @NotNull(message = "旧密码不能为空")
-    @Length(min = 6, max = 20, message = "密码长度在6-20位置")
     @ApiModelProperty("旧密码")
     private String oldPassword;
 
     @NotNull(message = "新密码不能为空")
-    @Length(min = 6, max = 20, message = "密码长度在6-20位置")
     @ApiModelProperty("新密码")
     private String newPassword;
 
