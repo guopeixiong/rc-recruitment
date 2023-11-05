@@ -8,6 +8,7 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * @Author guopeixiong
@@ -17,7 +18,9 @@ import javax.validation.constraints.NotNull;
 @Data
 @Accessors(chain = true)
 @ApiModel("忘记密码参数")
-public class ForgetPasswordDto {
+public class ForgetPasswordDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @NotNull(message = "邮箱不难为空")
     @Email(message = "邮箱格式错误")

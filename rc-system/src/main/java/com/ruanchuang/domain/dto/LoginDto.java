@@ -9,6 +9,7 @@ import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.io.Serializable;
 
 /**
  * @Author guopeixiong
@@ -18,7 +19,9 @@ import javax.validation.constraints.Pattern;
 @Data
 @Accessors(chain = true)
 @ApiModel("登录参数")
-public class LoginDto {
+public class LoginDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @NotNull(groups = LoginByPhoneOrStuNum.class, message = "学号不能为空")
     @Pattern(groups = LoginByPhoneOrStuNum.class, regexp = "^(202[0-9])(\\d){8}$", message = "学号格式错误")

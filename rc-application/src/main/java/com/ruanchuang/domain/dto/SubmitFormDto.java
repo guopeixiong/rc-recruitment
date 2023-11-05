@@ -7,6 +7,7 @@ import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.io.Serializable;
 
 /**
  * @Author guopeixiong
@@ -16,7 +17,9 @@ import javax.validation.constraints.Pattern;
 @Data
 @Accessors(chain = true)
 @ApiModel("提交表单参数")
-public class SubmitFormDto {
+public class SubmitFormDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @NotNull(message = "模板id不能为空")
     @Pattern(regexp = "\\d{1,20}", message = "非法提交内容")

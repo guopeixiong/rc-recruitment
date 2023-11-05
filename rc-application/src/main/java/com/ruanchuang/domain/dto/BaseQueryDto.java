@@ -7,6 +7,7 @@ import lombok.experimental.Accessors;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import java.io.Serializable;
 
 /**
  * @Author guopeixiong
@@ -16,7 +17,9 @@ import javax.validation.constraints.Min;
 @Data
 @Accessors(chain = true)
 @ApiModel("基础查询dto")
-public class BaseQueryDto {
+public class BaseQueryDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @ApiModelProperty("页码")
     @Min(value = 1, message = "页码不能小于1")

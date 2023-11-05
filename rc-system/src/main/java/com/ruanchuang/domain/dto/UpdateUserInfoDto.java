@@ -9,6 +9,7 @@ import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
+import java.io.Serializable;
 
 /**
  * @Author guopeixiong
@@ -18,7 +19,9 @@ import javax.validation.constraints.Pattern;
 @Data
 @Accessors(chain = true)
 @ApiModel("修改用户个人信息参数")
-public class UpdateUserInfoDto {
+public class UpdateUserInfoDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @ApiModelProperty("昵称")
     @Length(min = 1, max = 20, message = "昵称长度为1到20位")
