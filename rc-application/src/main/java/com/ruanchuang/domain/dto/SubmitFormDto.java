@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -32,10 +33,8 @@ public class SubmitFormDto implements Serializable {
     private Long id;
 
     @NotNull(message = "问题答案不能为空")
+    @Length(max = 1000, message = "答案长度不能超出1000字")
     private String answer;
-
-    @ApiModelProperty("是否必答")
-    private Integer isRequire;
 
     @NotNull(message = "问题类型不能为空")
     @ApiModelProperty("问题类型")

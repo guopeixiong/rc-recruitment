@@ -128,6 +128,10 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
         // 保存答案
         List<SignUpFromAnswer> answers = new ArrayList<>();
         formDto.stream().forEach(o -> {
+            // 过滤没有作答的非必答题
+            if (StringUtils.isBlank(o.getAnswer())) {
+                return;
+            }
             SignUpFromAnswer answer = new SignUpFromAnswer()
                     .setUserId(user.getId())
                     .setTemplateId(templateId)
