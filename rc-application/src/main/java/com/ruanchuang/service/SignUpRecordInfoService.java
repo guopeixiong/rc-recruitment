@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruanchuang.domain.SignUpRecordInfo;
 import com.ruanchuang.domain.dto.BaseQueryDto;
+import com.ruanchuang.domain.vo.SignUpDetailVo;
+
+import java.util.List;
 
 /**
  * <p>
@@ -21,4 +24,11 @@ public interface SignUpRecordInfoService extends IService<SignUpRecordInfo> {
      * @return
      */
     IPage<SignUpRecordInfo> queryUserSignUpRecord(BaseQueryDto baseQueryDto);
+
+    /**
+     * 查询报名记录详情
+     * @param id
+     * @return
+     */
+    List<SignUpDetailVo> querySignUpDetail(Long id);
 }

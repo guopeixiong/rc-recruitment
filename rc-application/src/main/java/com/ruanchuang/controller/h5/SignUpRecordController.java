@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,6 +30,12 @@ public class SignUpRecordController {
     @GetMapping("/auth/getSignUpRecordList/{pageNum}/{pageSize}")
     public CommonResult querySignUpRecordByPage(@Validated BaseQueryDto baseQueryDto) {
         return CommonResult.ok(signUpRecordInfoService.queryUserSignUpRecord(baseQueryDto));
+    }
+
+    @ApiOperation("用户查询报名表详情")
+    @GetMapping("/auth/getSignUpDetail/{id}")
+    public CommonResult querySignUpDetail(@PathVariable("id") Long id) {
+        return CommonResult.ok(signUpRecordInfoService.querySignUpDetail(id));
     }
 
 }

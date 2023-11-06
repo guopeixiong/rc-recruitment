@@ -2,4 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruanchuang.mapper.SignUpRecordInfoMapper">
 
+    <select id="querySignUpDetail" resultType="com.ruanchuang.domain.vo.SignUpDetailVo">
+        select #{id} as id, q.id as question_id, q.content as question, q.type as type, a.id as answer_id, a.text_answer as answer, a.options_answer as opt_answer
+        from sign_up_form_question q
+        left join sign_up_from_answer a
+        on a.question_id = q.id and a.user_id = #{userId}
+        where q.template_id = #{templateId}
+        order by q.sort asc
+    </select>
 </mapper>

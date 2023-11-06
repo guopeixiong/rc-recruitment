@@ -26,12 +26,12 @@ public interface Constants {
     /**
      * 报名表问题类型 单选题
      */
-    Integer SIGN_UP_FORM_QUESTION_TYPE_SINGLE_CHOICE = 1;
+    int SIGN_UP_FORM_QUESTION_TYPE_SINGLE_CHOICE = 1;
 
     /**
      * 报名表问题类型 多选题
      */
-    Integer SIGN_UP_FORM_QUESTION_TYPE_MULTIPLE_CHOICE = 2;
+    int SIGN_UP_FORM_QUESTION_TYPE_MULTIPLE_CHOICE = 2;
 
     /**
      * 问题类型-必答

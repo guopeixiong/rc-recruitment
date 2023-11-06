@@ -110,6 +110,7 @@
                     <include>application.yml</include>
                     <include>application-druid.yml</include>
                     <include>logback-spring.xml</include>
+                    <include>mapper/*.xml</include>
                 </includes>
                 <!-- 开启过滤 在打包时application.yml中配置的@env@将被确定到底是什么变量 -->
                 <filtering>true</filtering>
