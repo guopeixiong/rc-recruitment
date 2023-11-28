@@ -4,6 +4,7 @@ import com.ruanchuang.annotation.Log;
 import com.ruanchuang.annotation.RateLimiter;
 import com.ruanchuang.annotation.RepeatSubmit;
 import com.ruanchuang.domain.dto.SubmitFormDto;
+import com.ruanchuang.domain.dto.UpdateSignUpFormDto;
 import com.ruanchuang.enums.BusinessType;
 import com.ruanchuang.model.CommonResult;
 import com.ruanchuang.service.SignUpFormTemplateService;
@@ -42,6 +43,15 @@ public class SignUpFormController {
     @PostMapping("/auth/submit")
     public CommonResult submitForm(@Validated @RequestBody List<SubmitFormDto> formDto) {
         signUpFormTemplateService.submitForm(formDto);
+        return CommonResult.ok();
+    }
+
+    @ApiOperation("用户修改报名表问题")
+    @RepeatSubmit(interval = 10000, message = "重复提交, 请10秒后再试")
+    @Log(title = "用户修改报名表问题", businessType = BusinessType.UPDATE)
+    @PutMapping("/auth/update")
+    public CommonResult updateForm(@Validated @RequestBody UpdateSignUpFormDto updateSignUpFormDto) {
+        signUpFormTemplateService.updateForm(updateSignUpFormDto);
         return CommonResult.ok();
     }
 

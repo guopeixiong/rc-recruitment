@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruanchuang.constant.CacheConstants;
 import com.ruanchuang.domain.*;
 import com.ruanchuang.domain.dto.SubmitFormDto;
+import com.ruanchuang.domain.dto.UpdateSignUpFormDto;
 import com.ruanchuang.enums.Constants;
 import com.ruanchuang.exception.ServiceException;
 import com.ruanchuang.mapper.SignUpFormTemplateMapper;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -85,6 +87,7 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
 
     /**
      * 提交报名表单
+     *
      * @param formDto
      */
     @Override
@@ -146,6 +149,60 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
             answers.add(answer);
         });
         this.saveFormAnswer(signUpRecordInfo, answers);
+    }
+
+    /**
+     * 修改报名表
+     *
+     * @param updateSignUpFormDto
+     */
+    @Override
+    public void updateForm(UpdateSignUpFormDto updateSignUpFormDto) {
+        Long userId = LoginUtils.getLoginUser().getId();
+        SignUpFormQuestion question = signUpFormQuestionService.getBaseMapper().selectOne(
+                Wrappers.<SignUpFormQuestion>lambdaQuery()
+                        .eq(SignUpFormQuestion::getId, updateSignUpFormDto.getId())
+                        .select(SignUpFormQuestion::getTemplateId,
+                        SignUpFormQuestion::getType)
+        );
+        if (question == null) {
+            throw new ServiceException("问题不存在");
+        }
+        boolean exists = signUpRecordInfoService.lambdaQuery()
+                .eq(SignUpRecordInfo::getUserId, userId)
+                .eq(SignUpRecordInfo::getTemplateId, question.getTemplateId())
+                .exists();
+        if (!exists) {
+            throw new ServiceException("您尚未报名");
+        }
+        // 处理单项选择题和多项选择题
+        if (!question.getType().equals(Constants.SIGN_UP_FORM_QUESTION_TYPE_TEXT) && !updateSignUpFormDto.getAnswer().matches("\\d+(,\\d+)*")) {
+            throw new ServiceException("非法提交内容");
+        }
+        // 删除原来的答案
+        signUpFromAnswerService.lambdaUpdate()
+                .eq(SignUpFromAnswer::getUserId, userId)
+                .eq(SignUpFromAnswer::getTemplateId, question.getTemplateId())
+                .eq(SignUpFromAnswer::getQuestionId, updateSignUpFormDto.getId())
+                .remove();
+        SignUpFromAnswer signUpFromAnswer = new SignUpFromAnswer()
+                .setUserId(userId)
+                .setTemplateId(question.getTemplateId())
+                .setQuestionId(updateSignUpFormDto.getId())
+                .setType(question.getType())
+                .setOptionsAnswer(updateSignUpFormDto.getAnswer());
+        if (question.getType().equals(Constants.SIGN_UP_FORM_QUESTION_TYPE_TEXT)) {
+            signUpFromAnswer.setType(Constants.QUESTION_ANSWER_TYPE_TEXT)
+                    .setTextAnswer(updateSignUpFormDto.getAnswer());
+        } else {
+            signUpFromAnswer.setType(Constants.QUESTION_ANSWER_TYPE_OPTION)
+                   .setOptionsAnswer(updateSignUpFormDto.getAnswer());
+        }
+        // 保存新答案
+        boolean save = signUpFromAnswerService.save(signUpFromAnswer);
+        if (!save) {
+            throw new ServiceException("系统异常, 提交失败");
+        }
     }
 
     /**
