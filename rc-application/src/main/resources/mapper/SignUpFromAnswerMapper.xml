@@ -3,6 +3,6 @@
 <mapper namespace="com.ruanchuang.mapper.SignUpFromAnswerMapper">
 
     <select id="getTheNumOfQuestionUpdateTimes" resultType="java.lang.Integer">
-        select count(*) from sign_up_from_answer where user_id = #{userId} and question_id = #{questionId}
+        select count(*) from sign_up_from_answer where user_id = #{userId} and question_id = #{questionId} and is_delete = 1
     </select>
 </mapper>

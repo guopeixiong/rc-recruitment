@@ -240,7 +240,7 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
     @Override
     public Integer queryTheRestOfQuestionUpdateTimes(Long id) {
         Integer count = signUpFromAnswerService.getNumOfQuestionUpdateTimes(LoginUtils.getLoginUser().getId(), id);
-        if (count > maxFormUpdateTimes) {
+        if (count >= maxFormUpdateTimes) {
             throw new ServiceException("该问题修改次数已经超过" + maxFormUpdateTimes + "次,无法修改");
         }
         return maxFormUpdateTimes - count;

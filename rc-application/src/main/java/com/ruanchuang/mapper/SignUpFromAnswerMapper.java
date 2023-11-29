@@ -20,6 +20,6 @@ public interface SignUpFromAnswerMapper extends BaseMapper<SignUpFromAnswer> {
      * @param userId
      * @return
      */
-    Integer getTheNumOfQuestionUpdateTimes(@Param("questionId") Long questionId, @Param("userId") Long userId);
+    Integer getTheNumOfQuestionUpdateTimes(@Param("userId") Long userId, @Param("questionId") Long questionId);
 
 }
