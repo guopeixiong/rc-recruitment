@@ -6,7 +6,7 @@
         select #{id} as id, q.id as question_id, q.content as question, q.type as type, a.id as answer_id, a.text_answer as answer, a.options_answer as opt_answer
         from sign_up_form_question q
         left join sign_up_from_answer a
-        on a.question_id = q.id and a.user_id = #{userId}
+        on a.question_id = q.id and a.user_id = #{userId} and a.is_delete = 0
         where q.template_id = #{templateId}
         order by q.sort asc
     </select>
