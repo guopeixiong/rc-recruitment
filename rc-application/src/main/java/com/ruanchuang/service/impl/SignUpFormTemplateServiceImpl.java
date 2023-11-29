@@ -17,13 +17,13 @@ import com.ruanchuang.service.SignUpRecordInfoService;
 import com.ruanchuang.utils.LoginUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -51,6 +51,9 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
 
     @Autowired
     private SignUpFromAnswerService signUpFromAnswerService;
+
+    @Value("${user.max-form-update-times}")
+    private Integer maxFormUpdateTimes;
 
     /**
      * 获取报名表单
@@ -163,7 +166,7 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
                 Wrappers.<SignUpFormQuestion>lambdaQuery()
                         .eq(SignUpFormQuestion::getId, updateSignUpFormDto.getId())
                         .select(SignUpFormQuestion::getTemplateId,
-                        SignUpFormQuestion::getType)
+                                SignUpFormQuestion::getType)
         );
         if (question == null) {
             throw new ServiceException("问题不存在");
@@ -175,6 +178,7 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
         if (!exists) {
             throw new ServiceException("您尚未报名");
         }
+        queryTheRestOfQuestionUpdateTimes(updateSignUpFormDto.getId());
         // 处理单项选择题和多项选择题
         if (!question.getType().equals(Constants.SIGN_UP_FORM_QUESTION_TYPE_TEXT) && !updateSignUpFormDto.getAnswer().matches("\\d+(,\\d+)*")) {
             throw new ServiceException("非法提交内容");
@@ -196,13 +200,30 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
                     .setTextAnswer(updateSignUpFormDto.getAnswer());
         } else {
             signUpFromAnswer.setType(Constants.QUESTION_ANSWER_TYPE_OPTION)
-                   .setOptionsAnswer(updateSignUpFormDto.getAnswer());
+                    .setOptionsAnswer(updateSignUpFormDto.getAnswer());
         }
         // 保存新答案
         boolean save = signUpFromAnswerService.save(signUpFromAnswer);
         if (!save) {
             throw new ServiceException("系统异常, 提交失败");
         }
+    }
+
+    /**
+     * 查询问题剩余修改次数
+     * @param id
+     * @return
+     */
+    @Override
+    public Integer queryTheRestOfQuestionUpdateTimes(Long id) {
+        SignUpFromAnswer answer = signUpFromAnswerService.getBaseMapper().selectOne(Wrappers.<SignUpFromAnswer>lambdaQuery()
+                .eq(SignUpFromAnswer::getUserId, LoginUtils.getLoginUser().getId())
+                .eq(SignUpFromAnswer::getQuestionId, id)
+                .select(SignUpFromAnswer::getVersion));
+        if (answer != null && answer.getVersion() >= maxFormUpdateTimes) {
+            throw new ServiceException("该问题修改次数已经超过" + maxFormUpdateTimes + "次,无法修改");
+        }
+        return maxFormUpdateTimes - answer.getVersion();
     }
 
     /**

@@ -35,4 +35,11 @@ public interface SignUpFormTemplateService extends IService<SignUpFormTemplate> 
      * @param updateSignUpFormDto
      */
     void updateForm(UpdateSignUpFormDto updateSignUpFormDto);
+
+    /**
+     * 查询问题剩余修改次数
+     * @param id
+     * @return
+     */
+    Integer queryTheRestOfQuestionUpdateTimes(Long id);
 }

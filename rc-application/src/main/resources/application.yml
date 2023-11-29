@@ -76,3 +76,5 @@ user:
   max-password-error-times: 5
   # 密码错误锁定时间 单位: 分钟
   password-error-lock-time: 5
+  # 报名表最大修改次数(每个问题的最大修改次数)
+  max-form-update-times: 5

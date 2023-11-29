@@ -46,6 +46,12 @@ public class SignUpFormController {
         return CommonResult.ok();
     }
 
+    @ApiOperation("用户查询问题剩余修改次数")
+    @GetMapping("/getTheRestOfQuestionUpdateTimes/{id}")
+    public CommonResult getTheRestOfQuestionUpdateTimes(@PathVariable("id") Long id) {
+        return CommonResult.ok(signUpFormTemplateService.queryTheRestOfQuestionUpdateTimes(id));
+    }
+
     @ApiOperation("用户修改报名表问题")
     @RepeatSubmit(interval = 10000, message = "重复提交, 请10秒后再试")
     @Log(title = "用户修改报名表问题", businessType = BusinessType.UPDATE)
