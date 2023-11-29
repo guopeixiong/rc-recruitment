@@ -47,7 +47,7 @@ public class SignUpFormController {
     }
 
     @ApiOperation("用户查询问题剩余修改次数")
-    @GetMapping("/getTheRestOfQuestionUpdateTimes/{id}")
+    @GetMapping("/auth/getTheRestOfQuestionUpdateTimes/{id}")
     public CommonResult getTheRestOfQuestionUpdateTimes(@PathVariable("id") Long id) {
         return CommonResult.ok(signUpFormTemplateService.queryTheRestOfQuestionUpdateTimes(id));
     }
