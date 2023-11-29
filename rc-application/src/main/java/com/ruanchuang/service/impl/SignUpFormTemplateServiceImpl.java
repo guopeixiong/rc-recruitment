@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruanchuang.constant.CacheConstants;
 import com.ruanchuang.domain.*;
 import com.ruanchuang.domain.dto.SubmitFormDto;
+import com.ruanchuang.domain.dto.UpdateSignUpFormDto;
 import com.ruanchuang.enums.Constants;
 import com.ruanchuang.exception.ServiceException;
 import com.ruanchuang.mapper.SignUpFormTemplateMapper;
@@ -16,6 +17,7 @@ import com.ruanchuang.service.SignUpRecordInfoService;
 import com.ruanchuang.utils.LoginUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,6 +51,9 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
 
     @Autowired
     private SignUpFromAnswerService signUpFromAnswerService;
+
+    @Value("${user.max-form-update-times}")
+    private Integer maxFormUpdateTimes;
 
     /**
      * 获取报名表单
@@ -92,6 +97,7 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
 
     /**
      * 提交报名表单
+     *
      * @param formDto
      */
     @Override
@@ -153,6 +159,75 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
             answers.add(answer);
         });
         this.saveFormAnswer(signUpRecordInfo, answers);
+    }
+
+    /**
+     * 修改报名表
+     *
+     * @param updateSignUpFormDto
+     */
+    @Override
+    public void updateForm(UpdateSignUpFormDto updateSignUpFormDto) {
+        Long userId = LoginUtils.getLoginUser().getId();
+        SignUpFormQuestion question = signUpFormQuestionService.getBaseMapper().selectOne(
+                Wrappers.<SignUpFormQuestion>lambdaQuery()
+                        .eq(SignUpFormQuestion::getId, updateSignUpFormDto.getId())
+                        .select(SignUpFormQuestion::getTemplateId,
+                                SignUpFormQuestion::getType)
+        );
+        if (question == null) {
+            throw new ServiceException("问题不存在");
+        }
+        boolean exists = signUpRecordInfoService.lambdaQuery()
+                .eq(SignUpRecordInfo::getUserId, userId)
+                .eq(SignUpRecordInfo::getTemplateId, question.getTemplateId())
+                .exists();
+        if (!exists) {
+            throw new ServiceException("您尚未报名");
+        }
+        queryTheRestOfQuestionUpdateTimes(updateSignUpFormDto.getId());
+        // 处理单项选择题和多项选择题
+        if (!question.getType().equals(Constants.SIGN_UP_FORM_QUESTION_TYPE_TEXT) && !updateSignUpFormDto.getAnswer().matches("\\d+(,\\d+)*")) {
+            throw new ServiceException("非法提交内容");
+        }
+        // 删除原来的答案
+        signUpFromAnswerService.lambdaUpdate()
+                .eq(SignUpFromAnswer::getUserId, userId)
+                .eq(SignUpFromAnswer::getTemplateId, question.getTemplateId())
+                .eq(SignUpFromAnswer::getQuestionId, updateSignUpFormDto.getId())
+                .remove();
+        SignUpFromAnswer signUpFromAnswer = new SignUpFromAnswer()
+                .setUserId(userId)
+                .setTemplateId(question.getTemplateId())
+                .setQuestionId(updateSignUpFormDto.getId())
+                .setType(question.getType())
+                .setOptionsAnswer(updateSignUpFormDto.getAnswer());
+        if (question.getType().equals(Constants.SIGN_UP_FORM_QUESTION_TYPE_TEXT)) {
+            signUpFromAnswer.setType(Constants.QUESTION_ANSWER_TYPE_TEXT)
+                    .setTextAnswer(updateSignUpFormDto.getAnswer());
+        } else {
+            signUpFromAnswer.setType(Constants.QUESTION_ANSWER_TYPE_OPTION)
+                    .setOptionsAnswer(updateSignUpFormDto.getAnswer());
+        }
+        // 保存新答案
+        boolean save = signUpFromAnswerService.save(signUpFromAnswer);
+        if (!save) {
+            throw new ServiceException("系统异常, 提交失败");
+        }
+    }
+
+    /**
+     * 查询问题剩余修改次数
+     * @param id
+     * @return
+     */
+    @Override
+    public Integer queryTheRestOfQuestionUpdateTimes(Long id) {
+        Integer count = signUpFromAnswerService.getNumOfQuestionUpdateTimes(LoginUtils.getLoginUser().getId(), id);
+        if (count > maxFormUpdateTimes) {
+            throw new ServiceException("该问题修改次数已经超过" + maxFormUpdateTimes + "次,无法修改");
+        }
+        return maxFormUpdateTimes - count;
     }
 
     /**

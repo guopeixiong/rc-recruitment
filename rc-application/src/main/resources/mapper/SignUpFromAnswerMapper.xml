@@ -2,4 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruanchuang.mapper.SignUpFromAnswerMapper">
 
+    <select id="getTheNumOfQuestionUpdateTimes" resultType="java.lang.Integer">
+        select count(*) from sign_up_from_answer where user_id = #{userId} and question_id = #{questionId}
+    </select>
 </mapper>
