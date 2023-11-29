@@ -13,4 +13,12 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface SignUpFromAnswerService extends IService<SignUpFromAnswer> {
 
+    /**
+     * 查询用户报名表问题修改次数
+     * @param userId
+     * @param questionId
+     * @return
+     */
+    Integer getNumOfQuestionUpdateTimes(Long userId, Long questionId);
+
 }

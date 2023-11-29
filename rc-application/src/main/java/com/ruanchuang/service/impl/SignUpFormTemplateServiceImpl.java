@@ -216,14 +216,11 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
      */
     @Override
     public Integer queryTheRestOfQuestionUpdateTimes(Long id) {
-        SignUpFromAnswer answer = signUpFromAnswerService.getBaseMapper().selectOne(Wrappers.<SignUpFromAnswer>lambdaQuery()
-                .eq(SignUpFromAnswer::getUserId, LoginUtils.getLoginUser().getId())
-                .eq(SignUpFromAnswer::getQuestionId, id)
-                .select(SignUpFromAnswer::getVersion));
-        if (answer != null && answer.getVersion() >= maxFormUpdateTimes) {
+        Integer count = signUpFromAnswerService.getNumOfQuestionUpdateTimes(LoginUtils.getLoginUser().getId(), id);
+        if (count > maxFormUpdateTimes) {
             throw new ServiceException("该问题修改次数已经超过" + maxFormUpdateTimes + "次,无法修改");
         }
-        return maxFormUpdateTimes - answer.getVersion();
+        return maxFormUpdateTimes - count;
     }
 
     /**

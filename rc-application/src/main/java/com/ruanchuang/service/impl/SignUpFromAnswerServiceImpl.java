@@ -17,4 +17,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class SignUpFromAnswerServiceImpl extends ServiceImpl<SignUpFromAnswerMapper, SignUpFromAnswer> implements SignUpFromAnswerService {
 
+    /**
+     * 查询用户报名表问题修改次数
+     * @param userId
+     * @param questionId
+     * @return
+     */
+    @Override
+    public Integer getNumOfQuestionUpdateTimes(Long userId, Long questionId) {
+        return this.baseMapper.getTheNumOfQuestionUpdateTimes(userId, questionId);
+    }
 }
