@@ -61,4 +61,10 @@ public class SignUpFormController {
         return CommonResult.ok();
     }
 
+    @ApiOperation("查询选择题选项")
+    @GetMapping("/auth/getChoiceQuestion/{id}")
+    public CommonResult queryChoiceQuestion(@PathVariable("id") Long id) {
+        return CommonResult.ok(signUpFormTemplateService.queryChoiceQuestion(id));
+    }
+
 }

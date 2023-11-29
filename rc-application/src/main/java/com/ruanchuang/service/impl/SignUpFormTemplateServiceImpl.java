@@ -10,10 +10,7 @@ import com.ruanchuang.domain.dto.UpdateSignUpFormDto;
 import com.ruanchuang.enums.Constants;
 import com.ruanchuang.exception.ServiceException;
 import com.ruanchuang.mapper.SignUpFormTemplateMapper;
-import com.ruanchuang.service.SignUpFormQuestionService;
-import com.ruanchuang.service.SignUpFormTemplateService;
-import com.ruanchuang.service.SignUpFromAnswerService;
-import com.ruanchuang.service.SignUpRecordInfoService;
+import com.ruanchuang.service.*;
 import com.ruanchuang.utils.LoginUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +51,9 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
 
     @Value("${user.max-form-update-times}")
     private Integer maxFormUpdateTimes;
+
+    @Autowired
+    private TemplateQuestionOptionsService templateQuestionOptionsService;
 
     /**
      * 获取报名表单
@@ -162,6 +162,21 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
     }
 
     /**
+     * 查询选择题选项
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public List<TemplateQuestionOptions> queryChoiceQuestion(Long id) {
+        return templateQuestionOptionsService.lambdaQuery()
+                .eq(TemplateQuestionOptions::getQuestionId, id)
+                .select(TemplateQuestionOptions::getId,
+                        TemplateQuestionOptions::getContent)
+                .list();
+    }
+
+    /**
      * 修改报名表
      *
      * @param updateSignUpFormDto
@@ -218,6 +233,7 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
 
     /**
      * 查询问题剩余修改次数
+     *
      * @param id
      * @return
      */
