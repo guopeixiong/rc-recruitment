@@ -52,4 +52,9 @@ public class CacheConstants {
      */
     public static final String SIGN_UP_FORM_CACHE_KEY = "sign_up_form_cache";
 
+    /**
+     * 报名通道关闭
+     */
+    public static final String SIGN_UP_OFF = "sign_up_off";
+
 }
