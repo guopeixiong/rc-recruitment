@@ -37,6 +37,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
@@ -68,6 +69,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Value("${file.store-address}")
     private String rootPath;
 
+    @Value("${user.max-password-error-times}")
+    private Integer pwdErrTimes;
+
+    @Value("${user.password-error-lock-time}")
+    private Integer pwdErrLockTime;
+
     /**
      * 手机号或者学号密码登录方式
      *
@@ -77,6 +84,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      */
     @Override
     public String loginByPhoneAndPassword(LoginDto loginDto, HttpServletRequest request) {
+        if (redisTemplate.hasKey(CacheConstants.USER_FORBIDDEN + loginDto.getStuNum())) {
+            throw new ServiceException("您的账号密码错误次数超过" + pwdErrTimes + "次, 请" + pwdErrLockTime + "分钟后再试");
+        }
         loginDto.setPassword(RSAUtils.decryptByRsa(loginDto.getPassword()));
         SysUser user = this.baseMapper.selectOne(Wrappers.<SysUser>lambdaQuery().eq(SysUser::getStuNum, loginDto.getStuNum()));
         if (user == null) {
@@ -88,6 +98,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         String password = SaSecureUtil.md5BySalt(loginDto.getPassword(), user.getSalt());
         if (!password.equals(user.getPassword())) {
             saveLoginLog(loginDto, null, request, false);
+            Long count = redisTemplate.opsForValue().increment(CacheConstants.PWD_ERR_CNT_KEY + loginDto.getStuNum());
+            if (count >= pwdErrTimes) {
+                redisTemplate.opsForValue().set(CacheConstants.USER_FORBIDDEN + loginDto.getStuNum(), "lock");
+                redisTemplate.expire(CacheConstants.USER_FORBIDDEN + loginDto.getStuNum(), pwdErrLockTime, TimeUnit.MINUTES);
+                redisTemplate.delete(CacheConstants.PWD_ERR_CNT_KEY + loginDto.getStuNum());
+                throw new ServiceException("您的账号密码错误次数超过" + pwdErrTimes + "次, 请" + pwdErrLockTime + "分钟后再试");
+            }
+            redisTemplate.expire(CacheConstants.PWD_ERR_CNT_KEY + loginDto.getStuNum(), pwdErrLockTime, TimeUnit.MINUTES);
             throw new ServiceException("密码错误");
         }
         String token = LoginUtils.login(user);
