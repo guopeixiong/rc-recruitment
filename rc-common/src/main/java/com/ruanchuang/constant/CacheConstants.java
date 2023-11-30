@@ -62,4 +62,9 @@ public class CacheConstants {
      */
     public static final String SIGN_UP_OFF = "sign_up_off";
 
+    /**
+     * 常见问题缓存 redis key
+     */
+    public static final String COMMON_QA_INFO_CACHE_KEY = "common_qa_info_cache";
+
 }

@@ -52,4 +52,9 @@ public interface Constants {
      * 答案类型-选项
      */
     Integer QUESTION_ANSWER_TYPE_OPTION = 1;
+
+    /**
+     * 常见问题状态-启用
+     */
+    Integer COMMON_QA_INFO_STATUS_ENABLE = 1;
 }
