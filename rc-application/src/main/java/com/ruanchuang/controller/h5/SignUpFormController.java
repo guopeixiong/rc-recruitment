@@ -46,25 +46,4 @@ public class SignUpFormController {
         return CommonResult.ok();
     }
 
-    @ApiOperation("用户查询问题剩余修改次数")
-    @GetMapping("/auth/getTheRestOfQuestionUpdateTimes/{id}")
-    public CommonResult getTheRestOfQuestionUpdateTimes(@PathVariable("id") Long id) {
-        return CommonResult.ok(signUpFormTemplateService.queryTheRestOfQuestionUpdateTimes(id));
-    }
-
-    @ApiOperation("用户修改报名表问题")
-    @RepeatSubmit(interval = 10000, message = "重复提交, 请10秒后再试")
-    @Log(title = "用户修改报名表问题", businessType = BusinessType.UPDATE)
-    @PutMapping("/auth/update")
-    public CommonResult updateForm(@Validated @RequestBody UpdateSignUpFormDto updateSignUpFormDto) {
-        signUpFormTemplateService.updateForm(updateSignUpFormDto);
-        return CommonResult.ok();
-    }
-
-    @ApiOperation("查询选择题选项")
-    @GetMapping("/auth/getChoiceQuestion/{id}")
-    public CommonResult queryChoiceQuestion(@PathVariable("id") Long id) {
-        return CommonResult.ok(signUpFormTemplateService.queryChoiceQuestion(id));
-    }
-
 }
