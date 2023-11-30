@@ -43,6 +43,9 @@ public class CommonQaInfoServiceImpl extends ServiceImpl<CommonQaInfoMapper, Com
                             CommonQaInfo::getAnswer,
                             CommonQaInfo::getTop)
                     .list();
+            if (qaInfos.isEmpty()) {
+                return List.of();
+            }
             redisTemplate.opsForList().rightPushAll(CacheConstants.COMMON_QA_INFO_CACHE_KEY, qaInfos);
             // 只缓存5分钟, 过期再次获取
             redisTemplate.expire(CacheConstants.COMMON_QA_INFO_CACHE_KEY, 5, TimeUnit.MINUTES);

@@ -81,7 +81,7 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
                 throw new ServiceException("暂未开放报名");
             }
             List<SignUpFormQuestion> signUpForm = signUpFormQuestionService.selectQuestionsByTemplateId(template.getId());
-            redisTemplate.opsForList().leftPushAll(CacheConstants.SIGN_UP_FORM_CACHE_KEY, signUpForm);
+            redisTemplate.opsForList().rightPushAll(CacheConstants.SIGN_UP_FORM_CACHE_KEY, signUpForm);
             // 只缓存五分钟, 五分钟后从数据库获取新数据
             redisTemplate.expire(CacheConstants.SIGN_UP_FORM_CACHE_KEY, 5, TimeUnit.MINUTES);
             return signUpForm;
