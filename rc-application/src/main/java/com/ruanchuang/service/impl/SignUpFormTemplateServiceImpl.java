@@ -62,19 +62,12 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
      */
     @Override
     public List<SignUpFormQuestion> getForm() {
-        List<SignUpFormQuestion> signUpForm;
-        Long size = redisTemplate.opsForList().size(CacheConstants.SIGN_UP_FORM_CACHE_KEY);
-        if (size > 0) {
-            signUpForm = (List<SignUpFormQuestion>) redisTemplate.opsForList().leftPop(CacheConstants.SIGN_UP_FORM_CACHE_KEY);
-            return signUpForm;
-        }
         if (redisTemplate.hasKey(CacheConstants.SIGN_UP_OFF)) {
             throw new ServiceException("暂未开放报名");
         }
         synchronized (this) {
-            signUpForm = (List<SignUpFormQuestion>) redisTemplate.opsForValue().get(CacheConstants.SIGN_UP_FORM_CACHE_KEY);
-            if (signUpForm != null) {
-                return signUpForm;
+            if (redisTemplate.hasKey(CacheConstants.SIGN_UP_FORM_CACHE_KEY)) {
+                return redisTemplate.opsForList().range(CacheConstants.SIGN_UP_FORM_CACHE_KEY, 0, -1);
             }
             SignUpFormTemplate template = this.baseMapper.selectOne(
                     Wrappers.<SignUpFormTemplate>lambdaQuery()
@@ -87,12 +80,12 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
                 redisTemplate.expire(CacheConstants.SIGN_UP_OFF, 5, TimeUnit.MINUTES);
                 throw new ServiceException("暂未开放报名");
             }
-            signUpForm = signUpFormQuestionService.selectQuestionsByTemplateId(template.getId());
+            List<SignUpFormQuestion> signUpForm = signUpFormQuestionService.selectQuestionsByTemplateId(template.getId());
             redisTemplate.opsForList().leftPushAll(CacheConstants.SIGN_UP_FORM_CACHE_KEY, signUpForm);
             // 只缓存五分钟, 五分钟后从数据库获取新数据
             redisTemplate.expire(CacheConstants.SIGN_UP_FORM_CACHE_KEY, 5, TimeUnit.MINUTES);
+            return signUpForm;
         }
-        return signUpForm;
     }
 
     /**
