@@ -119,9 +119,11 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
             throw new ServiceException("请回答所有必答问题");
         });
         // 过滤选择题选项是否有非法提交内容
-        formDto.stream().filter(o -> o.getType().equals(Constants.SIGN_UP_FORM_QUESTION_TYPE_SINGLE_CHOICE) || o.getType().equals(Constants.SIGN_UP_FORM_QUESTION_TYPE_MULTIPLE_CHOICE))
+        formDto.stream()
+                .filter(o -> o.getType().equals(Constants.SIGN_UP_FORM_QUESTION_TYPE_SINGLE_CHOICE) || o.getType().equals(Constants.SIGN_UP_FORM_QUESTION_TYPE_MULTIPLE_CHOICE))
+                .filter(o -> StringUtils.isNotBlank(o.getAnswer()))
                 .map(SubmitFormDto::getAnswer)
-                .filter(answer -> answer.matches("\\d+(,\\d+)*"))
+                .filter(answer -> !answer.matches("\\d+(,\\d+)*"))
                 .findFirst()
                 .ifPresent(answer -> {
                     throw new ServiceException("非法提交内容");
