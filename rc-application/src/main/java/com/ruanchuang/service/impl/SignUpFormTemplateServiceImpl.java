@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -54,6 +55,9 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
 
     @Autowired
     private TemplateQuestionOptionsService templateQuestionOptionsService;
+
+    @Autowired
+    private SignUpProcessService signUpProcessService;
 
     /**
      * 获取报名表单
@@ -96,8 +100,8 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
     @Override
     public void submitForm(List<SubmitFormDto> formDto) {
         Long templateId = formDto.get(0).getTemplateId();
-        boolean exists = this.baseMapper.exists(Wrappers.<SignUpFormTemplate>lambdaQuery().eq(SignUpFormTemplate::getId, templateId));
-        if (!exists) {
+        SignUpFormTemplate template = this.baseMapper.selectOne(Wrappers.<SignUpFormTemplate>lambdaQuery().eq(SignUpFormTemplate::getId, templateId).select(SignUpFormTemplate::getId, SignUpFormTemplate::getProcessId));
+        if (Objects.isNull(template)) {
             throw new ServiceException("表单不存在");
         }
         SysUser user = LoginUtils.getLoginUser();
@@ -132,7 +136,9 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
         SignUpRecordInfo signUpRecordInfo = new SignUpRecordInfo()
                 .setUserId(user.getId())
                 .setUserName(user.getFullName())
-                .setTemplateId(templateId);
+                .setTemplateId(templateId)
+                .setProcessId(template.getProcessId())
+                .setCurrentProcessStatusId(signUpProcessService.getDefaultProcessStatusId(template.getProcessId()));
         // 保存答案
         List<SignUpFromAnswer> answers = new ArrayList<>();
         formDto.stream().forEach(o -> {

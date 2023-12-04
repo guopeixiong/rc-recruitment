@@ -44,7 +44,11 @@ public class SignUpRecordInfo implements Serializable {
     private Long processId;
 
     @ApiModelProperty("当前流程状态id")
-    private String currentProcessStatusId;
+    private Long currentProcessStatusId;
+
+    @ApiModelProperty("当前流程")
+    @TableField(exist = false)
+    private String currentProcess;
 
     @ApiModelProperty("创建人")
     @TableField(fill = FieldFill.INSERT)

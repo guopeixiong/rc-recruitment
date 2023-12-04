@@ -7,6 +7,7 @@ import com.ruanchuang.domain.dto.UpdateSignUpFormDto;
 import com.ruanchuang.enums.BusinessType;
 import com.ruanchuang.model.CommonResult;
 import com.ruanchuang.service.SignUpFormTemplateService;
+import com.ruanchuang.service.SignUpProcessService;
 import com.ruanchuang.service.SignUpRecordInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -31,6 +32,8 @@ public class SignUpRecordController {
     @Autowired
     private SignUpFormTemplateService signUpFormTemplateService;
 
+    @Autowired
+    private SignUpProcessService signUpProcessService;
 
 
     @ApiOperation("用户分页查询报名记录列表")
@@ -64,6 +67,12 @@ public class SignUpRecordController {
     @GetMapping("/auth/getChoiceQuestion/{id}")
     public CommonResult queryChoiceQuestion(@PathVariable("id") Long id) {
         return CommonResult.ok(signUpFormTemplateService.queryChoiceQuestion(id));
+    }
+
+    @ApiOperation("查询流程列表")
+    @GetMapping("/auth/getProcessList/{id}")
+    public CommonResult getProcessList(@PathVariable("id") Long id) {
+        return CommonResult.ok(signUpProcessService.getProcessStatusList(id));
     }
 
 }

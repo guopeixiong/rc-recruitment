@@ -38,7 +38,7 @@ public class SignUpFormTemplate implements Serializable {
     private Integer isEnabled;
 
     @ApiModelProperty("使用流程id")
-    private String processId;
+    private Long processId;
 
     @ApiModelProperty("创建人")
     @TableField(fill = FieldFill.INSERT)

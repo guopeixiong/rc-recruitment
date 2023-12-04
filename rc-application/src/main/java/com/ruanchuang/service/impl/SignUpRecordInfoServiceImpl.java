@@ -11,6 +11,7 @@ import com.ruanchuang.domain.vo.SignUpDetailVo;
 import com.ruanchuang.enums.Constants;
 import com.ruanchuang.exception.ServiceException;
 import com.ruanchuang.mapper.SignUpRecordInfoMapper;
+import com.ruanchuang.service.SignUpProcessService;
 import com.ruanchuang.service.SignUpRecordInfoService;
 import com.ruanchuang.service.TemplateQuestionOptionsService;
 import com.ruanchuang.utils.LoginUtils;
@@ -37,6 +38,9 @@ public class SignUpRecordInfoServiceImpl extends ServiceImpl<SignUpRecordInfoMap
     @Autowired
     private TemplateQuestionOptionsService templateQuestionOptionsService;
 
+    @Autowired
+    private SignUpProcessService signUpProcessService;
+
     /**
      * 用户分页查询报名记录列表
      *
@@ -45,13 +49,19 @@ public class SignUpRecordInfoServiceImpl extends ServiceImpl<SignUpRecordInfoMap
      */
     @Override
     public IPage<SignUpRecordInfo> queryUserSignUpRecord(BaseQueryDto baseQueryDto) {
-        return this.lambdaQuery()
+        Page<SignUpRecordInfo> page = this.lambdaQuery()
                 .eq(SignUpRecordInfo::getUserId, LoginUtils.getLoginUser().getId())
                 .select(SignUpRecordInfo::getId,
                         SignUpRecordInfo::getCreateTime,
-                        SignUpRecordInfo::getTemplateId)
+                        SignUpRecordInfo::getTemplateId,
+                        SignUpRecordInfo::getProcessId,
+                        SignUpRecordInfo::getCurrentProcessStatusId)
                 .orderByDesc(SignUpRecordInfo::getCreateTime)
                 .page(new Page<>(baseQueryDto.getPageNum(), baseQueryDto.getPageSize()));
+        page.getRecords().stream().forEach(record ->
+            record.setCurrentProcess(signUpProcessService.getProcessStatusNameById(record.getProcessId(), record.getCurrentProcessStatusId()))
+        );
+        return page;
     }
 
     /**
@@ -95,9 +105,9 @@ public class SignUpRecordInfoServiceImpl extends ServiceImpl<SignUpRecordInfoMap
                         case Constants.SIGN_UP_FORM_QUESTION_TYPE_SINGLE_CHOICE:
                             // 此处有坑, 因为数据库中存储的选项id是字符串, 所以需要转换成字符串, 也就是下面的o.getId().toString()
                             record.setOptAnswer(optContents.stream().filter(o -> o.getId().toString().equals(record.getOptAnswer())).findFirst().map(TemplateQuestionOptions::getContent).orElse(null));
-                                break;
+                            break;
                         case Constants.SIGN_UP_FORM_QUESTION_TYPE_MULTIPLE_CHOICE:
-                                record.setOptAnswer(optContents.stream().filter(o -> o.getQuestionId().equals(record.getQuestionId())).map(TemplateQuestionOptions::getContent).collect(Collectors.joining(",")));
+                            record.setOptAnswer(optContents.stream().filter(o -> o.getQuestionId().equals(record.getQuestionId())).map(TemplateQuestionOptions::getContent).collect(Collectors.joining(",")));
                     }
                 });
         return signUpDetailVos;

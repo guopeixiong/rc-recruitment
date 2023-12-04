@@ -67,4 +67,9 @@ public class CacheConstants {
      */
     public static final String COMMON_QA_INFO_CACHE_KEY = "common_qa_info_cache";
 
+    /**
+     * 报名流程缓存 redis key
+     */
+    public static final String PROCESS_CACHE_KEY = "process_cache";
+
 }
