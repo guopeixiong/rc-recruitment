@@ -4,7 +4,7 @@
   "avatar": "",
   "version": "4.5.1",
   "createdTime": "2023-7-27 19:51:30",
-  "updatedTime": "2023-12-4 10:43:20",
+  "updatedTime": "2023-12-4 11:03:09",
   "dbConns": [],
   "profile": {
     "default": {
@@ -2830,6 +2830,23 @@
           "extProps": {},
           "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
           "id": "27E9CA68-C3B2-4124-80FB-8E7878C8C014"
+        },
+        {
+          "defKey": "process_id",
+          "defName": "流程id",
+          "comment": "",
+          "type": "bigint",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "extProps": {},
+          "domain": "",
+          "id": "19C97BCE-1403-4114-A444-15A0CD678A12"
         },
         {
           "defKey": "current_process_status_id",
