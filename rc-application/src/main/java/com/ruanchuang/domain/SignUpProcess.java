@@ -11,19 +11,16 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * <p>
- * 报名记录信息表
- * </p>
- *
- * @author guopeixiong
- * @since 2023-08-01
+ * @author guopx
+ * @since 2023/12/4
  */
+
 @Getter
 @Setter
 @Accessors(chain = true)
-@TableName("sign_up_record_info")
-@ApiModel(value = "SignUpRecordInfo对象", description = "报名记录信息表")
-public class SignUpRecordInfo implements Serializable {
+@TableName("sign_up_process")
+@ApiModel(value = "SignUpProcess对象", description = "报名流程表")
+public class SignUpProcess implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -31,17 +28,14 @@ public class SignUpRecordInfo implements Serializable {
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
 
-    @ApiModelProperty("用户id")
-    private Long userId;
+    @ApiModelProperty("流程名称")
+    private String name;
 
-    @ApiModelProperty("用户姓名")
-    private String userName;
+    @ApiModelProperty("备注")
+    private String remark;
 
-    @ApiModelProperty("所填写模板id")
-    private Long templateId;
-
-    @ApiModelProperty("当前流程状态id")
-    private String currentProcessStatusId;
+    @ApiModelProperty("是否启用 0.否 1.是")
+    private Integer enable;
 
     @ApiModelProperty("创建人")
     @TableField(fill = FieldFill.INSERT)
@@ -66,4 +60,5 @@ public class SignUpRecordInfo implements Serializable {
     @ApiModelProperty("版本号")
     @Version
     private Integer version;
+
 }
