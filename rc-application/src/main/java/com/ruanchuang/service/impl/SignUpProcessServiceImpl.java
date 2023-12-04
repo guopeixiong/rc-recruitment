@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * @author guopx
@@ -37,7 +38,7 @@ public class SignUpProcessServiceImpl extends ServiceImpl<SignUpProcessMapper, S
     @Override
     public Long getDefaultProcessStatusId(Long processId) {
         return loadStatus(processId).stream()
-                .filter(o -> Objects.isNull(o.getNextStatusId()))
+                .filter(o -> o.getSortNum() == 1)
                 .findFirst()
                 .map(SignUpProcessStatus::getId)
                 .get();
@@ -65,15 +66,7 @@ public class SignUpProcessServiceImpl extends ServiceImpl<SignUpProcessMapper, S
     @Override
     public List<SignUpProcessStatus> getProcessStatusList(Long processId) {
         List<SignUpProcessStatus> statuses = loadStatus(processId);
-        Map<Long, SignUpProcessStatus> statusMap = new HashMap<>();
-        statuses.forEach(o -> statusMap.put(o.getId(), o));
-        List<SignUpProcessStatus> statusList = new ArrayList<>(statuses.size());
-        Long nextId = getDefaultProcessStatusId(processId);
-        while (Objects.isNull(nextId)) {
-            statusList.add(statusMap.get(nextId));
-            nextId = statusMap.get(nextId).getNextStatusId();
-        }
-        return statusList;
+        return statuses.stream().sorted(Comparator.comparingInt(SignUpProcessStatus::getSortNum)).collect(Collectors.toList());
     }
 
     /**
@@ -89,7 +82,7 @@ public class SignUpProcessServiceImpl extends ServiceImpl<SignUpProcessMapper, S
         List<SignUpProcessStatus> statuses = signUpProcessStatusService.lambdaQuery()
                 .eq(SignUpProcessStatus::getProcessId, processId)
                 .select(SignUpProcessStatus::getId,
-                        SignUpProcessStatus::getNextStatusId,
+                        SignUpProcessStatus::getSortNum,
                         SignUpProcessStatus::getName,
                         SignUpProcessStatus::getRemark,
                         SignUpProcessStatus::getProcessId)

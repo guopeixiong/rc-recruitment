@@ -34,7 +34,7 @@ public class SignUpProcessStatus implements Serializable {
     private String remark;
 
     @ApiModelProperty("下一状态id")
-    private Long nextStatusId;
+    private Integer sortNum;
 
     @ApiModelProperty("流程id")
     private Long processId;
