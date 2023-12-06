@@ -194,12 +194,15 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
         if (question == null) {
             throw new ServiceException("问题不存在");
         }
-        boolean exists = signUpRecordInfoService.lambdaQuery()
-                .eq(SignUpRecordInfo::getUserId, userId)
-                .eq(SignUpRecordInfo::getTemplateId, question.getTemplateId())
-                .exists();
-        if (!exists) {
+        SignUpRecordInfo recordInfo = signUpRecordInfoService.getBaseMapper().selectOne(
+                Wrappers.<SignUpRecordInfo>lambdaQuery()
+                        .eq(SignUpRecordInfo::getUserId, userId)
+                        .eq(SignUpRecordInfo::getTemplateId, question.getTemplateId()));
+        if (Objects.isNull(recordInfo)) {
             throw new ServiceException("您尚未报名");
+        }
+        if (!signUpProcessService.getDefaultProcessStatusId(recordInfo.getProcessId()).equals(recordInfo.getCurrentProcessStatusId())) {
+            throw new ServiceException("已经入面试流程，无法修改报名表");
         }
         queryTheRestOfQuestionUpdateTimes(updateSignUpFormDto.getId());
         // 处理单项选择题和多项选择题
