@@ -1,7 +1,11 @@
 package com.ruanchuang.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ruanchuang.domain.ConsultingInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ruanchuang.domain.dto.BaseQueryDto;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +17,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ConsultingInfoService extends IService<ConsultingInfo> {
 
+    /**
+     * 用户分页查询咨询记录
+     * @param baseQueryDto
+     * @return
+     */
+    IPage<ConsultingInfo> queryConsultingInfoList(BaseQueryDto baseQueryDto);
 }

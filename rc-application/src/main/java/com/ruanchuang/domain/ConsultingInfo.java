@@ -34,6 +34,9 @@ public class ConsultingInfo implements Serializable {
     @ApiModelProperty("消息内容")
     private String content;
 
+    @ApiModelProperty("用户id")
+    private Long userId;
+
     @ApiModelProperty("回复内容")
     private String replyContent;
 
