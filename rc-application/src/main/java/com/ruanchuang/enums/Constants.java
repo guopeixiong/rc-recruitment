@@ -57,4 +57,14 @@ public interface Constants {
      * 常见问题状态-启用
      */
     Integer COMMON_QA_INFO_STATUS_ENABLE = 1;
+
+    /**
+     * 咨询信息状态-未回复
+     */
+    Integer CONSULTING_INFO_STATUS_UN_REPLY = 0;
+
+    /**
+     * 咨询信息状态-已回复
+     */
+    Integer CONSULTING_INFO_STATUS_REPLY = 1;
 }
