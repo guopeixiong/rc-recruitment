@@ -1,6 +1,6 @@
 package com.ruanchuang.service;
 
-import com.ruanchuang.domain.ConsultingAndReply;
+import com.ruanchuang.domain.ConsultingInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author guopeixiong
  * @since 2023-08-01
  */
-public interface ConsultingAndReplyService extends IService<ConsultingAndReply> {
+public interface ConsultingInfoService extends IService<ConsultingInfo> {
 
 }

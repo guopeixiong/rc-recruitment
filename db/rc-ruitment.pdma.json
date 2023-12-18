@@ -2,9 +2,9 @@
   "name": "rc-ruitment",
   "describe": "软创招新系统",
   "avatar": "",
-  "version": "4.6.2",
+  "version": "4.5.1",
   "createdTime": "2023-7-27 19:51:30",
-  "updatedTime": "2023-12-4 20:13:12",
+  "updatedTime": "2023-12-18 16:15:05",
   "dbConns": [],
   "profile": {
     "default": {
@@ -1862,7 +1862,7 @@
           "codeRoot": ""
         }
       },
-      "defKey": "consulting_and_reply",
+      "defKey": "consulting_info",
       "defName": "咨询及回复信息表",
       "comment": "",
       "properties": {
@@ -2054,11 +2054,11 @@
           "id": "B97F987D-03B4-4C17-B3EA-DEA5AE0EE5DB"
         },
         {
-          "defKey": "reply_id",
-          "defName": "回复的消息的id",
+          "defKey": "reply_content",
+          "defName": "回复内容",
           "comment": "",
-          "type": "bigint",
-          "len": 64,
+          "type": "varchar",
+          "len": 1000,
           "scale": "",
           "primaryKey": false,
           "notNull": false,

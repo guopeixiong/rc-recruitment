@@ -21,9 +21,9 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Accessors(chain = true)
-@TableName("consulting_and_reply")
-@ApiModel(value = "ConsultingAndReply对象", description = "咨询及回复信息表")
-public class ConsultingAndReply implements Serializable {
+@TableName("consulting_info")
+@ApiModel(value = "ConsultingInfo对象", description = "咨询及回复信息表")
+public class ConsultingInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -34,11 +34,11 @@ public class ConsultingAndReply implements Serializable {
     @ApiModelProperty("消息内容")
     private String content;
 
+    @ApiModelProperty("回复内容")
+    private String replyContent;
+
     @ApiModelProperty("消息状态;0.未回复 1.已回复")
     private Integer status;
-
-    @ApiModelProperty("回复的消息的id")
-    private Long replyId;
 
     @ApiModelProperty("创建人")
     @TableField(fill = FieldFill.INSERT)
