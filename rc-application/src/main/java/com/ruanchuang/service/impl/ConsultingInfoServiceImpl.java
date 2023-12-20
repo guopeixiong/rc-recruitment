@@ -38,8 +38,6 @@ public class ConsultingInfoServiceImpl extends ServiceImpl<ConsultingInfoMapper,
                 .eq(ConsultingInfo::getUserId, id)
                 .orderByDesc(ConsultingInfo::getCreateTime)
                 .select(ConsultingInfo::getCreateTime,
-                        ConsultingInfo::getContent,
-                        ConsultingInfo::getReplyContent,
                         ConsultingInfo::getStatus)
                 .page(new Page<>(baseQueryDto.getPageNum(), baseQueryDto.getPageSize()));
     }
