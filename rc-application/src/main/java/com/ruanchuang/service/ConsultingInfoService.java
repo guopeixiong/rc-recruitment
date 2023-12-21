@@ -1,12 +1,10 @@
 package com.ruanchuang.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.ruanchuang.domain.ConsultingInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ruanchuang.domain.ConsultingInfo;
 import com.ruanchuang.domain.dto.BaseQueryDto;
 import com.ruanchuang.domain.dto.SubConsult;
-
-import java.util.List;
 
 /**
  * <p>
@@ -30,4 +28,11 @@ public interface ConsultingInfoService extends IService<ConsultingInfo> {
      * @param subConsult
      */
     void addConsultingInfo(SubConsult subConsult);
+
+    /**
+     * 查询咨询详情
+     * @param id
+     * @return
+     */
+    ConsultingInfo queryConsultingInfoDetail(Long id);
 }

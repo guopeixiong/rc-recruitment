@@ -1,6 +1,7 @@
 package com.ruanchuang.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruanchuang.domain.ConsultingInfo;
 import com.ruanchuang.domain.dto.BaseQueryDto;
@@ -58,5 +59,21 @@ public class ConsultingInfoServiceImpl extends ServiceImpl<ConsultingInfoMapper,
             log.error("用户提交咨询信息失败, 用户id: {}, 提交内容: {}", LoginUtils.getLoginUser().getId(), subConsult.getContent());
             throw new ServiceException("提交失败, 请稍后再试");
         }
+    }
+
+    /**
+     * 查询咨询详情
+     * @param id
+     * @return
+     */
+    @Override
+    public ConsultingInfo queryConsultingInfoDetail(Long id) {
+        return this.baseMapper.selectOne(
+                Wrappers.<ConsultingInfo>lambdaQuery()
+                        .eq(ConsultingInfo::getId, id)
+                        .select(ConsultingInfo::getContent,
+                                ConsultingInfo::getReplyContent,
+                                ConsultingInfo::getStatus)
+        );
     }
 }

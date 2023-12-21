@@ -45,4 +45,10 @@ public class ConsultingController {
         return CommonResult.ok();
     }
 
+    @ApiOperation("用户查看咨询问题详情")
+    @GetMapping("/auth/detail/{id}")
+    public CommonResult consultingInfoDetail(@PathVariable("id") Long id) {
+        return CommonResult.ok(consultingInfoService.queryConsultingInfoDetail(id));
+    }
+
 }
