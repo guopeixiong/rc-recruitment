@@ -285,6 +285,48 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     /**
+     * 管理员登录
+     * @param loginDto
+     * @param request
+     * @return
+     */
+    @Override
+    public String adminLogin(LoginDto loginDto, HttpServletRequest request) {
+        if (redisTemplate.hasKey(CacheConstants.USER_FORBIDDEN + loginDto.getStuNum())) {
+            throw new ServiceException("您的账号密码错误次数超过" + pwdErrTimes + "次, 请" + pwdErrLockTime + "分钟后再试");
+        }
+        loginDto.setPassword(RSAUtils.decryptByRsa(loginDto.getPassword()));
+        SysUser user = this.baseMapper.selectOne(Wrappers.<SysUser>lambdaQuery().eq(SysUser::getStuNum, loginDto.getStuNum()));
+        if (user == null) {
+            user = this.baseMapper.selectOne(Wrappers.<SysUser>lambdaQuery().eq(SysUser::getPhone, loginDto.getStuNum()));
+        }
+        if (user == null) {
+            throw new ServiceException("账号不存在");
+        }
+        if (!user.getType().equals(UserType.ADMIN)) {
+            log.error("普通用户尝试登录管理后台: id-{}, 账号-{}, 昵称-{}, 姓名-{}", user.getId(), user.getStuNum(), user.getNickName(), user.getFullName());
+            throw new ServiceException("非管理员账号, 禁止登录");
+        }
+        String password = SaSecureUtil.md5BySalt(loginDto.getPassword(), user.getSalt());
+        if (!password.equals(user.getPassword())) {
+            saveLoginLog(loginDto, null, request, false);
+            Long count = redisTemplate.opsForValue().increment(CacheConstants.PWD_ERR_CNT_KEY + loginDto.getStuNum());
+            if (count >= pwdErrTimes) {
+                redisTemplate.opsForValue().set(CacheConstants.USER_FORBIDDEN + loginDto.getStuNum(), "lock");
+                redisTemplate.expire(CacheConstants.USER_FORBIDDEN + loginDto.getStuNum(), pwdErrLockTime, TimeUnit.MINUTES);
+                redisTemplate.delete(CacheConstants.PWD_ERR_CNT_KEY + loginDto.getStuNum());
+                throw new ServiceException("您的账号密码错误次数超过" + pwdErrTimes + "次, 请" + pwdErrLockTime + "分钟后再试");
+            }
+            redisTemplate.expire(CacheConstants.PWD_ERR_CNT_KEY + loginDto.getStuNum(), pwdErrLockTime, TimeUnit.MINUTES);
+            throw new ServiceException("密码错误");
+        }
+        String token = LoginUtils.login(user);
+        final Long userId = user.getId();
+        this.saveLoginLog(loginDto, userId, request, true);
+        return token;
+    }
+
+    /**
      * 日志记录
      *
      * @param param

@@ -64,4 +64,12 @@ public interface SysUserService extends IService<SysUser> {
      * @param file
      */
     String uploadAvatar(MultipartFile file);
+
+    /**
+     * 管理员登录
+     * @param loginDto
+     * @param request
+     * @return
+     */
+    String adminLogin(LoginDto loginDto, HttpServletRequest request);
 }
