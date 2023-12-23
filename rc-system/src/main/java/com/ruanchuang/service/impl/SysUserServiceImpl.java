@@ -369,6 +369,26 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     /**
+     * 分页查询管理员用户
+     * @param baseQueryDto
+     * @return
+     */
+    @Override
+    public IPage<SysUser> adminList(PageDto baseQueryDto) {
+        return this.lambdaQuery()
+                .eq(SysUser::getType, UserType.ADMIN.getValue())
+                .select(SysUser::getId,
+                        SysUser::getCreateTime,
+                        SysUser::getFullName,
+                        SysUser::getLastLogin,
+                        SysUser::getStuNum,
+                        SysUser::getStatus,
+                        SysUser::getEmail)
+                .orderByDesc(SysUser::getCreateTime)
+                .page(new Page<>(baseQueryDto.getPageNo(), baseQueryDto.getPageSize()));
+    }
+
+    /**
      * 日志记录
      *
      * @param param

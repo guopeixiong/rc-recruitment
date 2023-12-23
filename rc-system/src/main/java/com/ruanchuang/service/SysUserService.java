@@ -87,4 +87,11 @@ public interface SysUserService extends IService<SysUser> {
      * @param userstatusDto
      */
     void updateUserStatus(UserStatusDto userstatusDto);
+
+    /**
+     * 分页查询管理员用户
+     * @param baseQueryDto
+     * @return
+     */
+    IPage<SysUser> adminList(PageDto baseQueryDto);
 }

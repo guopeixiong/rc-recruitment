@@ -39,4 +39,9 @@ public class UserInfoManageController {
         return CommonResult.ok();
     }
 
+    @ApiOperation("分页查询管理员用户")
+    @GetMapping("/admin/list/{pageNo}/{pageSize}")
+    public CommonResult adminList(@Validated PageDto baseQueryDto) {
+        return CommonResult.ok(sysUserService.adminList(baseQueryDto));
+    }
 }
