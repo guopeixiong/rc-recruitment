@@ -3,7 +3,9 @@ package com.ruanchuang.service.impl;
 import cn.dev33.satoken.secure.SaSecureUtil;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.RandomUtil;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruanchuang.constant.CacheConstants;
 import com.ruanchuang.domain.SysFile;
@@ -15,6 +17,7 @@ import com.ruanchuang.enums.UserType;
 import com.ruanchuang.exception.ServiceException;
 import com.ruanchuang.exception.SystemException;
 import com.ruanchuang.mapper.SysUserMapper;
+import com.ruanchuang.model.PageDto;
 import com.ruanchuang.service.SysFileService;
 import com.ruanchuang.service.SysLogService;
 import com.ruanchuang.service.SysUserService;
@@ -159,7 +162,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         SysUser user = new SysUser();
         user.setEmail(registerDto.getEmail())
                 .setStuNum(registerDto.getStuNum())
-                .setType(UserType.AVERAGE_USER)
+                .setType(UserType.AVERAGE_USER.getValue())
                 .setStatus(0)
                 .setPassword(password)
                 .setSalt(salt);
@@ -303,7 +306,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         if (user == null) {
             throw new ServiceException("账号不存在");
         }
-        if (!user.getType().equals(UserType.ADMIN)) {
+        if (!user.getType().equals(UserType.ADMIN.getValue())) {
             log.error("普通用户尝试登录管理后台: id-{}, 账号-{}, 昵称-{}, 姓名-{}", user.getId(), user.getStuNum(), user.getNickName(), user.getFullName());
             throw new ServiceException("非管理员账号, 禁止登录");
         }
@@ -324,6 +327,28 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         final Long userId = user.getId();
         this.saveLoginLog(loginDto, userId, request, true);
         return token;
+    }
+
+    /**
+     * 分页查询普通用户
+     * @param baseQueryDto
+     * @return
+     */
+    @Override
+    public IPage<SysUser> normalList(PageDto baseQueryDto) {
+        return this.lambdaQuery()
+                .eq(SysUser::getType, UserType.AVERAGE_USER.getValue())
+                .select(SysUser::getId,
+                        SysUser::getCreateTime,
+                        SysUser::getNickName,
+                        SysUser::getFullName,
+                        SysUser::getLastLogin,
+                        SysUser::getPhone,
+                        SysUser::getSex,
+                        SysUser::getStuNum,
+                        SysUser::getStatus)
+                .orderByDesc(SysUser::getCreateTime)
+                .page(new Page<>(baseQueryDto.getPageNo(), baseQueryDto.getPageSize()));
     }
 
     /**

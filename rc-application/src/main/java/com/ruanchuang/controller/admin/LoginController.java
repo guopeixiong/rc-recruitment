@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
  * @Email peixiongguo@163.com
  */
 @Api(tags = "登录相关接口")
+@Validated
 @RestController
 public class LoginController {
 

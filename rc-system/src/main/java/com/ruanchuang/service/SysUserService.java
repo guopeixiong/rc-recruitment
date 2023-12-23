@@ -1,8 +1,10 @@
 package com.ruanchuang.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruanchuang.domain.SysUser;
 import com.ruanchuang.domain.dto.*;
+import com.ruanchuang.model.PageDto;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -72,4 +74,11 @@ public interface SysUserService extends IService<SysUser> {
      * @return
      */
     String adminLogin(LoginDto loginDto, HttpServletRequest request);
+
+    /**
+     * 分页查询普通用户
+     * @param baseQueryDto
+     * @return
+     */
+    IPage<SysUser> normalList(PageDto baseQueryDto);
 }
