@@ -18,4 +18,14 @@ public class Constants {
      */
     public static final String USER_TYPE_ADMIN = "admin";
 
+    /**
+     * 用户状态-禁用
+     */
+    public static final Integer USER_STATUS_DISABLE = 1;
+
+    /**
+     * 用户状态-启用
+     */
+    public static final Integer USER_STATUS_ENABLE = 0;
+
 }

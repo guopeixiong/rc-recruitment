@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruanchuang.constant.CacheConstants;
+import com.ruanchuang.constant.Constants;
 import com.ruanchuang.domain.SysFile;
 import com.ruanchuang.domain.SysLog;
 import com.ruanchuang.domain.SysUser;
@@ -346,9 +347,25 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                         SysUser::getPhone,
                         SysUser::getSex,
                         SysUser::getStuNum,
-                        SysUser::getStatus)
+                        SysUser::getStatus,
+                        SysUser::getEmail)
                 .orderByDesc(SysUser::getCreateTime)
                 .page(new Page<>(baseQueryDto.getPageNo(), baseQueryDto.getPageSize()));
+    }
+
+    /**
+     * 修改用户状态
+     * @param userstatusDto
+     */
+    @Override
+    public void updateUserStatus(UserStatusDto userstatusDto) {
+        if (!(userstatusDto.getStatus().equals(Constants.USER_STATUS_DISABLE) || userstatusDto.getStatus().equals(Constants.USER_STATUS_ENABLE))) {
+            throw new ServiceException("状态值不合法");
+        }
+        this.lambdaUpdate()
+                .eq(SysUser::getId, userstatusDto.getId())
+                .set(SysUser::getStatus, userstatusDto.getStatus())
+                .update();
     }
 
     /**
