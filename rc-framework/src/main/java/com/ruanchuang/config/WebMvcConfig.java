@@ -3,7 +3,7 @@ package com.ruanchuang.config;
 import cn.dev33.satoken.interceptor.SaInterceptor;
 import cn.dev33.satoken.router.SaRouter;
 import cn.dev33.satoken.stp.StpUtil;
-import com.ruanchuang.enums.UserType;
+import com.ruanchuang.constant.Constants;
 import com.ruanchuang.interceptor.RepeatSubmitInterceptor;
 import com.ruanchuang.interceptor.UserTokenInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +46,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(new UserTokenInterceptor()).addPathPatterns("/**");
         registry.addInterceptor(new SaInterceptor(handle -> {
             SaRouter.match("/**/auth/**", r -> StpUtil.checkLogin());
-            SaRouter.match("/**/admin/**", r -> StpUtil.checkRole(UserType.ADMIN.getValue().toString()));
+            SaRouter.match("/**/admin/**", r -> StpUtil.checkRole(Constants.USER_TYPE_ADMIN));
             SaRouter.match(authApi.split(","))
                     .check(r -> StpUtil.checkLogin());
         })).addPathPatterns("/**");

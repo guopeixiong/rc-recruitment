@@ -1,7 +1,6 @@
 package com.ruanchuang.domain;
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.ruanchuang.enums.UserType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -63,7 +62,7 @@ public class SysUser implements Serializable {
     private String avatar;
 
     @ApiModelProperty("用户类型;0.普通用户 1.系统管理员")
-    private UserType type;
+    private Integer type;
 
     @ApiModelProperty("账号状态;0.正常 1.停用")
     private Integer status;
