@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruanchuang.domain.SysUser;
 import com.ruanchuang.domain.dto.*;
-import com.ruanchuang.model.PageDto;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -77,10 +76,10 @@ public interface SysUserService extends IService<SysUser> {
 
     /**
      * 分页查询普通用户
-     * @param baseQueryDto
+     * @param userQueryDto
      * @return
      */
-    IPage<SysUser> normalList(PageDto baseQueryDto);
+    IPage<SysUser> normalList(UserQueryDto userQueryDto);
 
     /**
      * 修改用户状态
@@ -90,8 +89,8 @@ public interface SysUserService extends IService<SysUser> {
 
     /**
      * 分页查询管理员用户
-     * @param baseQueryDto
+     * @param userQueryDto
      * @return
      */
-    IPage<SysUser> adminList(PageDto baseQueryDto);
+    IPage<SysUser> adminList(UserQueryDto userQueryDto);
 }

@@ -1,10 +1,10 @@
 package com.ruanchuang.controller.admin;
 
 import com.ruanchuang.annotation.Log;
+import com.ruanchuang.domain.dto.UserQueryDto;
 import com.ruanchuang.domain.dto.UserStatusDto;
 import com.ruanchuang.enums.BusinessType;
 import com.ruanchuang.model.CommonResult;
-import com.ruanchuang.model.PageDto;
 import com.ruanchuang.service.SysUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,9 +26,9 @@ public class UserInfoManageController {
     private SysUserService sysUserService;
 
     @ApiOperation("分页查询普通用户")
-    @GetMapping("/normal/list/{pageNo}/{pageSize}")
-    public CommonResult normalList(@Validated PageDto baseQueryDto) {
-        return CommonResult.ok(sysUserService.normalList(baseQueryDto));
+    @GetMapping("/normal/list")
+    public CommonResult normalList(@Validated UserQueryDto userQueryDto) {
+        return CommonResult.ok(sysUserService.normalList(userQueryDto));
     }
 
     @ApiOperation("禁用普通用户")
@@ -40,8 +40,8 @@ public class UserInfoManageController {
     }
 
     @ApiOperation("分页查询管理员用户")
-    @GetMapping("/admin/list/{pageNo}/{pageSize}")
-    public CommonResult adminList(@Validated PageDto baseQueryDto) {
-        return CommonResult.ok(sysUserService.adminList(baseQueryDto));
+    @GetMapping("/admin/list")
+    public CommonResult adminList(@Validated UserQueryDto userQueryDto) {
+        return CommonResult.ok(sysUserService.adminList(userQueryDto));
     }
 }

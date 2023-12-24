@@ -18,7 +18,6 @@ import com.ruanchuang.enums.UserType;
 import com.ruanchuang.exception.ServiceException;
 import com.ruanchuang.exception.SystemException;
 import com.ruanchuang.mapper.SysUserMapper;
-import com.ruanchuang.model.PageDto;
 import com.ruanchuang.service.SysFileService;
 import com.ruanchuang.service.SysLogService;
 import com.ruanchuang.service.SysUserService;
@@ -335,13 +334,17 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     /**
      * 分页查询普通用户
-     * @param baseQueryDto
+     * @param userQueryDto
      * @return
      */
     @Override
-    public IPage<SysUser> normalList(PageDto baseQueryDto) {
+    public IPage<SysUser> normalList(UserQueryDto userQueryDto) {
         return this.lambdaQuery()
                 .eq(SysUser::getType, UserType.AVERAGE_USER.getValue())
+                .eq(StringUtils.isNotBlank(userQueryDto.getStuNum()), SysUser::getStuNum, userQueryDto.getStuNum())
+                .eq(StringUtils.isNotBlank(userQueryDto.getEmail()), SysUser::getEmail, userQueryDto.getEmail())
+                .eq(StringUtils.isNotBlank(userQueryDto.getPhone()), SysUser::getPhone, userQueryDto.getPhone())
+                .like(StringUtils.isNotBlank(userQueryDto.getFullName()), SysUser::getFullName, userQueryDto.getFullName())
                 .select(SysUser::getId,
                         SysUser::getCreateTime,
                         SysUser::getNickName,
@@ -353,7 +356,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                         SysUser::getStatus,
                         SysUser::getEmail)
                 .orderByDesc(SysUser::getCreateTime)
-                .page(new Page<>(baseQueryDto.getPageNo(), baseQueryDto.getPageSize()));
+                .page(new Page<>(userQueryDto.getPageNo(), userQueryDto.getPageSize()));
     }
 
     /**
@@ -373,13 +376,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     /**
      * 分页查询管理员用户
-     * @param baseQueryDto
+     * @param userQueryDto
      * @return
      */
     @Override
-    public IPage<SysUser> adminList(PageDto baseQueryDto) {
+    public IPage<SysUser> adminList(UserQueryDto userQueryDto) {
         return this.lambdaQuery()
                 .eq(SysUser::getType, UserType.ADMIN.getValue())
+                .like(StringUtils.isNotBlank(userQueryDto.getFullName()), SysUser::getFullName, userQueryDto.getFullName())
                 .select(SysUser::getId,
                         SysUser::getCreateTime,
                         SysUser::getFullName,
@@ -388,7 +392,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                         SysUser::getStatus,
                         SysUser::getEmail)
                 .orderByDesc(SysUser::getCreateTime)
-                .page(new Page<>(baseQueryDto.getPageNo(), baseQueryDto.getPageSize()));
+                .page(new Page<>(userQueryDto.getPageNo(), userQueryDto.getPageSize()));
     }
 
     /**
