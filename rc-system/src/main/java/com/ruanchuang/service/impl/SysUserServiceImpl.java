@@ -99,6 +99,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         if (user == null) {
             throw new ServiceException("账号不存在");
         }
+        checkUserStatus(user);
         String password = SaSecureUtil.md5BySalt(loginDto.getPassword(), user.getSalt());
         if (!password.equals(user.getPassword())) {
             saveLoginLog(loginDto, null, request, false);
@@ -133,6 +134,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }
         redisTemplate.delete(CacheConstants.CAPTCHA_CODE_KEY_LOGIN + loginDto.getEmail());
         SysUser user = this.baseMapper.selectOne(Wrappers.<SysUser>lambdaQuery().eq(SysUser::getEmail, loginDto.getEmail()));
+        checkUserStatus(user);
         String token = LoginUtils.login(user);
         this.saveLoginLog(loginDto, user.getId(), request, true);
         return token;
@@ -307,6 +309,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         if (user == null) {
             throw new ServiceException("账号不存在");
         }
+        checkUserStatus(user);
         if (!user.getType().equals(UserType.ADMIN.getValue())) {
             log.error("普通用户尝试登录管理后台: id-{}, 账号-{}, 昵称-{}, 姓名-{}", user.getId(), user.getStuNum(), user.getNickName(), user.getFullName());
             throw new ServiceException("非管理员账号, 禁止登录");
@@ -431,6 +434,16 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             throw new ServiceException("账户不存在");
         }
         return user;
+    }
+
+    /**
+     * 检查账号状态
+     * @param user
+     */
+    private void checkUserStatus(SysUser user) {
+        if (user.getStatus().equals(Constants.USER_STATUS_DISABLE)) {
+            throw new ServiceException("账号已被禁用");
+        }
     }
 
 }
