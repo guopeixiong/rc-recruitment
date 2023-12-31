@@ -341,9 +341,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     public IPage<SysUser> normalList(UserQueryDto userQueryDto) {
         return this.lambdaQuery()
                 .eq(SysUser::getType, UserType.AVERAGE_USER.getValue())
-                .eq(StringUtils.isNotBlank(userQueryDto.getStuNum()), SysUser::getStuNum, userQueryDto.getStuNum())
-                .eq(StringUtils.isNotBlank(userQueryDto.getEmail()), SysUser::getEmail, userQueryDto.getEmail())
-                .eq(StringUtils.isNotBlank(userQueryDto.getPhone()), SysUser::getPhone, userQueryDto.getPhone())
+                .likeRight(StringUtils.isNotBlank(userQueryDto.getStuNum()), SysUser::getStuNum, userQueryDto.getStuNum())
+                .likeRight(StringUtils.isNotBlank(userQueryDto.getEmail()), SysUser::getEmail, userQueryDto.getEmail())
+                .likeRight(StringUtils.isNotBlank(userQueryDto.getPhone()), SysUser::getPhone, userQueryDto.getPhone())
                 .like(StringUtils.isNotBlank(userQueryDto.getFullName()), SysUser::getFullName, userQueryDto.getFullName())
                 .select(SysUser::getId,
                         SysUser::getCreateTime,
