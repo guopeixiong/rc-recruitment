@@ -21,10 +21,7 @@ import com.ruanchuang.mapper.SysUserMapper;
 import com.ruanchuang.service.SysFileService;
 import com.ruanchuang.service.SysLogService;
 import com.ruanchuang.service.SysUserService;
-import com.ruanchuang.utils.IpUtils;
-import com.ruanchuang.utils.JSONUtils;
-import com.ruanchuang.utils.LoginUtils;
-import com.ruanchuang.utils.RSAUtils;
+import com.ruanchuang.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +37,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -68,6 +66,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Autowired
     private RedisTemplate redisTemplate;
+
+    @Autowired
+    private EmailUtils emailUtils;
 
     @Value("${file.store-address}")
     private String rootPath;
@@ -393,6 +394,41 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                         SysUser::getEmail)
                 .orderByDesc(SysUser::getCreateTime)
                 .page(new Page<>(userQueryDto.getPageNo(), userQueryDto.getPageSize()));
+    }
+
+    /**
+     * 添加管理员
+     *
+     * @param addAdminDto
+     */
+    @Override
+    public void addAdmin(AddAdminDto addAdminDto) {
+        SysUser user = this.baseMapper.selectOne(Wrappers.<SysUser>lambdaQuery()
+                .eq(SysUser::getStuNum, addAdminDto.getStuNum())
+                .or()
+                .eq(SysUser::getEmail, addAdminDto.getEmail())
+                .or()
+                .eq(SysUser::getFullName, addAdminDto.getFullName()));
+        if (Objects.nonNull(user)) {
+            throw new ServiceException("该管理员已存在");
+        }
+        emailUtils.testEmailCanSend(addAdminDto.getEmail());
+        String salt = RandomUtil.randomString(6);
+        String password = RandomUtil.randomString(8);
+        SysUser sysUser = new SysUser()
+                .setStuNum(addAdminDto.getStuNum())
+                .setEmail(addAdminDto.getEmail())
+                .setFullName(addAdminDto.getFullName())
+                .setPassword(SaSecureUtil.md5BySalt(password, salt))
+                .setSalt(salt)
+                .setType(UserType.ADMIN.getValue())
+                .setStatus(Constants.USER_STATUS_ENABLE);
+        boolean save = this.save(sysUser);
+        if (!save) {
+            throw new ServiceException("添加失败，稍后再试");
+        }
+        log.info("新增管理员， {}, {}, {}", sysUser.getStuNum(), sysUser.getEmail(), sysUser.getFullName());
+        emailUtils.sendAdminAccountPassword(addAdminDto.getEmail(), password, addAdminDto.getStuNum());
     }
 
     /**

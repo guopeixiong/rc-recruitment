@@ -1,6 +1,8 @@
 package com.ruanchuang.controller.admin;
 
 import com.ruanchuang.annotation.Log;
+import com.ruanchuang.annotation.RepeatSubmit;
+import com.ruanchuang.domain.dto.AddAdminDto;
 import com.ruanchuang.domain.dto.UserQueryDto;
 import com.ruanchuang.domain.dto.UserStatusDto;
 import com.ruanchuang.enums.BusinessType;
@@ -44,4 +46,14 @@ public class UserInfoManageController {
     public CommonResult adminList(@Validated UserQueryDto userQueryDto) {
         return CommonResult.ok(sysUserService.adminList(userQueryDto));
     }
+
+    @ApiOperation("新增管理员")
+    @RepeatSubmit
+    @Log(title = "新增管理员", businessType = BusinessType.INSERT, saveRequestParam = true, saveResponseResult = true)
+    @PostMapping("/admin/add")
+    public CommonResult addAdmin(@Validated @RequestBody AddAdminDto addAdminDto) {
+        sysUserService.addAdmin(addAdminDto);
+        return CommonResult.ok();
+    }
+
 }

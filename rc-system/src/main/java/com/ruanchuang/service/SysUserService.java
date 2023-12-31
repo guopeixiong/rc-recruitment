@@ -93,4 +93,10 @@ public interface SysUserService extends IService<SysUser> {
      * @return
      */
     IPage<SysUser> adminList(UserQueryDto userQueryDto);
+
+    /**
+     * 添加管理员
+     * @param addAdminDto
+     */
+    void addAdmin(AddAdminDto addAdminDto);
 }
