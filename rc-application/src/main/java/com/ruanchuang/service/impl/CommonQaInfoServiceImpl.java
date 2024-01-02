@@ -77,6 +77,7 @@ public class CommonQaInfoServiceImpl extends ServiceImpl<CommonQaInfoMapper, Com
         if (!success) {
             throw new ServiceException("新增失败，请稍后再试");
         }
+        redisTemplate.delete(CacheConstants.COMMON_QA_INFO_CACHE_KEY);
     }
 
     /**
@@ -96,6 +97,7 @@ public class CommonQaInfoServiceImpl extends ServiceImpl<CommonQaInfoMapper, Com
         if (!success) {
             throw new ServiceException("修改失败，请稍后再试");
         }
+        redisTemplate.delete(CacheConstants.COMMON_QA_INFO_CACHE_KEY);
     }
 
     /**
