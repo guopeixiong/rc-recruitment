@@ -7,6 +7,7 @@ import com.ruanchuang.constant.CacheConstants;
 import com.ruanchuang.domain.CommonQaInfo;
 import com.ruanchuang.domain.dto.AddQaDto;
 import com.ruanchuang.domain.dto.BaseQueryDto;
+import com.ruanchuang.domain.dto.DeleteQaDto;
 import com.ruanchuang.domain.dto.UpdateQaDto;
 import com.ruanchuang.enums.Constants;
 import com.ruanchuang.exception.ServiceException;
@@ -58,6 +59,18 @@ public class CommonQaInfoServiceImpl extends ServiceImpl<CommonQaInfoMapper, Com
             // 只缓存5分钟, 过期再次获取
             redisTemplate.expire(CacheConstants.COMMON_QA_INFO_CACHE_KEY, 5, TimeUnit.MINUTES);
             return qaInfos;
+        }
+    }
+
+    /**
+     * 删除常见问题
+     * @param deleteQaDto
+     */
+    @Override
+    public void deleteQa(DeleteQaDto deleteQaDto) {
+        boolean success = this.removeByIds(deleteQaDto.getIds());
+        if (!success) {
+            throw new ServiceException("删除失败，请稍后再试");
         }
     }
 

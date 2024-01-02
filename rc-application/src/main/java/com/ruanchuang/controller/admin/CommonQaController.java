@@ -4,6 +4,7 @@ import com.ruanchuang.annotation.Log;
 import com.ruanchuang.annotation.RepeatSubmit;
 import com.ruanchuang.domain.dto.AddQaDto;
 import com.ruanchuang.domain.dto.BaseQueryDto;
+import com.ruanchuang.domain.dto.DeleteQaDto;
 import com.ruanchuang.domain.dto.UpdateQaDto;
 import com.ruanchuang.enums.BusinessType;
 import com.ruanchuang.model.CommonResult;
@@ -49,6 +50,15 @@ public class CommonQaController {
     @PostMapping("/add")
     public CommonResult add(@Validated @RequestBody AddQaDto addQaDto) {
         commonQaInfoService.addQa(addQaDto);
+        return CommonResult.ok();
+    }
+
+    @ApiOperation("删除常用问题")
+    @RepeatSubmit
+    @Log(title = "删除常见问题", businessType = BusinessType.DELETE)
+    @DeleteMapping("/delete")
+    public CommonResult delete(@Validated @RequestBody DeleteQaDto deleteQaDto) {
+        commonQaInfoService.deleteQa(deleteQaDto);
         return CommonResult.ok();
     }
 
