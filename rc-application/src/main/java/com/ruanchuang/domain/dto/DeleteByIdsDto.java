@@ -16,8 +16,8 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel("删除常见问题")
-public class DeleteQaDto implements Serializable {
+@ApiModel("根据id删除dto")
+public class DeleteByIdsDto implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

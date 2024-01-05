@@ -7,7 +7,7 @@ import com.ruanchuang.constant.CacheConstants;
 import com.ruanchuang.domain.CommonQaInfo;
 import com.ruanchuang.domain.dto.AddQaDto;
 import com.ruanchuang.domain.dto.BaseQueryDto;
-import com.ruanchuang.domain.dto.DeleteQaDto;
+import com.ruanchuang.domain.dto.DeleteByIdsDto;
 import com.ruanchuang.domain.dto.UpdateQaDto;
 import com.ruanchuang.enums.Constants;
 import com.ruanchuang.exception.ServiceException;
@@ -67,7 +67,7 @@ public class CommonQaInfoServiceImpl extends ServiceImpl<CommonQaInfoMapper, Com
      * @param deleteQaDto
      */
     @Override
-    public void deleteQa(DeleteQaDto deleteQaDto) {
+    public void deleteQa(DeleteByIdsDto deleteQaDto) {
         boolean success = this.removeByIds(deleteQaDto.getIds());
         if (!success) {
             throw new ServiceException("删除失败，请稍后再试");

@@ -14,7 +14,6 @@ import com.ruanchuang.domain.vo.SignUpFormVo;
 import com.ruanchuang.enums.Constants;
 import com.ruanchuang.exception.ServiceException;
 import com.ruanchuang.mapper.SignUpFormTemplateMapper;
-import com.ruanchuang.model.PageDto;
 import com.ruanchuang.service.*;
 import com.ruanchuang.utils.LoginUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -237,6 +236,18 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
         boolean save = signUpFromAnswerService.save(signUpFromAnswer);
         if (!save) {
             throw new ServiceException("系统异常, 提交失败");
+        }
+    }
+
+    /**
+     * 批量删除报名表
+     * @param ids
+     */
+    @Override
+    public void deleteByIds(List<Long> ids) {
+        boolean success = this.removeBatchByIds(ids);
+        if (!success) {
+            throw new ServiceException("系统异常, 删除失败");
         }
     }
 

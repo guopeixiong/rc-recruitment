@@ -59,4 +59,10 @@ public interface SignUpFormTemplateService extends IService<SignUpFormTemplate> 
      * @return
      */
     IPage<SignUpFormVo> getFormList(BaseQueryDto baseQueryDto);
+
+    /**
+     * 批量删除报名表
+     * @param ids
+     */
+    void deleteByIds(List<Long> ids);
 }

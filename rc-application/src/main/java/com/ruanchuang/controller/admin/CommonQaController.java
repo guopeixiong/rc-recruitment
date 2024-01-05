@@ -4,7 +4,7 @@ import com.ruanchuang.annotation.Log;
 import com.ruanchuang.annotation.RepeatSubmit;
 import com.ruanchuang.domain.dto.AddQaDto;
 import com.ruanchuang.domain.dto.BaseQueryDto;
-import com.ruanchuang.domain.dto.DeleteQaDto;
+import com.ruanchuang.domain.dto.DeleteByIdsDto;
 import com.ruanchuang.domain.dto.UpdateQaDto;
 import com.ruanchuang.enums.BusinessType;
 import com.ruanchuang.model.CommonResult;
@@ -57,7 +57,7 @@ public class CommonQaController {
     @RepeatSubmit
     @Log(title = "删除常见问题", businessType = BusinessType.DELETE)
     @DeleteMapping("/delete")
-    public CommonResult delete(@Validated @RequestBody DeleteQaDto deleteQaDto) {
+    public CommonResult delete(@Validated @RequestBody DeleteByIdsDto deleteQaDto) {
         commonQaInfoService.deleteQa(deleteQaDto);
         return CommonResult.ok();
     }

@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruanchuang.domain.CommonQaInfo;
 import com.ruanchuang.domain.dto.AddQaDto;
 import com.ruanchuang.domain.dto.BaseQueryDto;
-import com.ruanchuang.domain.dto.DeleteQaDto;
+import com.ruanchuang.domain.dto.DeleteByIdsDto;
 import com.ruanchuang.domain.dto.UpdateQaDto;
 
 import java.util.List;
@@ -45,5 +45,5 @@ public interface CommonQaInfoService extends IService<CommonQaInfo> {
      * 删除常见问题
      * @param deleteQaDto
      */
-    void deleteQa(DeleteQaDto deleteQaDto);
+    void deleteQa(DeleteByIdsDto deleteQaDto);
 }
