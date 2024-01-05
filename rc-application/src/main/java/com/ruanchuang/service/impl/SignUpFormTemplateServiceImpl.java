@@ -1,15 +1,20 @@
 package com.ruanchuang.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruanchuang.constant.CacheConstants;
 import com.ruanchuang.domain.*;
+import com.ruanchuang.domain.dto.BaseQueryDto;
 import com.ruanchuang.domain.dto.SubmitFormDto;
 import com.ruanchuang.domain.dto.UpdateSignUpFormDto;
+import com.ruanchuang.domain.vo.SignUpFormVo;
 import com.ruanchuang.enums.Constants;
 import com.ruanchuang.exception.ServiceException;
 import com.ruanchuang.mapper.SignUpFormTemplateMapper;
+import com.ruanchuang.model.PageDto;
 import com.ruanchuang.service.*;
 import com.ruanchuang.utils.LoginUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -233,6 +238,17 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
         if (!save) {
             throw new ServiceException("系统异常, 提交失败");
         }
+    }
+
+    /**
+     * 后台查询报名表列表
+     * @param baseQueryDto
+     * @return
+     */
+    @Override
+    public IPage<SignUpFormVo> getFormList(BaseQueryDto baseQueryDto) {
+        Page page = new Page(baseQueryDto.getPageNum(), baseQueryDto.getPageSize());
+        return baseMapper.selectFormList(page);
     }
 
     /**

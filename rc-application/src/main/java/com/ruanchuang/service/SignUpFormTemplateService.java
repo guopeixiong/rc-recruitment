@@ -1,11 +1,14 @@
 package com.ruanchuang.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruanchuang.domain.SignUpFormQuestion;
 import com.ruanchuang.domain.SignUpFormTemplate;
 import com.ruanchuang.domain.TemplateQuestionOptions;
+import com.ruanchuang.domain.dto.BaseQueryDto;
 import com.ruanchuang.domain.dto.SubmitFormDto;
 import com.ruanchuang.domain.dto.UpdateSignUpFormDto;
+import com.ruanchuang.domain.vo.SignUpFormVo;
 
 import java.util.List;
 
@@ -49,4 +52,11 @@ public interface SignUpFormTemplateService extends IService<SignUpFormTemplate> 
      * @return
      */
     Integer queryTheRestOfQuestionUpdateTimes(Long id);
+
+    /**
+     * 后台查询报名表列表
+     * @param baseQueryDto
+     * @return
+     */
+    IPage<SignUpFormVo> getFormList(BaseQueryDto baseQueryDto);
 }
