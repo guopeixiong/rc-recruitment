@@ -1,6 +1,7 @@
 package com.ruanchuang.controller.admin;
 
 import com.ruanchuang.annotation.RepeatSubmit;
+import com.ruanchuang.domain.dto.AddTemplateDto;
 import com.ruanchuang.domain.dto.BaseQueryDto;
 import com.ruanchuang.domain.dto.DeleteByIdsDto;
 import com.ruanchuang.model.CommonResult;
@@ -37,6 +38,20 @@ public class SignUpFormTemplateController {
     public CommonResult delete(@Validated @RequestBody DeleteByIdsDto deleteByIdsDto) {
         signUpFormTemplateService.deleteByIds(deleteByIdsDto.getIds());
         return CommonResult.ok();
+    }
+
+    @ApiOperation("新增报名表")
+    @RepeatSubmit
+    @PostMapping("/add")
+    public CommonResult add(@Validated @RequestBody AddTemplateDto addTemplateDto) {
+        signUpFormTemplateService.add(addTemplateDto);
+        return CommonResult.ok();
+    }
+
+    @ApiOperation("获取流程列表")
+    @GetMapping("/getProcessList")
+    public CommonResult processList() {
+        return CommonResult.ok(signUpFormTemplateService.getProcessList());
     }
 
 }

@@ -67,4 +67,15 @@ public interface Constants {
      * 咨询信息状态-已回复
      */
     Integer CONSULTING_INFO_STATUS_REPLY = 1;
+
+    /**
+     * 报名流程状态-启用
+     */
+    Integer SIGN_UP_PROCESS_STATUS_ENABLE = 1;
+
+    /**
+     * 报名流程状态-未启用
+     */
+    Integer SIGN_UP_PROCESS_STATUS_DISABLE = 0;
+
 }

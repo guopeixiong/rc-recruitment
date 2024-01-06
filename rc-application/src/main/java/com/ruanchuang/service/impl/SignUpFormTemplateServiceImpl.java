@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruanchuang.constant.CacheConstants;
 import com.ruanchuang.domain.*;
+import com.ruanchuang.domain.dto.AddTemplateDto;
 import com.ruanchuang.domain.dto.BaseQueryDto;
 import com.ruanchuang.domain.dto.SubmitFormDto;
 import com.ruanchuang.domain.dto.UpdateSignUpFormDto;
@@ -236,6 +237,41 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
         boolean save = signUpFromAnswerService.save(signUpFromAnswer);
         if (!save) {
             throw new ServiceException("系统异常, 提交失败");
+        }
+    }
+
+    /**
+     * 获取流程列表
+     * @return
+     */
+    @Override
+    public List<SignUpProcess> getProcessList() {
+        return signUpProcessService.lambdaQuery()
+                .eq(SignUpProcess::getEnable, Constants.SIGN_UP_PROCESS_STATUS_ENABLE)
+                .orderByDesc(SignUpProcess::getCreateTime)
+                .select(SignUpProcess::getId,
+                        SignUpProcess::getName)
+                .list();
+    }
+
+    /**
+     * 添加报名表
+     * @param addTemplateDto
+     */
+    @Override
+    public void add(AddTemplateDto addTemplateDto) {
+        boolean exists = signUpProcessService.lambdaQuery()
+                .eq(SignUpProcess::getId, addTemplateDto.getProcessId())
+                .exists();
+        if (!exists) {
+            throw new ServiceException("流程不存在");
+        }
+        SignUpFormTemplate template = new SignUpFormTemplate()
+                .setName(addTemplateDto.getName())
+                .setProcessId(addTemplateDto.getProcessId());
+        boolean success = this.save(template);
+        if (!success) {
+            throw new ServiceException("系统异常, 创建失败");
         }
     }
 

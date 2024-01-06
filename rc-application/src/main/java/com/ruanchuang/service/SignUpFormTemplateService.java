@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruanchuang.domain.SignUpFormQuestion;
 import com.ruanchuang.domain.SignUpFormTemplate;
+import com.ruanchuang.domain.SignUpProcess;
 import com.ruanchuang.domain.TemplateQuestionOptions;
+import com.ruanchuang.domain.dto.AddTemplateDto;
 import com.ruanchuang.domain.dto.BaseQueryDto;
 import com.ruanchuang.domain.dto.SubmitFormDto;
 import com.ruanchuang.domain.dto.UpdateSignUpFormDto;
@@ -65,4 +67,16 @@ public interface SignUpFormTemplateService extends IService<SignUpFormTemplate> 
      * @param ids
      */
     void deleteByIds(List<Long> ids);
+
+    /**
+     * 添加报名表
+     * @param addTemplateDto
+     */
+    void add(AddTemplateDto addTemplateDto);
+
+    /**
+     * 获取流程列表
+     * @return
+     */
+    List<SignUpProcess> getProcessList();
 }
