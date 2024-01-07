@@ -13,13 +13,11 @@ import com.ruanchuang.enums.Constants;
 import com.ruanchuang.exception.ServiceException;
 import com.ruanchuang.mapper.CommonQaInfoMapper;
 import com.ruanchuang.service.CommonQaInfoService;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -99,14 +97,14 @@ public class CommonQaInfoServiceImpl extends ServiceImpl<CommonQaInfoMapper, Com
      */
     @Override
     public void updateQa(UpdateQaDto updateQaDto) {
-        boolean success = this.lambdaUpdate()
-                .eq(CommonQaInfo::getId, updateQaDto.getId())
-                .set(StringUtils.isNotBlank(updateQaDto.getQuestion()), CommonQaInfo::getQuestion, updateQaDto.getQuestion())
-                .set(StringUtils.isNotBlank(updateQaDto.getAnswer()), CommonQaInfo::getAnswer, updateQaDto.getAnswer())
-                .set(StringUtils.isNotBlank(updateQaDto.getRemark()), CommonQaInfo::getRemark, updateQaDto.getRemark())
-                .set(Objects.nonNull(updateQaDto.getTop()), CommonQaInfo::getTop, updateQaDto.getTop())
-                .set(Objects.nonNull(updateQaDto.getEnable()), CommonQaInfo::getEnable, updateQaDto.getEnable())
-                .update();
+        CommonQaInfo commonQaInfo = new CommonQaInfo()
+                .setId(updateQaDto.getId())
+                .setTop(updateQaDto.getTop())
+                .setEnable(updateQaDto.getEnable())
+                .setRemark(updateQaDto.getRemark())
+                .setQuestion(updateQaDto.getQuestion())
+                .setAnswer(updateQaDto.getAnswer());
+        boolean success = this.updateById(commonQaInfo);
         if (!success) {
             throw new ServiceException("修改失败，请稍后再试");
         }
