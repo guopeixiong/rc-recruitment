@@ -12,6 +12,7 @@ import com.ruanchuang.domain.dto.BaseQueryDto;
 import com.ruanchuang.domain.dto.SubmitFormDto;
 import com.ruanchuang.domain.dto.UpdateSignUpFormDto;
 import com.ruanchuang.domain.vo.SignUpFormVo;
+import com.ruanchuang.domain.vo.TemplateQuestionVo;
 import com.ruanchuang.enums.Constants;
 import com.ruanchuang.exception.ServiceException;
 import com.ruanchuang.mapper.SignUpFormTemplateMapper;
@@ -24,10 +25,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -238,6 +236,49 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
         if (!save) {
             throw new ServiceException("系统异常, 提交失败");
         }
+    }
+
+    /**
+     * 后台查询报名表详情
+     * @param id
+     * @return
+     */
+    @Override
+    public List<TemplateQuestionVo> getDetail(Long id) {
+        List<SignUpFormQuestion> qusList = signUpFormQuestionService.lambdaQuery()
+                .eq(SignUpFormQuestion::getTemplateId, id)
+                .select(SignUpFormQuestion::getContent,
+                        SignUpFormQuestion::getIsRequire,
+                        SignUpFormQuestion::getType,
+                        SignUpFormQuestion::getId)
+                .orderByAsc(SignUpFormQuestion::getSort)
+                .list();
+        if (qusList.isEmpty()) {
+            return List.of();
+        }
+        List<TemplateQuestionVo> result = new ArrayList<>(qusList.size());
+        qusList.stream().forEach(q ->
+            result.add(
+                    new TemplateQuestionVo()
+                            .setId(q.getId())
+                            .setType(q.getType())
+                            .setIsRequire(q.getIsRequire().toString())
+                            .setContent(q.getContent()))
+        );
+        List<TemplateQuestionOptions> optionslist = templateQuestionOptionsService.lambdaQuery()
+                .eq(TemplateQuestionOptions::getTemplateId, id)
+                .select(TemplateQuestionOptions::getContent,
+                        TemplateQuestionOptions::getQuestionId)
+                .list();
+        if (optionslist.isEmpty()) {
+            return result;
+        }
+        result.stream().filter(q -> !q.getType().equals(Constants.SIGN_UP_FORM_QUESTION_TYPE_TEXT))
+                .forEach(q ->
+                    q.setOptions(
+                            optionslist.stream().filter(opt -> opt.getQuestionId().equals(q.getId())).map(TemplateQuestionOptions::getContent).collect(Collectors.toList()))
+                );
+        return result;
     }
 
     /**

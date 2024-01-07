@@ -11,6 +11,7 @@ import com.ruanchuang.domain.dto.BaseQueryDto;
 import com.ruanchuang.domain.dto.SubmitFormDto;
 import com.ruanchuang.domain.dto.UpdateSignUpFormDto;
 import com.ruanchuang.domain.vo.SignUpFormVo;
+import com.ruanchuang.domain.vo.TemplateQuestionVo;
 
 import java.util.List;
 
@@ -79,4 +80,11 @@ public interface SignUpFormTemplateService extends IService<SignUpFormTemplate> 
      * @return
      */
     List<SignUpProcess> getProcessList();
+
+    /**
+     * 后台查询报名表详情
+     * @param id
+     * @return
+     */
+    List<TemplateQuestionVo> getDetail(Long id);
 }

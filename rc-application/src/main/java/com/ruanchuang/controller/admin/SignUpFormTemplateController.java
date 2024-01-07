@@ -54,4 +54,10 @@ public class SignUpFormTemplateController {
         return CommonResult.ok(signUpFormTemplateService.getProcessList());
     }
 
+    @ApiOperation("获取报名表详情")
+    @GetMapping("/detail/{id}")
+    public CommonResult detail(@PathVariable Long id) {
+        return CommonResult.ok(signUpFormTemplateService.getDetail(id));
+    }
+
 }
