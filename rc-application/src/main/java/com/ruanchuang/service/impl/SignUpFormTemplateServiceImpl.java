@@ -1,5 +1,7 @@
 package com.ruanchuang.service.impl;
 
+import cn.hutool.core.lang.Snowflake;
+import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -7,10 +9,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruanchuang.constant.CacheConstants;
 import com.ruanchuang.domain.*;
-import com.ruanchuang.domain.dto.AddTemplateDto;
-import com.ruanchuang.domain.dto.BaseQueryDto;
-import com.ruanchuang.domain.dto.SubmitFormDto;
-import com.ruanchuang.domain.dto.UpdateSignUpFormDto;
+import com.ruanchuang.domain.dto.*;
 import com.ruanchuang.domain.vo.SignUpFormVo;
 import com.ruanchuang.domain.vo.TemplateQuestionVo;
 import com.ruanchuang.enums.Constants;
@@ -25,7 +24,10 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -80,6 +82,8 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
                     Wrappers.<SignUpFormTemplate>lambdaQuery()
                             .eq(SignUpFormTemplate::getIsEnabled, Constants.SIGN_UP_FORM_TEMPLATE_STATUS_ENABLE)
                             .select(SignUpFormTemplate::getId)
+                            .orderByDesc(SignUpFormTemplate::getCreateTime)
+                            .last("limit 1")
             );
             if (template == null) {
                 log.error("系统中没有启动的模板");
@@ -235,6 +239,67 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
         boolean save = signUpFromAnswerService.save(signUpFromAnswer);
         if (!save) {
             throw new ServiceException("系统异常, 提交失败");
+        }
+    }
+
+    /**
+     * 编辑报名表
+     * @param editTemplateDto
+     */
+    @Override
+    @Transactional(rollbackFor = ServiceException.class)
+    public void UpdateTemplate(EditTemplateDto editTemplateDto) {
+        List<SignUpFormQuestion> questions = new ArrayList<>(editTemplateDto.getQuestions().size());
+        List<TemplateQuestionOptions> options = new ArrayList<>();
+        Snowflake snowflake = IdUtil.getSnowflake();
+        for (int i = 0; i < editTemplateDto.getQuestions().size(); i++) {
+            TemplateQuestionVo questionVo = editTemplateDto.getQuestions().get(i);
+            SignUpFormQuestion question = new SignUpFormQuestion()
+                    .setId(snowflake.nextId())
+                    .setTemplateId(editTemplateDto.getId())
+                    .setSort(i)
+                    .setContent(questionVo.getContent())
+                    .setType(questionVo.getType())
+                    .setIsRequire(Integer.parseInt(questionVo.getIsRequire()));
+            if (!question.getType().equals(Constants.SIGN_UP_FORM_QUESTION_TYPE_TEXT)) {
+                for (int j = 0; j < questionVo.getOptions().size(); j++) {
+                    TemplateQuestionOptions option = new TemplateQuestionOptions()
+                            .setTemplateId(editTemplateDto.getId())
+                            .setQuestionId(question.getId())
+                            .setContent(questionVo.getOptions().get(j));
+                    options.add(option);
+                }
+            }
+            questions.add(question);
+        }
+        SignUpFormTemplate template = new SignUpFormTemplate()
+                .setId(editTemplateDto.getId())
+                .setProcessId(editTemplateDto.getProcessId())
+                .setName(editTemplateDto.getName())
+                .setIsEnabled(editTemplateDto.getIsEnabled());
+        boolean success = this.updateById(template);
+        if (!success) {
+            throw new ServiceException("系统异常, 更新失败");
+        }
+        if (editTemplateDto.getQuestions().isEmpty()) {
+            return;
+        }
+        signUpFormQuestionService.lambdaUpdate()
+                .eq(SignUpFormQuestion::getTemplateId, editTemplateDto.getId())
+                .remove();
+        templateQuestionOptionsService.lambdaUpdate()
+                .eq(TemplateQuestionOptions::getTemplateId, editTemplateDto.getId())
+                .remove();
+        success = signUpFormQuestionService.saveBatch(questions);
+        if (!success) {
+            throw new ServiceException("系统异常, 保存失败");
+        }
+        if (options.isEmpty()) {
+            return;
+        }
+        success = templateQuestionOptionsService.saveBatch(options);
+        if (!success) {
+            throw new ServiceException("系统异常, 保存失败");
         }
     }
 

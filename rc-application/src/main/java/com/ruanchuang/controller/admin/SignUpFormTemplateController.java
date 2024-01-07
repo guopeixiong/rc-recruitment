@@ -4,6 +4,7 @@ import com.ruanchuang.annotation.RepeatSubmit;
 import com.ruanchuang.domain.dto.AddTemplateDto;
 import com.ruanchuang.domain.dto.BaseQueryDto;
 import com.ruanchuang.domain.dto.DeleteByIdsDto;
+import com.ruanchuang.domain.dto.EditTemplateDto;
 import com.ruanchuang.model.CommonResult;
 import com.ruanchuang.service.SignUpFormTemplateService;
 import io.swagger.annotations.Api;
@@ -58,6 +59,14 @@ public class SignUpFormTemplateController {
     @GetMapping("/detail/{id}")
     public CommonResult detail(@PathVariable Long id) {
         return CommonResult.ok(signUpFormTemplateService.getDetail(id));
+    }
+
+    @ApiOperation("修改报名表模板")
+    @RepeatSubmit
+    @PutMapping("/edit")
+    public CommonResult edit(@Validated @RequestBody EditTemplateDto editTemplateDto) {
+        signUpFormTemplateService.UpdateTemplate(editTemplateDto);
+        return CommonResult.ok();
     }
 
 }

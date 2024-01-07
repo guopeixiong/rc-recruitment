@@ -6,10 +6,7 @@ import com.ruanchuang.domain.SignUpFormQuestion;
 import com.ruanchuang.domain.SignUpFormTemplate;
 import com.ruanchuang.domain.SignUpProcess;
 import com.ruanchuang.domain.TemplateQuestionOptions;
-import com.ruanchuang.domain.dto.AddTemplateDto;
-import com.ruanchuang.domain.dto.BaseQueryDto;
-import com.ruanchuang.domain.dto.SubmitFormDto;
-import com.ruanchuang.domain.dto.UpdateSignUpFormDto;
+import com.ruanchuang.domain.dto.*;
 import com.ruanchuang.domain.vo.SignUpFormVo;
 import com.ruanchuang.domain.vo.TemplateQuestionVo;
 
@@ -87,4 +84,10 @@ public interface SignUpFormTemplateService extends IService<SignUpFormTemplate> 
      * @return
      */
     List<TemplateQuestionVo> getDetail(Long id);
+
+    /**
+     * 编辑报名表
+     * @param editTemplateDto
+     */
+    void UpdateTemplate(EditTemplateDto editTemplateDto);
 }
