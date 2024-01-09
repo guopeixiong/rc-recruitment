@@ -1,9 +1,17 @@
 package com.ruanchuang.service.impl;
 
+import cn.hutool.core.lang.Snowflake;
+import cn.hutool.core.util.IdUtil;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruanchuang.constant.CacheConstants;
 import com.ruanchuang.domain.SignUpProcess;
 import com.ruanchuang.domain.SignUpProcessStatus;
+import com.ruanchuang.domain.dto.BaseQueryDto;
+import com.ruanchuang.domain.dto.DeleteByIdsDto;
+import com.ruanchuang.domain.dto.SignUpProcessDto;
+import com.ruanchuang.exception.ServiceException;
 import com.ruanchuang.exception.SystemException;
 import com.ruanchuang.mapper.SignUpProcessMapper;
 import com.ruanchuang.service.SignUpProcessService;
@@ -11,6 +19,7 @@ import com.ruanchuang.service.SignUpProcessStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -56,6 +65,127 @@ public class SignUpProcessServiceImpl extends ServiceImpl<SignUpProcessMapper, S
                 .findFirst()
                 .map(SignUpProcessStatus::getName)
                 .get();
+    }
+
+    /**
+     * 编辑流程
+     * @param signUpProcessDto
+     */
+    @Override
+    @Transactional(rollbackFor = ServiceException.class)
+    public void edit(SignUpProcessDto signUpProcessDto) {
+        SignUpProcess process = new SignUpProcess()
+                .setId(signUpProcessDto.getId())
+                .setName(signUpProcessDto.getName())
+                .setRemark(signUpProcessDto.getRemark())
+                .setEnable(signUpProcessDto.getEnable());
+        boolean success = this.updateById(process);
+        if (!success) {
+            throw new SystemException("系统异常, 修改失败");
+        }
+        if (signUpProcessDto.getStatus().isEmpty()) {
+            return;
+        }
+        success = signUpProcessStatusService.lambdaUpdate()
+                .eq(SignUpProcessStatus::getProcessId, signUpProcessDto.getId())
+                .remove();
+        if (!success) {
+            throw new SystemException("系统异常, 修改失败");
+        }
+        List<SignUpProcessStatus> status = new ArrayList<>(signUpProcessDto.getStatus().size());
+        for (int i = 0; i < signUpProcessDto.getStatus().size(); i++) {
+            status.add(
+                    new SignUpProcessStatus()
+                            .setProcessId(signUpProcessDto.getId())
+                            .setName(signUpProcessDto.getStatus().get(i))
+                            .setSortNum(i)
+            );
+        }
+        success = signUpProcessStatusService.saveBatch(status);
+        if (!success) {
+            throw new SystemException("系统异常, 修改失败");
+        }
+    }
+
+    /**
+     * 新增流程
+     * @param signUpProcessDto
+     */
+    @Override
+    @Transactional(rollbackFor = ServiceException.class)
+    public void add(SignUpProcessDto signUpProcessDto) {
+        Snowflake snowflake = IdUtil.getSnowflake();
+        SignUpProcess process = new SignUpProcess()
+                .setId(snowflake.nextId())
+                .setName(signUpProcessDto.getName())
+                .setRemark(signUpProcessDto.getRemark())
+                .setEnable(signUpProcessDto.getEnable());
+        ArrayList<SignUpProcessStatus> status = new ArrayList<>(signUpProcessDto.getStatus().size());
+        for (int i = 0; i < signUpProcessDto.getStatus().size(); i++) {
+            status.add(
+                    new SignUpProcessStatus()
+                            .setProcessId(process.getId())
+                            .setName(signUpProcessDto.getStatus().get(i))
+                            .setSortNum(i)
+            );
+        }
+        boolean success = this.save(process);
+        if (!success) {
+            throw new SystemException("系统异常, 新增失败");
+        }
+        success = signUpProcessStatusService.saveBatch(status);
+        if (!success) {
+            throw new SystemException("系统异常, 新增失败");
+        }
+    }
+
+    /**
+     * 获取流程状态
+     * @param id
+     * @return
+     */
+    @Override
+    public List<String> getStatus(Long id) {
+        return signUpProcessStatusService.lambdaQuery()
+                .eq(SignUpProcessStatus::getProcessId, id)
+                .orderByAsc(SignUpProcessStatus::getSortNum)
+                .select(SignUpProcessStatus::getName)
+                .list()
+                .stream()
+                .map(SignUpProcessStatus::getName)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 删除流程
+     * @param deleteByIdsDto
+     */
+    @Override
+    public void deleteByIds(DeleteByIdsDto deleteByIdsDto) {
+        boolean success = this.removeBatchByIds(deleteByIdsDto.getIds());
+        if (!success) {
+            throw new SystemException("系统异常, 删除失败");
+        }
+    }
+
+    /**
+     * 获取流程列表
+     * @param baseQueryDto
+     * @return
+     */
+    @Override
+    public IPage<SignUpProcess> getList(BaseQueryDto baseQueryDto) {
+        return this.lambdaQuery()
+                .orderByDesc(SignUpProcess::getEnable, SignUpProcess::getCreateTime)
+                .select(SignUpProcess::getId,
+                        SignUpProcess::getName,
+                        SignUpProcess::getRemark,
+                        SignUpProcess::getEnable,
+                        SignUpProcess::getCreateBy,
+                        SignUpProcess::getCreateTime,
+                        SignUpProcess::getUpdateBy,
+                        SignUpProcess::getUpdateTime)
+                .page(new Page<>(baseQueryDto.getPageNum(), baseQueryDto.getPageSize()));
     }
 
     /**
