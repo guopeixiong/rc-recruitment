@@ -46,7 +46,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(new UserTokenInterceptor()).addPathPatterns("/**");
         registry.addInterceptor(new SaInterceptor(handle -> {
             SaRouter.match("/**/auth/**", r -> StpUtil.checkLogin());
-            SaRouter.match("/**/admin/**", r -> StpUtil.checkRole(Constants.USER_TYPE_ADMIN));
+            SaRouter.match("/**/admin/**", r -> {
+                StpUtil.checkLogin();
+                StpUtil.checkRole(Constants.USER_TYPE_ADMIN);
+            });
             SaRouter.match(authApi.split(","))
                     .check(r -> StpUtil.checkLogin());
         })).addPathPatterns("/**");
