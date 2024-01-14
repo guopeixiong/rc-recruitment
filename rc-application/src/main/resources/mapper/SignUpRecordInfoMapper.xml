@@ -7,7 +7,7 @@
         from sign_up_form_question q
         left join sign_up_from_answer a
         on a.question_id = q.id and a.user_id = #{userId} and a.is_delete = 0
-        where q.template_id = #{templateId}
+        where q.template_id = #{templateId} and q.is_delete = 0
         order by q.sort asc
     </select>
 </mapper>
