@@ -43,18 +43,6 @@ public class EmailSendRecord implements Serializable {
     @ApiModelProperty("邮件主题")
     private String subject;
 
-    @ApiModelProperty("邮件状态;0.未发送 1.已发送 2.未读 3.已读")
-    private Integer status;
-
-    @ApiModelProperty("发送类型;0.立即发送 1.定时发送")
-    private Integer sendType;
-
-    @ApiModelProperty("定时发送时间")
-    private LocalDateTime planSendTime;
-
-    @ApiModelProperty("实际发送时间")
-    private LocalDateTime sendTime;
-
     @ApiModelProperty("创建人")
     @TableField(fill = FieldFill.INSERT)
     private String createBy;

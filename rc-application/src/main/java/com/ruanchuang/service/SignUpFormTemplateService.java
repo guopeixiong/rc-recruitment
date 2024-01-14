@@ -90,4 +90,11 @@ public interface SignUpFormTemplateService extends IService<SignUpFormTemplate> 
      * @param editTemplateDto
      */
     void UpdateTemplate(EditTemplateDto editTemplateDto);
+
+    /**
+     * 获取所有报名表
+     * @return
+     */
+    List<SignUpFormTemplate> getList();
+
 }

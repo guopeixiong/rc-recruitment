@@ -37,9 +37,6 @@ public class EmailTemplate implements Serializable {
     @ApiModelProperty("邮件内容")
     private String content;
 
-    @ApiModelProperty("填充参数个数")
-    private Integer paramCount;
-
     @ApiModelProperty("创建人")
     @TableField(fill = FieldFill.INSERT)
     private String createBy;

@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruanchuang.domain.SignUpRecordInfo;
 import com.ruanchuang.domain.TemplateQuestionOptions;
 import com.ruanchuang.domain.dto.BaseQueryDto;
+import com.ruanchuang.domain.dto.SignUpRecordQueryDto;
 import com.ruanchuang.domain.vo.SignUpDetailVo;
 import com.ruanchuang.enums.Constants;
 import com.ruanchuang.exception.ServiceException;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -65,6 +65,33 @@ public class SignUpRecordInfoServiceImpl extends ServiceImpl<SignUpRecordInfoMap
     }
 
     /**
+     * 查询报名记录列表
+     * @param signUpRecordQueryDto
+     * @return
+     */
+    @Override
+    public IPage<SignUpRecordInfo> getList(SignUpRecordQueryDto signUpRecordQueryDto) {
+        Page<SignUpRecordInfo> page = this.lambdaQuery()
+                .eq(Objects.nonNull(signUpRecordQueryDto.getTemplateId()), SignUpRecordInfo::getTemplateId, signUpRecordQueryDto.getTemplateId())
+                .eq(Objects.nonNull(signUpRecordQueryDto.getStatusId()), SignUpRecordInfo::getCurrentProcessStatusId, signUpRecordQueryDto.getStatusId())
+                .orderByDesc(SignUpRecordInfo::getCreateTime)
+                .select(SignUpRecordInfo::getId,
+                        SignUpRecordInfo::getUserName,
+                        SignUpRecordInfo::getUserId,
+                        SignUpRecordInfo::getProcessId,
+                        SignUpRecordInfo::getCurrentProcessStatusId,
+                        SignUpRecordInfo::getCreateTime)
+                .page(new Page<>(signUpRecordQueryDto.getPageNum(), signUpRecordQueryDto.getPageSize()));
+        page.getRecords().stream().forEach(record -> {
+            String processStatusName = signUpProcessService.getProcessStatusNameById(record.getProcessId(), record.getCurrentProcessStatusId());
+            record.setCurrentProcess(processStatusName);
+            record.setProcessId(null);
+            record.setCurrentProcessStatusId(null);
+        });
+        return page;
+    }
+
+    /**
      * 查询报名详情
      *
      * @param id
@@ -75,14 +102,14 @@ public class SignUpRecordInfoServiceImpl extends ServiceImpl<SignUpRecordInfoMap
         if (Objects.isNull(id)) {
             throw new ServiceException("非法入参");
         }
-        // 作答报名表模板id
-        Long templateId = Optional.ofNullable(this.baseMapper.selectOne(Wrappers.<SignUpRecordInfo>lambdaQuery()
-                        .eq(SignUpRecordInfo::getId, id)
-                        .select(SignUpRecordInfo::getTemplateId)))
-                .map(SignUpRecordInfo::getTemplateId)
-                .orElseThrow(() -> new ServiceException("报名记录不存在"));
-        Long userId = LoginUtils.getLoginUser().getId();
-        List<SignUpDetailVo> signUpDetailVos = this.baseMapper.querySignUpDetail(id, templateId, userId);
+        SignUpRecordInfo signUpRecordInfo = this.baseMapper.selectOne(Wrappers.<SignUpRecordInfo>lambdaQuery()
+                .eq(SignUpRecordInfo::getId, id)
+                .select(SignUpRecordInfo::getTemplateId,
+                        SignUpRecordInfo::getUserId));
+        if (Objects.isNull(signUpRecordInfo)) {
+            throw new ServiceException("报名记录不存在");
+        }
+        List<SignUpDetailVo> signUpDetailVos = this.baseMapper.querySignUpDetail(id, signUpRecordInfo.getTemplateId(), signUpRecordInfo.getUserId());
         // 将选择题目选项id放入集合
         List<String> optIds = signUpDetailVos.stream().filter(o -> o.getType().equals(Constants.SIGN_UP_FORM_QUESTION_TYPE_SINGLE_CHOICE) && Objects.nonNull(o.getOptAnswer()))
                 .map(SignUpDetailVo::getOptAnswer)
