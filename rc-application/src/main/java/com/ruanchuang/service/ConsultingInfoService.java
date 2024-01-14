@@ -3,7 +3,10 @@ package com.ruanchuang.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruanchuang.domain.ConsultingInfo;
+import com.ruanchuang.domain.SysUser;
 import com.ruanchuang.domain.dto.BaseQueryDto;
+import com.ruanchuang.domain.dto.DeleteByIdsDto;
+import com.ruanchuang.domain.dto.ReplyConsultingDto;
 import com.ruanchuang.domain.dto.SubConsult;
 
 /**
@@ -35,4 +38,30 @@ public interface ConsultingInfoService extends IService<ConsultingInfo> {
      * @return
      */
     ConsultingInfo queryConsultingInfoDetail(Long id);
+
+    /**
+     * 查询咨询记录列表
+     * @param baseQueryDto
+     * @return
+     */
+    IPage<ConsultingInfo> getList(BaseQueryDto baseQueryDto);
+
+    /**
+     * 删除咨询记录
+     * @param deleteByIdsDto
+     */
+    void delete(DeleteByIdsDto deleteByIdsDto);
+
+    /**
+     * 查询咨询人
+     * @param userId
+     * @return
+     */
+    SysUser getConsultingPerson(Long userId);
+
+    /**
+     * 回复咨询
+     * @param replyDto
+     */
+    void reply(ReplyConsultingDto replyDto);
 }

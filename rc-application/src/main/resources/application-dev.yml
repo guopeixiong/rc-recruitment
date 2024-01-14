@@ -57,6 +57,7 @@ spring:
   mail:
     username: ENC(OGrdeVsC4dF/iui91bhDS0m13mApAuuMbgkinRzWp2U=)
     password: ENC(h3M247lO3Vh3BZJ5HA+GCAnYzVnQSP9JP7JuMzbUzo8=)
+    title: '软件创新实验室'
     host: smtp.163.com
     default-encoding: UTF-8
     protocol: smtps
