@@ -2,7 +2,7 @@ package com.ruanchuang.controller.admin;
 
 import com.ruanchuang.annotation.RepeatSubmit;
 import com.ruanchuang.domain.dto.BaseQueryDto;
-import com.ruanchuang.domain.dto.DeleteByIdsDto;
+import com.ruanchuang.domain.dto.IdsDto;
 import com.ruanchuang.domain.dto.SignUpProcessDto;
 import com.ruanchuang.model.CommonResult;
 import com.ruanchuang.service.SignUpProcessService;
@@ -37,7 +37,7 @@ public class SignUpProcessController {
     @ApiOperation("删除报名流程")
     @RepeatSubmit
     @DeleteMapping("delete")
-    public CommonResult delete(@Validated @RequestBody DeleteByIdsDto deleteByIdsDto) {
+    public CommonResult delete(@Validated @RequestBody IdsDto deleteByIdsDto) {
         signUpProcessService.deleteByIds(deleteByIdsDto);
         return CommonResult.ok();
     }

@@ -3,7 +3,7 @@ package com.ruanchuang.controller.admin;
 import com.ruanchuang.annotation.RepeatSubmit;
 import com.ruanchuang.domain.dto.AddTemplateDto;
 import com.ruanchuang.domain.dto.BaseQueryDto;
-import com.ruanchuang.domain.dto.DeleteByIdsDto;
+import com.ruanchuang.domain.dto.IdsDto;
 import com.ruanchuang.domain.dto.EditTemplateDto;
 import com.ruanchuang.model.CommonResult;
 import com.ruanchuang.service.SignUpFormTemplateService;
@@ -36,7 +36,7 @@ public class SignUpFormTemplateController {
     @ApiOperation("删除模板")
     @RepeatSubmit
     @DeleteMapping("/delete")
-    public CommonResult delete(@Validated @RequestBody DeleteByIdsDto deleteByIdsDto) {
+    public CommonResult delete(@Validated @RequestBody IdsDto deleteByIdsDto) {
         signUpFormTemplateService.deleteByIds(deleteByIdsDto.getIds());
         return CommonResult.ok();
     }

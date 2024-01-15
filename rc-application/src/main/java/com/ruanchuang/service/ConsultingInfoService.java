@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruanchuang.domain.ConsultingInfo;
 import com.ruanchuang.domain.SysUser;
 import com.ruanchuang.domain.dto.BaseQueryDto;
-import com.ruanchuang.domain.dto.DeleteByIdsDto;
+import com.ruanchuang.domain.dto.IdsDto;
 import com.ruanchuang.domain.dto.ReplyConsultingDto;
 import com.ruanchuang.domain.dto.SubConsult;
 
@@ -50,7 +50,7 @@ public interface ConsultingInfoService extends IService<ConsultingInfo> {
      * 删除咨询记录
      * @param deleteByIdsDto
      */
-    void delete(DeleteByIdsDto deleteByIdsDto);
+    void delete(IdsDto deleteByIdsDto);
 
     /**
      * 查询咨询人

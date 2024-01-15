@@ -5,7 +5,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.List;
 
@@ -16,13 +15,12 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel("根据id删除dto")
-public class DeleteByIdsDto implements Serializable {
+@ApiModel("id列表入参")
+public class IdsDto implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty("ids")
-    @Size(min = 1, max = 10, message = "一次只能删除1到10条数据")
     private List<Long> ids;
 
 }

@@ -50,6 +50,9 @@ public class SignUpRecordInfo implements Serializable {
     @TableField(exist = false)
     private String currentProcess;
 
+    @ApiModelProperty("流程结束 0.否 1.是")
+    private Integer processEnd;
+
     @ApiModelProperty("创建人")
     @TableField(fill = FieldFill.INSERT)
     private String createBy;

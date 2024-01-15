@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruanchuang.domain.ConsultingInfo;
 import com.ruanchuang.domain.SysUser;
 import com.ruanchuang.domain.dto.BaseQueryDto;
-import com.ruanchuang.domain.dto.DeleteByIdsDto;
+import com.ruanchuang.domain.dto.IdsDto;
 import com.ruanchuang.domain.dto.ReplyConsultingDto;
 import com.ruanchuang.domain.dto.SubConsult;
 import com.ruanchuang.enums.Constants;
@@ -102,7 +102,7 @@ public class ConsultingInfoServiceImpl extends ServiceImpl<ConsultingInfoMapper,
      * @param deleteByIdsDto
      */
     @Override
-    public void delete(DeleteByIdsDto deleteByIdsDto) {
+    public void delete(IdsDto deleteByIdsDto) {
         boolean success = this.removeBatchByIds(deleteByIdsDto.getIds());
         if (!success) {
             throw new ServiceException("系统异常, 删除失败");

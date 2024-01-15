@@ -78,4 +78,9 @@ public interface Constants {
      */
     Integer SIGN_UP_PROCESS_STATUS_DISABLE = 0;
 
+    /**
+     * 报名流程状态-已结束
+     */
+    Integer SIGN_UP_PROCESS_STATUS_END = 1;
+
 }

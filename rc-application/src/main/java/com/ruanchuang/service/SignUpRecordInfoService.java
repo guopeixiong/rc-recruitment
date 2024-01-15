@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruanchuang.domain.SignUpRecordInfo;
 import com.ruanchuang.domain.dto.BaseQueryDto;
+import com.ruanchuang.domain.dto.IdsDto;
+import com.ruanchuang.domain.dto.SendEmailDto;
 import com.ruanchuang.domain.dto.SignUpRecordQueryDto;
 import com.ruanchuang.domain.vo.SignUpDetailVo;
 
@@ -40,4 +42,21 @@ public interface SignUpRecordInfoService extends IService<SignUpRecordInfo> {
      */
     IPage<SignUpRecordInfo> getList(SignUpRecordQueryDto signUpRecordQueryDto);
 
+    /**
+     * 变更流程状态为下一个流程
+     * @param idsDto
+     */
+    void nextStatus(IdsDto idsDto);
+
+    /**
+     * 变更流程状态为已经终止
+     * @param idsDto
+     */
+    void endStatus(IdsDto idsDto);
+
+    /**
+     * 发送邮件
+     * @param sendEmailDto
+     */
+    void sendEmail(SendEmailDto sendEmailDto);
 }

@@ -3,7 +3,7 @@ package com.ruanchuang.controller.admin;
 import com.ruanchuang.annotation.Log;
 import com.ruanchuang.annotation.RepeatSubmit;
 import com.ruanchuang.domain.dto.BaseQueryDto;
-import com.ruanchuang.domain.dto.DeleteByIdsDto;
+import com.ruanchuang.domain.dto.IdsDto;
 import com.ruanchuang.domain.dto.ReplyConsultingDto;
 import com.ruanchuang.model.CommonResult;
 import com.ruanchuang.service.ConsultingInfoService;
@@ -37,7 +37,7 @@ public class ConsultingInfoController {
     @RepeatSubmit
     @Log(title = "删除咨询问题")
     @DeleteMapping("/delete")
-    public CommonResult delete(@Validated @RequestBody DeleteByIdsDto deleteByIdsDto) {
+    public CommonResult delete(@Validated @RequestBody IdsDto deleteByIdsDto) {
         consultingInfoService.delete(deleteByIdsDto);
         return CommonResult.ok();
     }

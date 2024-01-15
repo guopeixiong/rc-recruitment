@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruanchuang.domain.SignUpProcess;
 import com.ruanchuang.domain.SignUpProcessStatus;
 import com.ruanchuang.domain.dto.BaseQueryDto;
-import com.ruanchuang.domain.dto.DeleteByIdsDto;
+import com.ruanchuang.domain.dto.IdsDto;
 import com.ruanchuang.domain.dto.SignUpProcessDto;
 
 import java.util.List;
@@ -48,7 +48,7 @@ public interface SignUpProcessService extends IService<SignUpProcess> {
      * 删除流程
      * @param deleteByIdsDto
      */
-    void deleteByIds(DeleteByIdsDto deleteByIdsDto);
+    void deleteByIds(IdsDto deleteByIdsDto);
 
     /**
      * 获取流程状态
@@ -68,4 +68,12 @@ public interface SignUpProcessService extends IService<SignUpProcess> {
      * @param signUpProcessDto
      */
     void edit(SignUpProcessDto signUpProcessDto);
+
+    /**
+     * 获取下一个流程状态id
+     * @param processId
+     * @param processStatusId
+     * @return
+     */
+    Long getNextProcessStatusId(Long processId, Long processStatusId);
 }

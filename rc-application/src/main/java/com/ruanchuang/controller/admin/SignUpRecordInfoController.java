@@ -1,5 +1,9 @@
 package com.ruanchuang.controller.admin;
 
+import com.ruanchuang.annotation.Log;
+import com.ruanchuang.annotation.RepeatSubmit;
+import com.ruanchuang.domain.dto.IdsDto;
+import com.ruanchuang.domain.dto.SendEmailDto;
 import com.ruanchuang.domain.dto.SignUpRecordQueryDto;
 import com.ruanchuang.model.CommonResult;
 import com.ruanchuang.service.SignUpFormTemplateService;
@@ -9,10 +13,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @Author guopeixiong
@@ -56,6 +57,33 @@ public class SignUpRecordInfoController {
     @GetMapping("/processStatus/{id}")
     public CommonResult processStatus(@PathVariable("id") Long id) {
         return CommonResult.ok(signUpProcessService.getProcessStatusList(id));
+    }
+
+    @ApiOperation("将流程进入下一状态")
+    @RepeatSubmit
+    @Log(title = "变更报名表流程流程", saveRequestParam = true)
+    @PutMapping("/nextStatus")
+    public CommonResult nextStatus(@Validated @RequestBody IdsDto idsDto) {
+        signUpRecordInfoService.nextStatus(idsDto);
+        return CommonResult.ok();
+    }
+
+    @ApiOperation("结束流程")
+    @RepeatSubmit
+    @Log(title = "终止报名表状态")
+    @PutMapping("/endStatus")
+    public CommonResult endStatus(@Validated @RequestBody IdsDto idsDto) {
+        signUpRecordInfoService.endStatus(idsDto);
+        return CommonResult.ok();
+    }
+
+    @ApiOperation("发送邮件通知")
+    @RepeatSubmit
+    @Log(title = "发送邮件通知")
+    @PostMapping("/sendEmail")
+    public CommonResult sendEmail(@Validated @RequestBody SendEmailDto sendEmailDto) {
+        signUpRecordInfoService.sendEmail(sendEmailDto);
+        return CommonResult.ok();
     }
 
 }

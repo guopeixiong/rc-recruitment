@@ -9,7 +9,7 @@ import com.ruanchuang.constant.CacheConstants;
 import com.ruanchuang.domain.SignUpProcess;
 import com.ruanchuang.domain.SignUpProcessStatus;
 import com.ruanchuang.domain.dto.BaseQueryDto;
-import com.ruanchuang.domain.dto.DeleteByIdsDto;
+import com.ruanchuang.domain.dto.IdsDto;
 import com.ruanchuang.domain.dto.SignUpProcessDto;
 import com.ruanchuang.exception.ServiceException;
 import com.ruanchuang.exception.SystemException;
@@ -65,6 +65,26 @@ public class SignUpProcessServiceImpl extends ServiceImpl<SignUpProcessMapper, S
                 .findFirst()
                 .map(SignUpProcessStatus::getName)
                 .get();
+    }
+
+    /**
+     * 获取下一个流程状态id
+     * @param processId
+     * @param processStatusId
+     * @return
+     */
+    @Override
+    public Long getNextProcessStatusId(Long processId, Long processStatusId) {
+        List<SignUpProcessStatus> statuses = loadStatus(processId);
+        for (int i = 0; i < statuses.size(); i++) {
+            if (statuses.get(i).getId().equals(processStatusId)) {
+                if (i + 1 == statuses.size()) {
+                    return processStatusId;
+                }
+                return statuses.get(i + 1).getId();
+            }
+        }
+        throw new ServiceException("流程状态id不存在");
     }
 
     /**
@@ -161,7 +181,7 @@ public class SignUpProcessServiceImpl extends ServiceImpl<SignUpProcessMapper, S
      * @param deleteByIdsDto
      */
     @Override
-    public void deleteByIds(DeleteByIdsDto deleteByIdsDto) {
+    public void deleteByIds(IdsDto deleteByIdsDto) {
         boolean success = this.removeBatchByIds(deleteByIdsDto.getIds());
         if (!success) {
             throw new SystemException("系统异常, 删除失败");
@@ -207,7 +227,7 @@ public class SignUpProcessServiceImpl extends ServiceImpl<SignUpProcessMapper, S
      */
     private synchronized List<SignUpProcessStatus> loadStatus(Long processId) {
         if (redisTemplate.hasKey(CacheConstants.PROCESS_CACHE_KEY + processId)) {
-            return redisTemplate.opsForList().range(CacheConstants.PROCESS_CACHE_KEY + processId, 0, -1);
+            return (List<SignUpProcessStatus>) redisTemplate.opsForList().range(CacheConstants.PROCESS_CACHE_KEY + processId, 0, -1).stream().sorted(Comparator.comparing(SignUpProcessStatus::getSortNum)).collect(Collectors.toList());
         }
         List<SignUpProcessStatus> statuses = signUpProcessStatusService.lambdaQuery()
                 .eq(SignUpProcessStatus::getProcessId, processId)

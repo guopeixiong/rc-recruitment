@@ -112,4 +112,26 @@ public class EmailUtils {
         });
     }
 
+    /**
+     * 发送通知邮件
+     *
+     * @param title
+     * @param content
+     * @param targetEmail
+     */
+    public void sendNotification(String title, String content, String targetEmail) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setSubject("【" + emailTitle + "】" + title);
+        message.setText(content);
+        message.setFrom(userName);
+        message.setTo(targetEmail);
+        threadPoolTaskExecutor.execute(() -> {
+            try {
+                javaMailSender.send(message);
+            } catch (MailException e) {
+                log.error("email send error, target email: \"{}\", error details: {}", targetEmail, e.getMessage());
+            }
+        });
+    }
+
 }

@@ -4,21 +4,26 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ruanchuang.domain.EmailSendRecord;
 import com.ruanchuang.domain.SignUpRecordInfo;
+import com.ruanchuang.domain.SysUser;
 import com.ruanchuang.domain.TemplateQuestionOptions;
 import com.ruanchuang.domain.dto.BaseQueryDto;
+import com.ruanchuang.domain.dto.IdsDto;
+import com.ruanchuang.domain.dto.SendEmailDto;
 import com.ruanchuang.domain.dto.SignUpRecordQueryDto;
 import com.ruanchuang.domain.vo.SignUpDetailVo;
 import com.ruanchuang.enums.Constants;
 import com.ruanchuang.exception.ServiceException;
 import com.ruanchuang.mapper.SignUpRecordInfoMapper;
-import com.ruanchuang.service.SignUpProcessService;
-import com.ruanchuang.service.SignUpRecordInfoService;
-import com.ruanchuang.service.TemplateQuestionOptionsService;
+import com.ruanchuang.service.*;
+import com.ruanchuang.utils.EmailUtils;
 import com.ruanchuang.utils.LoginUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -40,6 +45,15 @@ public class SignUpRecordInfoServiceImpl extends ServiceImpl<SignUpRecordInfoMap
 
     @Autowired
     private SignUpProcessService signUpProcessService;
+
+    @Autowired
+    private SysUserService sysUserService;
+
+    @Autowired
+    private EmailUtils emailUtils;
+
+    @Autowired
+    private EmailSendRecordService emailSendRecordService;
 
     /**
      * 用户分页查询报名记录列表
@@ -65,6 +79,73 @@ public class SignUpRecordInfoServiceImpl extends ServiceImpl<SignUpRecordInfoMap
     }
 
     /**
+     * 发送邮件
+     * @param sendEmailDto
+     */
+    @Override
+    public void sendEmail(SendEmailDto sendEmailDto) {
+        List<SysUser> sysUsers = sysUserService.lambdaQuery()
+                .in(SysUser::getId, sendEmailDto.getTargetIds())
+                .select(SysUser::getId,
+                        SysUser::getEmail)
+                .list();
+        List<EmailSendRecord> emailSendRecords = new ArrayList<>(sysUsers.size());
+        sysUsers.stream().forEach(user -> {
+            emailUtils.sendNotification(sendEmailDto.getTitle(), sendEmailDto.getContent(), user.getEmail());
+            emailSendRecords.add(new EmailSendRecord()
+                    .setSubject(sendEmailDto.getTitle())
+                    .setContent(sendEmailDto.getContent())
+                    .setTargetEmail(user.getEmail())
+                    .setUserId(user.getId()));
+        });
+        emailSendRecordService.saveBatch(emailSendRecords);
+    }
+
+    /**
+     * 变更流程状态为已经终止
+     * @param idsDto
+     */
+    @Override
+    public void endStatus(IdsDto idsDto) {
+        List<SignUpRecordInfo> signUpRecords = new ArrayList<>(idsDto.getIds().size());
+        idsDto.getIds().stream().forEach(id -> {
+            signUpRecords.add(new SignUpRecordInfo().setId(id).setProcessEnd(Constants.SIGN_UP_PROCESS_STATUS_END));
+        });
+        boolean success = this.updateBatchById(signUpRecords);
+        if (!success) {
+            throw new ServiceException("系统异常，修改失败，请稍后再试");
+        }
+    }
+
+    /**
+     * 变更流程状态为下一个流程
+     * @param idsDto
+     */
+    @Override
+    public void nextStatus(IdsDto idsDto) {
+        List<SignUpRecordInfo> signUpRecords = this.lambdaQuery()
+                .in(SignUpRecordInfo::getId, idsDto.getIds())
+                .select(SignUpRecordInfo::getId,
+                        SignUpRecordInfo::getProcessId,
+                        SignUpRecordInfo::getCurrentProcessStatusId)
+                .list();
+        changeStatusToNext(signUpRecords);
+    }
+
+    @Transactional(rollbackFor = ServiceException.class)
+    public void changeStatusToNext(List<SignUpRecordInfo> signUpRecords) {
+        signUpRecords.stream().forEach(item -> {
+            Long nextProcessStatusId = signUpProcessService.getNextProcessStatusId(item.getProcessId(), item.getCurrentProcessStatusId());
+            item.setCurrentProcessStatusId(nextProcessStatusId)
+                    .setProcessId(null);
+            boolean success = this.updateById(item);
+            if (!success) {
+                throw new ServiceException("更新失败，请稍后再试");
+            }
+        });
+    }
+
+    /**
      * 查询报名记录列表
      * @param signUpRecordQueryDto
      * @return
@@ -79,6 +160,9 @@ public class SignUpRecordInfoServiceImpl extends ServiceImpl<SignUpRecordInfoMap
                         SignUpRecordInfo::getUserName,
                         SignUpRecordInfo::getUserId,
                         SignUpRecordInfo::getProcessId,
+                        SignUpRecordInfo::getProcessEnd,
+                        SignUpRecordInfo::getUpdateBy,
+                        SignUpRecordInfo::getUpdateTime,
                         SignUpRecordInfo::getCurrentProcessStatusId,
                         SignUpRecordInfo::getCreateTime)
                 .page(new Page<>(signUpRecordQueryDto.getPageNum(), signUpRecordQueryDto.getPageSize()));
