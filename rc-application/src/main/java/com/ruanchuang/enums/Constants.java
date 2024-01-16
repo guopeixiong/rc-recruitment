@@ -83,4 +83,9 @@ public interface Constants {
      */
     Integer SIGN_UP_PROCESS_STATUS_END = 1;
 
+    /**
+     * 保存邮件模板
+     */
+    Integer SAVE_EMAIL_TEMPLATE = 1;
+
 }

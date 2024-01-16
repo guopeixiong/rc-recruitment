@@ -4,10 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.ruanchuang.domain.EmailSendRecord;
-import com.ruanchuang.domain.SignUpRecordInfo;
-import com.ruanchuang.domain.SysUser;
-import com.ruanchuang.domain.TemplateQuestionOptions;
+import com.ruanchuang.domain.*;
 import com.ruanchuang.domain.dto.BaseQueryDto;
 import com.ruanchuang.domain.dto.IdsDto;
 import com.ruanchuang.domain.dto.SendEmailDto;
@@ -55,6 +52,9 @@ public class SignUpRecordInfoServiceImpl extends ServiceImpl<SignUpRecordInfoMap
     @Autowired
     private EmailSendRecordService emailSendRecordService;
 
+    @Autowired
+    private EmailTemplateService emailTemplateService;
+
     /**
      * 用户分页查询报名记录列表
      *
@@ -90,6 +90,11 @@ public class SignUpRecordInfoServiceImpl extends ServiceImpl<SignUpRecordInfoMap
                         SysUser::getEmail)
                 .list();
         List<EmailSendRecord> emailSendRecords = new ArrayList<>(sysUsers.size());
+        if (sendEmailDto.getSaveAsTemplate().equals(Constants.SAVE_EMAIL_TEMPLATE)) {
+            emailTemplateService.save(new EmailTemplate()
+                    .setSubject(sendEmailDto.getTitle())
+                    .setContent(sendEmailDto.getContent()));
+        }
         sysUsers.stream().forEach(user -> {
             emailUtils.sendNotification(sendEmailDto.getTitle(), sendEmailDto.getContent(), user.getEmail());
             emailSendRecords.add(new EmailSendRecord()

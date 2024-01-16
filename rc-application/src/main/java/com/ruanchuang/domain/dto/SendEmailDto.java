@@ -34,4 +34,7 @@ public class SendEmailDto {
     @Size(min = 1, max = 100, message = "接收人不能超过100个")
     private List<Long> targetIds;
 
+    @ApiModelProperty("是否保存为模板")
+    private Integer saveAsTemplate = 0;
+
 }
