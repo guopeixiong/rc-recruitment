@@ -2,4 +2,26 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruanchuang.mapper.EmailSendRecordMapper">
 
+    <select id="queryList" resultType="com.ruanchuang.domain.EmailSendRecord">
+        select b.full_name as name, a.target_email, a.subject, a.content, a.create_time, a.create_by
+        from email_send_record a
+        left join sys_user b on a.user_id = b.id
+        where a.is_delete = 0
+        <if test="param.name != null">
+            and b.full_name like concat(#{param.name},'%')
+        </if>
+        <if test="param.email != null">
+            and a.target_email like concat(#{param.email},'%')
+        </if>
+        <if test="param.title != null">
+            and a.subject like concat(#{param.title},'%')
+        </if>
+        <if test="param.startTime != null">
+            and a.create_time &gt; #{param.startTime}
+        </if>
+        <if test="param.endTime != null">
+            and a.create_time &lt; #{param.endTime}
+        </if>
+        order by a.create_time desc
+    </select>
 </mapper>

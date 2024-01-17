@@ -34,6 +34,10 @@ public class EmailSendRecord implements Serializable {
     @ApiModelProperty("目标用户id")
     private Long userId;
 
+    @ApiModelProperty("用户姓名")
+    @TableField(exist = false)
+    private String name;
+
     @ApiModelProperty("目标邮箱")
     private String targetEmail;
 
