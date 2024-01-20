@@ -5,6 +5,8 @@ import com.ruanchuang.annotation.RepeatSubmit;
 import com.ruanchuang.domain.dto.IdsDto;
 import com.ruanchuang.domain.dto.SendEmailDto;
 import com.ruanchuang.domain.dto.SignUpRecordQueryDto;
+import com.ruanchuang.enums.BusinessType;
+import com.ruanchuang.enums.Constants;
 import com.ruanchuang.model.CommonResult;
 import com.ruanchuang.service.SignUpFormTemplateService;
 import com.ruanchuang.service.SignUpProcessService;
@@ -61,7 +63,7 @@ public class SignUpRecordInfoController {
 
     @ApiOperation("将流程进入下一状态")
     @RepeatSubmit
-    @Log(title = "变更报名表流程流程", saveRequestParam = true)
+    @Log(type = Constants.LOG_TYPE_ADMIN, title = "变更报名表流程流程", saveRequestParam = true, businessType = BusinessType.UPDATE)
     @PutMapping("/nextStatus")
     public CommonResult nextStatus(@Validated @RequestBody IdsDto idsDto) {
         signUpRecordInfoService.nextStatus(idsDto);
@@ -70,7 +72,7 @@ public class SignUpRecordInfoController {
 
     @ApiOperation("结束流程")
     @RepeatSubmit
-    @Log(title = "终止报名表状态")
+    @Log(type = Constants.LOG_TYPE_ADMIN, title = "终止报名表状态", businessType = BusinessType.UPDATE)
     @PutMapping("/endStatus")
     public CommonResult endStatus(@Validated @RequestBody IdsDto idsDto) {
         signUpRecordInfoService.endStatus(idsDto);
@@ -79,7 +81,7 @@ public class SignUpRecordInfoController {
 
     @ApiOperation("发送邮件通知")
     @RepeatSubmit
-    @Log(title = "发送邮件通知")
+    @Log(type = Constants.LOG_TYPE_ADMIN, title = "发送邮件通知", businessType = BusinessType.INSERT)
     @PostMapping("/sendEmail")
     public CommonResult sendEmail(@Validated @RequestBody SendEmailDto sendEmailDto) {
         signUpRecordInfoService.sendEmail(sendEmailDto);

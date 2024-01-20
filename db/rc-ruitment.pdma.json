@@ -4,7 +4,7 @@
   "avatar": "",
   "version": "4.6.2",
   "createdTime": "2023-7-27 19:51:30",
-  "updatedTime": "2024-1-14 19:47:25",
+  "updatedTime": "2024-1-20 20:32:19",
   "dbConns": [],
   "profile": {
     "default": {
@@ -1306,6 +1306,23 @@
           "refDict": "",
           "uiHint": "",
           "id": "C78E1702-179E-4BA3-86D2-8A8278667860"
+        },
+        {
+          "defKey": "type",
+          "defName": "日志类型",
+          "comment": "日志类型: 0.用户日志 1.后台日志 2.登录日志",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "extProps": {},
+          "domain": "6BC8F04B-6CFA-4995-98D3-318F5CDD774E",
+          "id": "3663FEA8-ECD1-4DA6-99EC-581D155D14BC"
         },
         {
           "defKey": "title",

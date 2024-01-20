@@ -88,4 +88,20 @@ public interface Constants {
      */
     Integer SAVE_EMAIL_TEMPLATE = 1;
 
+
+    /**
+     * 日志类型 用户
+     */
+    int LOG_TYPE_USER = 0;
+
+    /**
+     * 日志类型 后台
+     */
+    int LOG_TYPE_ADMIN = 1;
+
+    /**
+     * 日志类型 登录
+     */
+    int LOG_TYPE_LOGIN = 2;
+
 }

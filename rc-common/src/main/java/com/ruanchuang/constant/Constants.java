@@ -28,4 +28,20 @@ public class Constants {
      */
     public static final Integer USER_STATUS_ENABLE = 0;
 
+
+    /**
+     * 日志类型 用户
+     */
+    public static int LOG_TYPE_USER = 0;
+
+    /**
+     * 日志类型 后台
+     */
+    public static int LOG_TYPE_ADMIN = 1;
+
+    /**
+     * 日志类型 登录
+     */
+    public static int LOG_TYPE_LOGIN = 2;
+
 }

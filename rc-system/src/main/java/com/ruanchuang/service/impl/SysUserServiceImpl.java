@@ -450,6 +450,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             }
             SysLog sysLog = new SysLog();
             sysLog.setTitle("用户登录")
+                    .setType(Constants.LOG_TYPE_LOGIN)
                     .setRequestIp(IpUtils.getIpAddr(request))
                     .setRequestParam(JSONUtils.toJsonString(param))
                     .setStatus(loginSuccess ? BusinessStatus.SUCCESS : BusinessStatus.FAIL);

@@ -1,10 +1,13 @@
 package com.ruanchuang.controller.admin;
 
+import com.ruanchuang.annotation.Log;
 import com.ruanchuang.annotation.RepeatSubmit;
 import com.ruanchuang.domain.dto.AddTemplateDto;
 import com.ruanchuang.domain.dto.BaseQueryDto;
-import com.ruanchuang.domain.dto.IdsDto;
 import com.ruanchuang.domain.dto.EditTemplateDto;
+import com.ruanchuang.domain.dto.IdsDto;
+import com.ruanchuang.enums.BusinessType;
+import com.ruanchuang.enums.Constants;
 import com.ruanchuang.model.CommonResult;
 import com.ruanchuang.service.SignUpFormTemplateService;
 import io.swagger.annotations.Api;
@@ -34,6 +37,7 @@ public class SignUpFormTemplateController {
     }
 
     @ApiOperation("删除模板")
+    @Log(type = Constants.LOG_TYPE_ADMIN, title = "删除报名表模板", businessType = BusinessType.DELETE)
     @RepeatSubmit
     @DeleteMapping("/delete")
     public CommonResult delete(@Validated @RequestBody IdsDto deleteByIdsDto) {
@@ -42,6 +46,7 @@ public class SignUpFormTemplateController {
     }
 
     @ApiOperation("新增报名表")
+    @Log(type = Constants.LOG_TYPE_ADMIN, title = "新增报名表", businessType = BusinessType.INSERT)
     @RepeatSubmit
     @PostMapping("/add")
     public CommonResult add(@Validated @RequestBody AddTemplateDto addTemplateDto) {
@@ -62,6 +67,7 @@ public class SignUpFormTemplateController {
     }
 
     @ApiOperation("修改报名表模板")
+    @Log(type = Constants.LOG_TYPE_ADMIN, title = "修改报名表流程", businessType = BusinessType.UPDATE)
     @RepeatSubmit
     @PutMapping("/edit")
     public CommonResult edit(@Validated @RequestBody EditTemplateDto editTemplateDto) {

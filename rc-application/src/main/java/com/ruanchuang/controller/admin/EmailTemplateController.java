@@ -6,6 +6,8 @@ import com.ruanchuang.domain.EmailTemplate;
 import com.ruanchuang.domain.dto.AddEmailTemplateDTO;
 import com.ruanchuang.domain.dto.BaseQueryDto;
 import com.ruanchuang.domain.dto.IdsDto;
+import com.ruanchuang.enums.BusinessType;
+import com.ruanchuang.enums.Constants;
 import com.ruanchuang.model.CommonResult;
 import com.ruanchuang.service.EmailTemplateService;
 import io.swagger.annotations.Api;
@@ -29,7 +31,7 @@ public class EmailTemplateController {
     private EmailTemplateService emailTemplateService;
 
     @ApiOperation("新增邮件模板")
-    @Log(title = "新增邮件模板")
+    @Log(type = Constants.LOG_TYPE_ADMIN, title = "新增邮件模板", businessType = BusinessType.INSERT)
     @RepeatSubmit
     @PostMapping("/add")
     public CommonResult add(@Validated @RequestBody AddEmailTemplateDTO addEmailTemplateDTO) {
@@ -44,7 +46,7 @@ public class EmailTemplateController {
     }
 
     @ApiOperation("删除邮件模板")
-    @Log(title = "删除邮件模板")
+    @Log(type = Constants.LOG_TYPE_ADMIN, title = "删除邮件模板", businessType = BusinessType.DELETE)
     @RepeatSubmit
     @DeleteMapping("/delete")
     public CommonResult delete(@Validated @RequestBody IdsDto idsDto) {
@@ -53,7 +55,7 @@ public class EmailTemplateController {
     }
 
     @ApiOperation("修改邮件模板")
-    @Log(title = "修改邮件模板")
+    @Log(type = Constants.LOG_TYPE_ADMIN, title = "修改邮件模板", businessType = BusinessType.UPDATE)
     @RepeatSubmit
     @PutMapping("/update")
     public CommonResult update(@Validated @RequestBody EmailTemplate emailTemplate) {

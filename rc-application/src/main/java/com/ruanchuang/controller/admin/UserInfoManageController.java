@@ -6,6 +6,7 @@ import com.ruanchuang.domain.dto.AddAdminDto;
 import com.ruanchuang.domain.dto.UserQueryDto;
 import com.ruanchuang.domain.dto.UserStatusDto;
 import com.ruanchuang.enums.BusinessType;
+import com.ruanchuang.enums.Constants;
 import com.ruanchuang.model.CommonResult;
 import com.ruanchuang.service.SysUserService;
 import io.swagger.annotations.Api;
@@ -34,7 +35,7 @@ public class UserInfoManageController {
     }
 
     @ApiOperation("禁用普通用户")
-    @Log(title = "修改用户账号状态", businessType = BusinessType.UPDATE, saveRequestParam = true)
+    @Log(type = Constants.LOG_TYPE_ADMIN, title = "修改用户账号状态", businessType = BusinessType.UPDATE, saveRequestParam = true)
     @PutMapping("/normal/status")
     public CommonResult normalDisAble(@RequestBody UserStatusDto userStatusDto) {
         sysUserService.updateUserStatus(userStatusDto);
@@ -49,7 +50,7 @@ public class UserInfoManageController {
 
     @ApiOperation("新增管理员")
     @RepeatSubmit
-    @Log(title = "新增管理员", businessType = BusinessType.INSERT, saveRequestParam = true, saveResponseResult = true)
+    @Log(type = Constants.LOG_TYPE_ADMIN, title = "新增管理员", businessType = BusinessType.INSERT, saveRequestParam = true, saveResponseResult = true)
     @PostMapping("/admin/add")
     public CommonResult addAdmin(@Validated @RequestBody AddAdminDto addAdminDto) {
         sysUserService.addAdmin(addAdminDto);

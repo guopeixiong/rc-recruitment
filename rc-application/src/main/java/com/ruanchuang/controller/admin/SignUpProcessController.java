@@ -1,9 +1,12 @@
 package com.ruanchuang.controller.admin;
 
+import com.ruanchuang.annotation.Log;
 import com.ruanchuang.annotation.RepeatSubmit;
 import com.ruanchuang.domain.dto.BaseQueryDto;
 import com.ruanchuang.domain.dto.IdsDto;
 import com.ruanchuang.domain.dto.SignUpProcessDto;
+import com.ruanchuang.enums.BusinessType;
+import com.ruanchuang.enums.Constants;
 import com.ruanchuang.model.CommonResult;
 import com.ruanchuang.service.SignUpProcessService;
 import io.swagger.annotations.Api;
@@ -35,6 +38,7 @@ public class SignUpProcessController {
     }
 
     @ApiOperation("删除报名流程")
+    @Log(type = Constants.LOG_TYPE_ADMIN, title = "删除报名流程", businessType = BusinessType.DELETE)
     @RepeatSubmit
     @DeleteMapping("delete")
     public CommonResult delete(@Validated @RequestBody IdsDto deleteByIdsDto) {
@@ -49,6 +53,7 @@ public class SignUpProcessController {
     }
 
     @ApiOperation("新增报名流程")
+    @Log(type = Constants.LOG_TYPE_ADMIN, title = "新增报名流程", businessType = BusinessType.INSERT)
     @RepeatSubmit
     @PostMapping("/add")
     public CommonResult add(@Validated({SignUpProcessDto.AddGroup.class}) @RequestBody SignUpProcessDto signUpProcessDto) {
@@ -57,6 +62,7 @@ public class SignUpProcessController {
     }
 
     @ApiOperation("修改流程")
+    @Log(type = Constants.LOG_TYPE_ADMIN, title = "修改报名流程", businessType = BusinessType.UPDATE)
     @RepeatSubmit
     @PutMapping("/edit")
     public CommonResult edit(@Validated({SignUpProcessDto.UpdateGroup.class}) @RequestBody SignUpProcessDto signUpProcessDto) {

@@ -36,6 +36,9 @@ public class SysLog implements Serializable {
     @ApiModelProperty("操作")
     private String title;
 
+    @ApiModelProperty("日志类型: 0.用户日志 1.后台日志 2.登录日志")
+    private Integer type;
+
     @ApiModelProperty("操作类型;0.其他 1.新增 2.修改 3.删除")
     private BusinessType operType;
 

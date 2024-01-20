@@ -37,4 +37,10 @@ public @interface Log {
      * @return
      */
     boolean saveResponseResult() default false;
+
+    /**
+     * 日志类型 0.用户日志 1.后台日志 2.登录日志
+     * @return
+     */
+    int type() default 0;
 }

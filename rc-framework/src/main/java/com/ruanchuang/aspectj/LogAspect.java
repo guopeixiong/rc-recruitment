@@ -84,6 +84,7 @@ public class LogAspect {
         } else {
             logger.info(JSONUtils.toJsonString(log));
         }
+        log.setType(controllerLog.type());
         threadPoolTaskExecutor.execute(() -> sysLogService.save(log));
     }
 

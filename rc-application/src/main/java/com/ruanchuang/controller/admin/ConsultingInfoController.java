@@ -5,6 +5,8 @@ import com.ruanchuang.annotation.RepeatSubmit;
 import com.ruanchuang.domain.dto.BaseQueryDto;
 import com.ruanchuang.domain.dto.IdsDto;
 import com.ruanchuang.domain.dto.ReplyConsultingDto;
+import com.ruanchuang.enums.BusinessType;
+import com.ruanchuang.enums.Constants;
 import com.ruanchuang.model.CommonResult;
 import com.ruanchuang.service.ConsultingInfoService;
 import io.swagger.annotations.Api;
@@ -35,7 +37,7 @@ public class ConsultingInfoController {
 
     @ApiOperation("删除咨询问题")
     @RepeatSubmit
-    @Log(title = "删除咨询问题")
+    @Log(type = Constants.LOG_TYPE_ADMIN, title = "删除咨询问题", businessType = BusinessType.DELETE)
     @DeleteMapping("/delete")
     public CommonResult delete(@Validated @RequestBody IdsDto deleteByIdsDto) {
         consultingInfoService.delete(deleteByIdsDto);
@@ -50,7 +52,7 @@ public class ConsultingInfoController {
 
     @ApiOperation("回复咨询")
     @RepeatSubmit
-    @Log(title = "回复咨询问题")
+    @Log(type = Constants.LOG_TYPE_ADMIN, title = "回复咨询问题", businessType = BusinessType.UPDATE)
     @PutMapping("/reply")
     public CommonResult reply(@Validated @RequestBody ReplyConsultingDto replyDto) {
         consultingInfoService.reply(replyDto);

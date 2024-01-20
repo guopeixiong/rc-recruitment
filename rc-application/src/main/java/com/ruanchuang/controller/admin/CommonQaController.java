@@ -7,6 +7,7 @@ import com.ruanchuang.domain.dto.BaseQueryDto;
 import com.ruanchuang.domain.dto.IdsDto;
 import com.ruanchuang.domain.dto.UpdateQaDto;
 import com.ruanchuang.enums.BusinessType;
+import com.ruanchuang.enums.Constants;
 import com.ruanchuang.model.CommonResult;
 import com.ruanchuang.service.CommonQaInfoService;
 import io.swagger.annotations.Api;
@@ -37,7 +38,7 @@ public class CommonQaController {
 
     @ApiOperation("修改常见问题接口")
     @RepeatSubmit
-    @Log(title = "修改常见问题", businessType = BusinessType.UPDATE)
+    @Log(type = Constants.LOG_TYPE_ADMIN, title = "修改常见问题", businessType = BusinessType.UPDATE)
     @PutMapping("/edit")
     public CommonResult edit(@Validated @RequestBody UpdateQaDto updateQaDto) {
         commonQaInfoService.updateQa(updateQaDto);
@@ -46,7 +47,7 @@ public class CommonQaController {
 
     @ApiOperation("新增常见问题接口")
     @RepeatSubmit
-    @Log(title = "新增常见问题", businessType = BusinessType.INSERT)
+    @Log(type = Constants.LOG_TYPE_ADMIN, title = "新增常见问题", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     public CommonResult add(@Validated @RequestBody AddQaDto addQaDto) {
         commonQaInfoService.addQa(addQaDto);
@@ -55,7 +56,7 @@ public class CommonQaController {
 
     @ApiOperation("删除常用问题")
     @RepeatSubmit
-    @Log(title = "删除常见问题", businessType = BusinessType.DELETE)
+    @Log(type = Constants.LOG_TYPE_ADMIN, title = "删除常见问题", businessType = BusinessType.DELETE)
     @DeleteMapping("/delete")
     public CommonResult delete(@Validated @RequestBody IdsDto deleteQaDto) {
         commonQaInfoService.deleteQa(deleteQaDto);
