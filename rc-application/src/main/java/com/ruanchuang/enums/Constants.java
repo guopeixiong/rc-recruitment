@@ -104,4 +104,14 @@ public interface Constants {
      */
     int LOG_TYPE_LOGIN = 2;
 
+    /**
+     * 首页简介状态 启用
+     */
+    Integer INDEX_INTRO_STATUS_ENABLE = 1;
+
+    /**
+     * 首页简介状态 未启用
+     */
+    Integer INDEX_INTRO_STATUS_DISABLE = 0;
+
 }
