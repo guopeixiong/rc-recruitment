@@ -4,7 +4,7 @@
   "avatar": "",
   "version": "4.6.2",
   "createdTime": "2023-7-27 19:51:30",
-  "updatedTime": "2024-1-28 17:56:20",
+  "updatedTime": "2024-1-28 22:46:17",
   "dbConns": [],
   "profile": {
     "default": {
@@ -4781,6 +4781,23 @@
           "extProps": {},
           "domain": "",
           "id": "C44DF18F-CFFD-4BA6-B0B0-A119A853D67D"
+        },
+        {
+          "defKey": "url",
+          "defName": "图片url",
+          "comment": "",
+          "type": "varchar",
+          "len": 700,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "extProps": {},
+          "domain": "",
+          "id": "F4A8E14D-EA19-405B-8BBA-A8879689A075"
         },
         {
           "defKey": "image_path",

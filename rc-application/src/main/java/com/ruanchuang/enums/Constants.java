@@ -114,4 +114,13 @@ public interface Constants {
      */
     Integer INDEX_INTRO_STATUS_DISABLE = 0;
 
+    /**
+     * 首页图片状态 未启用
+     */
+    Integer INDEX_IMAGE_DISABLE = 0;
+
+    /**
+     * 首页图片状态 启用
+     */
+    Integer INDEX_IMAGE_ENABLE = 1;
 }

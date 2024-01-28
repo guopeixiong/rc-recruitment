@@ -37,6 +37,9 @@ public class IndexRollingImage implements Serializable {
     @ApiModelProperty("图片路径")
     private String imagePath;
 
+    @ApiModelProperty("url")
+    private String url;
+
     @ApiModelProperty("图片备注")
     private String remark;
 
