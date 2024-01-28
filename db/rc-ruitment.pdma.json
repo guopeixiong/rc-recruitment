@@ -4,7 +4,7 @@
   "avatar": "",
   "version": "4.6.2",
   "createdTime": "2023-7-27 19:51:30",
-  "updatedTime": "2024-1-21 21:11:04",
+  "updatedTime": "2024-1-28 17:56:20",
   "dbConns": [],
   "profile": {
     "default": {
@@ -4798,23 +4798,6 @@
           "extProps": {},
           "domain": "",
           "id": "953BE291-C5C7-4350-AE65-F73B5394E92C"
-        },
-        {
-          "defKey": "sort",
-          "defName": "图片顺序",
-          "comment": "",
-          "type": "",
-          "len": "",
-          "scale": "",
-          "primaryKey": false,
-          "notNull": false,
-          "autoIncrement": false,
-          "defaultValue": "",
-          "hideInGraph": false,
-          "refDict": "",
-          "extProps": {},
-          "domain": "6BC8F04B-6CFA-4995-98D3-318F5CDD774E",
-          "id": "5FA3BACA-616C-4034-9DE5-82227782AA2F"
         },
         {
           "defKey": "remark",
