@@ -99,4 +99,16 @@ public interface SysUserService extends IService<SysUser> {
      * @param addAdminDto
      */
     void addAdmin(AddAdminDto addAdminDto);
+
+    /**
+     * 修改管理员信息
+     * @param sysUser
+     */
+    void updateAdminInfo(UpdateUserInfoDto sysUser);
+
+    /**
+     * 修改管理员密码
+     * @param pwd
+     */
+    void updateAdminPassword(String pwd);
 }

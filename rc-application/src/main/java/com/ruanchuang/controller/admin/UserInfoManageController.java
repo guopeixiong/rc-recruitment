@@ -3,6 +3,7 @@ package com.ruanchuang.controller.admin;
 import com.ruanchuang.annotation.Log;
 import com.ruanchuang.annotation.RepeatSubmit;
 import com.ruanchuang.domain.dto.AddAdminDto;
+import com.ruanchuang.domain.dto.UpdateUserInfoDto;
 import com.ruanchuang.domain.dto.UserQueryDto;
 import com.ruanchuang.domain.dto.UserStatusDto;
 import com.ruanchuang.enums.BusinessType;
@@ -54,6 +55,24 @@ public class UserInfoManageController {
     @PostMapping("/admin/add")
     public CommonResult addAdmin(@Validated @RequestBody AddAdminDto addAdminDto) {
         sysUserService.addAdmin(addAdminDto);
+        return CommonResult.ok();
+    }
+
+    @ApiOperation("管理员修改个人信息")
+    @RepeatSubmit
+    @Log(type = Constants.LOG_TYPE_ADMIN, title = "管理员修改个人信息", businessType = BusinessType.UPDATE)
+    @PutMapping("/admin/update")
+    public CommonResult updateMyInfo(@Validated @RequestBody UpdateUserInfoDto infoDto) {
+        sysUserService.updateAdminInfo(infoDto);
+        return CommonResult.ok();
+    }
+
+    @ApiOperation("管理员修改账户密码")
+    @RepeatSubmit
+    @Log(type = Constants.LOG_TYPE_ADMIN, title = "管理员修改账户密码", businessType = BusinessType.UPDATE)
+    @PutMapping("/admin/update/password")
+    public CommonResult updateMyPassword(@RequestBody String pwd) {
+        sysUserService.updateAdminPassword(pwd);
         return CommonResult.ok();
     }
 

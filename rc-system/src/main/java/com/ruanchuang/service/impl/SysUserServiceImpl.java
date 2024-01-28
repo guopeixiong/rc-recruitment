@@ -397,6 +397,71 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     /**
+     * 修改管理员密码
+     * @param pwd
+     */
+    @Override
+    public void updateAdminPassword(String pwd) {
+        String newPwd = RSAUtils.decryptByRsa(pwd);
+        SysUser loginUser = LoginUtils.getLoginUser();
+        SysUser user = new SysUser();
+        user.setId(loginUser.getId())
+                .setPassword(SaSecureUtil.md5BySalt(newPwd, loginUser.getSalt()));
+        boolean success = this.updateById(user);
+        if (!success) {
+            throw new ServiceException("系统异常, 修改失败");
+        }
+        loginUser.setPassword(user.getPassword());
+        LoginUtils.updateUserInfo(loginUser);
+    }
+
+    /**
+     * 修改管理员信息
+     * @param sysUser
+     */
+    @Override
+    public void updateAdminInfo(UpdateUserInfoDto sysUser) {
+        Long id = LoginUtils.getLoginUser().getId();
+        SysUser updateInfo = new SysUser();
+        updateInfo.setId(id);
+        if (sysUser.getNickName() != null) {
+            updateInfo.setNickName(sysUser.getNickName());
+        }
+        if (sysUser.getFullName() != null) {
+            updateInfo.setFullName(sysUser.getFullName());
+        }
+        if (sysUser.getSex() != null) {
+            updateInfo.setSex(sysUser.getSex());
+        }
+        if (sysUser.getStuNum() != null) {
+            updateInfo.setStuNum(sysUser.getStuNum());
+        }
+        if (sysUser.getEmail() != null) {
+            Long count = this.lambdaQuery()
+                    .eq(SysUser::getEmail, sysUser.getEmail())
+                    .count();
+            if (count > 0) {
+                throw new ServiceException("该邮箱已被绑定");
+            }
+            updateInfo.setEmail(sysUser.getEmail());
+        }
+        if (sysUser.getPhone() != null) {
+            Long count = this.lambdaQuery()
+                    .eq(SysUser::getPhone, sysUser.getPhone())
+                    .count();
+            if (count > 0) {
+                throw new ServiceException("该手机号码已被绑定");
+            }
+            updateInfo.setPhone(sysUser.getPhone());
+        }
+        boolean success = this.updateById(updateInfo);
+        if (!success) {
+            throw new ServiceException("系统异常修改失败");
+        }
+        LoginUtils.updateUserInfo(this.getById(id));
+    }
+
+    /**
      * 添加管理员
      *
      * @param addAdminDto
