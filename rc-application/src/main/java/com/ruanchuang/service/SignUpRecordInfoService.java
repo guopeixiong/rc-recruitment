@@ -59,4 +59,10 @@ public interface SignUpRecordInfoService extends IService<SignUpRecordInfo> {
      * @param sendEmailDto
      */
     void sendEmail(SendEmailDto sendEmailDto);
+
+    /**
+     * 查询最近报名记录
+     * @return
+     */
+    List<SignUpRecordInfo> getLastSignUp();
 }

@@ -44,4 +44,9 @@ public class Constants {
      */
     public static int LOG_TYPE_LOGIN = 2;
 
+    /**
+     * 日志状态 异常
+     */
+    public static int LOG_STATUS_ERROR = 1;
+
 }

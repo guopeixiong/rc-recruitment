@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -71,6 +72,21 @@ public class IndexRollingImageServiceImpl extends ServiceImpl<IndexRollingImageM
                 .setCreateBy(null)
                 .setIsEnabled(Constants.INDEX_IMAGE_DISABLE);
         return indexRollingImage;
+    }
+
+    /**
+     * 获取首页轮播图
+     * @return
+     */
+    @Override
+    public List<String> getIndexImage() {
+        return this.lambdaQuery()
+                .eq(IndexRollingImage::getIsEnabled, Constants.INDEX_IMAGE_ENABLE)
+                .select(IndexRollingImage::getUrl)
+                .list()
+                .stream()
+                .map(IndexRollingImage::getUrl)
+                .collect(Collectors.toList());
     }
 
     /**

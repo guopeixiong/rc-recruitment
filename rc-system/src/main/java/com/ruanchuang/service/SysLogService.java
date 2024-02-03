@@ -31,4 +31,11 @@ public interface SysLogService extends IService<SysLog> {
      * @return
      */
     List<String> titleList(Integer type);
+
+    /**
+     * 获取最新100条错误日志
+     *
+     * @return
+     */
+    List<SysLog> lastErrorLog();
 }

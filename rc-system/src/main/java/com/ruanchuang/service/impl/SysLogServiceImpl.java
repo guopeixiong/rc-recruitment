@@ -3,6 +3,7 @@ package com.ruanchuang.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ruanchuang.constant.Constants;
 import com.ruanchuang.domain.SysLog;
 import com.ruanchuang.domain.dto.LogQueryDto;
 import com.ruanchuang.mapper.SysLogMapper;
@@ -23,6 +24,26 @@ import java.util.stream.Collectors;
  */
 @Service
 public class SysLogServiceImpl extends ServiceImpl<SysLogMapper, SysLog> implements SysLogService {
+
+    /**
+     * 获取最新100条错误日志
+     *
+     * @return
+     */
+    @Override
+    public List<SysLog> lastErrorLog() {
+        return this.lambdaQuery()
+                .eq(SysLog::getStatus, Constants.LOG_STATUS_ERROR)
+                .ne(SysLog::getTitle, "用户登录")
+                .orderByDesc(SysLog::getCreateTime)
+                .select(SysLog::getTitle,
+                        SysLog::getCreateTime,
+                        SysLog::getRequestUrl,
+                        SysLog::getErrorMsg,
+                        SysLog::getCreateBy)
+                .last("limit 100")
+                .list();
+    }
 
     /**
      * 获取日志标题列表

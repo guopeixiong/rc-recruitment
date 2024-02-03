@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -56,6 +57,21 @@ public class ConsultingInfoServiceImpl extends ServiceImpl<ConsultingInfoMapper,
                         ConsultingInfo::getStatus,
                         ConsultingInfo::getId)
                 .page(new Page<>(baseQueryDto.getPageNum(), baseQueryDto.getPageSize()));
+    }
+
+    /**
+     * 查询最新100条待回复咨询记录
+     * @return
+     */
+    @Override
+    public List<ConsultingInfo> getLastConsulting() {
+        return this.lambdaQuery()
+                .eq(ConsultingInfo::getStatus, Constants.CONSULTING_INFO_STATUS_UN_REPLY)
+                .orderByDesc(ConsultingInfo::getCreateTime)
+                .select(ConsultingInfo::getContent,
+                        ConsultingInfo::getCreateTime)
+                .last("limit 100")
+                .list();
     }
 
     /**

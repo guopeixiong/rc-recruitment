@@ -40,4 +40,10 @@ public interface IndexRollingImageService extends IService<IndexRollingImage> {
      * @param id
      */
     void deleteImage(Long id);
+
+    /**
+     * 获取首页轮播图
+     * @return
+     */
+    List<String> getIndexImage();
 }

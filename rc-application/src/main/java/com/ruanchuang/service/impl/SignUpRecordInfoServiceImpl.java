@@ -107,6 +107,20 @@ public class SignUpRecordInfoServiceImpl extends ServiceImpl<SignUpRecordInfoMap
     }
 
     /**
+     * 查询最近报名记录
+     * @return
+     */
+    @Override
+    public List<SignUpRecordInfo> getLastSignUp() {
+        return this.lambdaQuery()
+                .orderByDesc(SignUpRecordInfo::getCreateTime)
+                .select(SignUpRecordInfo::getUserName,
+                        SignUpRecordInfo::getCreateTime)
+                .last("limit 100")
+                .list();
+    }
+
+    /**
      * 变更流程状态为已经终止
      * @param idsDto
      */

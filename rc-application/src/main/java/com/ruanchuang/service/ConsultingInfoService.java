@@ -9,6 +9,8 @@ import com.ruanchuang.domain.dto.IdsDto;
 import com.ruanchuang.domain.dto.ReplyConsultingDto;
 import com.ruanchuang.domain.dto.SubConsult;
 
+import java.util.List;
+
 /**
  * <p>
  * 咨询及回复信息表 服务类
@@ -64,4 +66,10 @@ public interface ConsultingInfoService extends IService<ConsultingInfo> {
      * @param replyDto
      */
     void reply(ReplyConsultingDto replyDto);
+
+    /**
+     * 查询最新100条咨询记录
+     * @return
+     */
+    List<ConsultingInfo> getLastConsulting();
 }

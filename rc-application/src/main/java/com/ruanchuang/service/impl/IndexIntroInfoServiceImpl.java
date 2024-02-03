@@ -1,6 +1,7 @@
 package com.ruanchuang.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruanchuang.domain.IndexIntroInfo;
@@ -34,6 +35,16 @@ public class IndexIntroInfoServiceImpl extends ServiceImpl<IndexIntroInfoMapper,
         if (!success) {
             throw new ServiceException("系统异常，删除失败");
         }
+    }
+
+    /**
+     * 获取首页简介
+     * @return
+     */
+    @Override
+    public String getIndexText() {
+        IndexIntroInfo info = this.baseMapper.selectOne(Wrappers.<IndexIntroInfo>lambdaQuery().eq(IndexIntroInfo::getEnable, Constants.INDEX_INTRO_STATUS_ENABLE).select(IndexIntroInfo::getContent));
+        return Objects.isNull(info) ? "" : info.getContent();
     }
 
     /**

@@ -50,4 +50,10 @@ public interface IndexIntroInfoService extends IService<IndexIntroInfo> {
      * @param indexIntroInfoDto
      */
     void updateInfo(IndexIntroInfo indexIntroInfoDto);
+
+    /**
+     * 获取首页简介
+     * @return
+     */
+    String getIndexText();
 }
