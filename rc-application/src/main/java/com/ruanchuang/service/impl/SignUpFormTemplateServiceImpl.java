@@ -263,6 +263,12 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
     @Override
     @Transactional(rollbackFor = ServiceException.class)
     public void UpdateTemplate(EditTemplateDto editTemplateDto) {
+        Long count = signUpRecordInfoService.lambdaQuery()
+                .eq(SignUpRecordInfo::getTemplateId, editTemplateDto.getId())
+                .count();
+        if (count > 0) {
+            throw new ServiceException("该报名表已有报名记录，无法编辑");
+        }
         List<SignUpFormQuestion> questions = new ArrayList<>(editTemplateDto.getQuestions().size());
         List<TemplateQuestionOptions> options = new ArrayList<>();
         Snowflake snowflake = IdUtil.getSnowflake();
