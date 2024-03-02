@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -152,6 +153,15 @@ public class ConsultingInfoServiceImpl extends ServiceImpl<ConsultingInfoMapper,
      */
     @Override
     public void addConsultingInfo(SubConsult subConsult) {
+        LocalDateTime now = LocalDateTime.now();
+        Long count = this.lambdaQuery()
+                .eq(ConsultingInfo::getUserId, LoginUtils.getLoginUser().getId())
+                .ge(ConsultingInfo::getCreateTime, now.minusHours(24L))
+                .count();
+        if (count >= 50) {
+            log.error("用户提交咨询信息失败, 用户id: {}, 提交内容: {}", LoginUtils.getLoginUser().getId(), subConsult.getContent());
+            throw new ServiceException("提交失败, 一天只能提交50条咨询");
+        }
         ConsultingInfo consultingInfo = new ConsultingInfo()
                 .setContent(subConsult.getContent())
                 .setUserId(LoginUtils.getLoginUser().getId())
