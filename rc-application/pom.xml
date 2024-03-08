@@ -57,7 +57,7 @@
         <profile>
             <id>prod</id>
             <properties>
-                <env>test</env>
+                <env>prod</env>
             </properties>
         </profile>
     </profiles>
