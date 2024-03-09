@@ -58,7 +58,7 @@ public class IndexIntroInfoServiceImpl extends ServiceImpl<IndexIntroInfoMapper,
                 return (String) redisTemplate.opsForValue().get(CacheConstants.INDEX_INTRO_CACHE_KEY);
             }
             IndexIntroInfo info = this.baseMapper.selectOne(Wrappers.<IndexIntroInfo>lambdaQuery().eq(IndexIntroInfo::getEnable, Constants.INDEX_INTRO_STATUS_ENABLE).select(IndexIntroInfo::getContent));
-            if (Objects.isNull(info.getContent())) {
+            if (Objects.isNull(info) && Objects.isNull(info.getContent())) {
                 info.setContent("");
             }
             redisTemplate.opsForValue().set(CacheConstants.INDEX_INTRO_CACHE_KEY, info.getContent(), 5, TimeUnit.MINUTES);

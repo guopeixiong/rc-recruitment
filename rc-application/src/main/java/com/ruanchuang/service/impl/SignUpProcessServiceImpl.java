@@ -47,7 +47,7 @@ public class SignUpProcessServiceImpl extends ServiceImpl<SignUpProcessMapper, S
     @Override
     public Long getDefaultProcessStatusId(Long processId) {
         return loadStatus(processId).stream()
-                .filter(o -> o.getSortNum() == 1)
+                .filter(o -> o.getSortNum() == 0)
                 .findFirst()
                 .map(SignUpProcessStatus::getId)
                 .get();
@@ -236,6 +236,7 @@ public class SignUpProcessServiceImpl extends ServiceImpl<SignUpProcessMapper, S
                         SignUpProcessStatus::getName,
                         SignUpProcessStatus::getRemark,
                         SignUpProcessStatus::getProcessId)
+                .orderByAsc(SignUpProcessStatus::getSortNum)
                 .list();
         if (statuses.isEmpty()) {
             throw new SystemException("流程不存在具体状态值");
