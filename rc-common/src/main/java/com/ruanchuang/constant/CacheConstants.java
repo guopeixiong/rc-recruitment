@@ -72,4 +72,14 @@ public class CacheConstants {
      */
     public static final String PROCESS_CACHE_KEY = "process_cache";
 
+    /**
+     * 首页介绍缓存 redis key
+     */
+    public static final String INDEX_INTRO_CACHE_KEY = "index_intro_cache";
+
+    /**
+     * 首页轮播图缓存 redis key
+     */
+    public static final String INDEX_IMAGE_CACHE_KEY = "index_image_cache";
+
 }

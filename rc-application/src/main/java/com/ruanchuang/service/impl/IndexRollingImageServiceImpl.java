@@ -1,5 +1,6 @@
 package com.ruanchuang.service.impl;
 
+import com.ruanchuang.constant.CacheConstants;
 import com.ruanchuang.domain.IndexRollingImage;
 import com.ruanchuang.enums.Constants;
 import com.ruanchuang.exception.ServiceException;
@@ -8,7 +9,9 @@ import com.ruanchuang.mapper.IndexRollingImageMapper;
 import com.ruanchuang.service.IndexRollingImageService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -35,6 +39,9 @@ public class IndexRollingImageServiceImpl extends ServiceImpl<IndexRollingImageM
     private String rootPath;
 
     private Set<String> fileType = Set.of("jpg", "jpeg", "png", "gif");
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     /**
      * 上传图片
@@ -80,13 +87,23 @@ public class IndexRollingImageServiceImpl extends ServiceImpl<IndexRollingImageM
      */
     @Override
     public List<String> getIndexImage() {
-        return this.lambdaQuery()
-                .eq(IndexRollingImage::getIsEnabled, Constants.INDEX_IMAGE_ENABLE)
-                .select(IndexRollingImage::getUrl)
-                .list()
-                .stream()
-                .map(IndexRollingImage::getUrl)
-                .collect(Collectors.toList());
+        if (redisTemplate.hasKey(CacheConstants.INDEX_IMAGE_CACHE_KEY)) {
+            return (List<String>) redisTemplate.opsForValue().get(CacheConstants.INDEX_IMAGE_CACHE_KEY);
+        }
+        synchronized (this) {
+            if (redisTemplate.hasKey(CacheConstants.INDEX_IMAGE_CACHE_KEY)) {
+                return (List<String>) redisTemplate.opsForValue().get(CacheConstants.INDEX_IMAGE_CACHE_KEY);
+            }
+            List<String> images = this.lambdaQuery()
+                    .eq(IndexRollingImage::getIsEnabled, Constants.INDEX_IMAGE_ENABLE)
+                    .select(IndexRollingImage::getUrl)
+                    .list()
+                    .stream()
+                    .map(IndexRollingImage::getUrl)
+                    .collect(Collectors.toList());
+            redisTemplate.opsForValue().set(CacheConstants.INDEX_IMAGE_CACHE_KEY, images, 5, TimeUnit.MINUTES);
+            return images;
+        }
     }
 
     /**
@@ -99,6 +116,7 @@ public class IndexRollingImageServiceImpl extends ServiceImpl<IndexRollingImageM
         if (!success) {
             throw new SystemException("删除失败");
         }
+        redisTemplate.delete(CacheConstants.INDEX_IMAGE_CACHE_KEY);
     }
 
     /**
@@ -115,6 +133,7 @@ public class IndexRollingImageServiceImpl extends ServiceImpl<IndexRollingImageM
         if (!success) {
             throw new SystemException("修改启用状态失败");
         }
+        redisTemplate.delete(CacheConstants.INDEX_IMAGE_CACHE_KEY);
     }
 
     /**

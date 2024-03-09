@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ruanchuang.constant.CacheConstants;
 import com.ruanchuang.domain.IndexIntroInfo;
 import com.ruanchuang.domain.dto.BaseQueryDto;
 import com.ruanchuang.domain.dto.IdsDto;
@@ -12,10 +13,13 @@ import com.ruanchuang.exception.ServiceException;
 import com.ruanchuang.mapper.IndexIntroInfoMapper;
 import com.ruanchuang.service.IndexIntroInfoService;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Author guopeixiong
@@ -24,6 +28,9 @@ import java.util.Objects;
  */
 @Service
 public class IndexIntroInfoServiceImpl extends ServiceImpl<IndexIntroInfoMapper, IndexIntroInfo> implements IndexIntroInfoService {
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     /**
      * 删除简介记录
@@ -43,8 +50,20 @@ public class IndexIntroInfoServiceImpl extends ServiceImpl<IndexIntroInfoMapper,
      */
     @Override
     public String getIndexText() {
-        IndexIntroInfo info = this.baseMapper.selectOne(Wrappers.<IndexIntroInfo>lambdaQuery().eq(IndexIntroInfo::getEnable, Constants.INDEX_INTRO_STATUS_ENABLE).select(IndexIntroInfo::getContent));
-        return Objects.isNull(info) ? "" : info.getContent();
+        if (redisTemplate.hasKey(CacheConstants.INDEX_INTRO_CACHE_KEY)) {
+            return (String) redisTemplate.opsForValue().get(CacheConstants.INDEX_INTRO_CACHE_KEY);
+        }
+        synchronized (this) {
+            if (redisTemplate.hasKey(CacheConstants.INDEX_INTRO_CACHE_KEY)) {
+                return (String) redisTemplate.opsForValue().get(CacheConstants.INDEX_INTRO_CACHE_KEY);
+            }
+            IndexIntroInfo info = this.baseMapper.selectOne(Wrappers.<IndexIntroInfo>lambdaQuery().eq(IndexIntroInfo::getEnable, Constants.INDEX_INTRO_STATUS_ENABLE).select(IndexIntroInfo::getContent));
+            if (Objects.isNull(info.getContent())) {
+                info.setContent("");
+            }
+            redisTemplate.opsForValue().set(CacheConstants.INDEX_INTRO_CACHE_KEY, info.getContent(), 5, TimeUnit.MINUTES);
+            return Objects.isNull(info) ? "" : info.getContent();
+        }
     }
 
     /**
@@ -65,6 +84,7 @@ public class IndexIntroInfoServiceImpl extends ServiceImpl<IndexIntroInfoMapper,
         if (!success) {
             throw new ServiceException("系统异常，更新失败");
         }
+        redisTemplate.delete(CacheConstants.INDEX_INTRO_CACHE_KEY);
     }
 
     /**
@@ -99,6 +119,7 @@ public class IndexIntroInfoServiceImpl extends ServiceImpl<IndexIntroInfoMapper,
         if (!success) {
             throw new ServiceException("系统异常，添加失败");
         }
+        redisTemplate.delete(CacheConstants.INDEX_INTRO_CACHE_KEY);
     }
 
     /**
@@ -122,6 +143,7 @@ public class IndexIntroInfoServiceImpl extends ServiceImpl<IndexIntroInfoMapper,
         if (!success) {
             throw new ServiceException("系统异常，启用失败");
         }
+        redisTemplate.delete(CacheConstants.INDEX_INTRO_CACHE_KEY);
     }
 
     /**

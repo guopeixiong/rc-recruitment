@@ -70,6 +70,7 @@ public class CommonQaInfoServiceImpl extends ServiceImpl<CommonQaInfoMapper, Com
         if (!success) {
             throw new ServiceException("删除失败，请稍后再试");
         }
+        redisTemplate.delete(CacheConstants.COMMON_QA_INFO_CACHE_KEY);
     }
 
     /**

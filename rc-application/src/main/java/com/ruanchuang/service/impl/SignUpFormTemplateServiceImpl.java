@@ -321,6 +321,8 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
         if (!success) {
             throw new ServiceException("系统异常, 保存失败");
         }
+        redisTemplate.delete(CacheConstants.SIGN_UP_OFF);
+        redisTemplate.delete(CacheConstants.SIGN_UP_FORM_CACHE_KEY);
     }
 
     /**
