@@ -70,7 +70,7 @@ api:
 jasypt:
   encryptor:
     algorithm: PBEWithMD5AndDES
-    password: ${RC-RECRUITMENT-PASSWORD}
+    password: ${RC_RECRUITMENT_PASSWORD}
 user:
   # 密码最大错误次数
   max-password-error-times: 5

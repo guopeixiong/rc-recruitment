@@ -29,7 +29,7 @@
 java -cp jasypt-1.9.3.jar org.jasypt.intf.cli.JasyptPBEStringEncryptionCLI input="这是你需要加密的密码" password=这是密码盐值 algorithm=PBEWithMD5AndDES 
 ```
 2. 回车后会输出加密好的密文, 在springboot的配置文件中, 将原本的密码替换为  ENC(加密后的密文)
-3. 接着系统环境变量中增加一个新的变量, RC-RECRUITMENT-PASSWORD,变量值就是使用jasypt加密时的密码盐, 添加完记得重启IDEA再启动项目
+3. 接着系统环境变量中增加一个新的变量, RC_RECRUITMENT_PASSWORD,变量值就是使用jasypt加密时的密码盐, 添加完记得重启IDEA再启动项目
 ### 打包部署
 > 打包时, 在项目的父模块也就是rc-recruitment下进行操作, 先进行clean操作再进行install, install结束后将rc-application模块下的jar包取出部署即可
 `打包时注意区分环境, 选择test/prod环境, 才会启用对应的配置文件`
