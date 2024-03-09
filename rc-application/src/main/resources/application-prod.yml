@@ -35,9 +35,9 @@ spring:
       # 总上传文件大小
       max-request-size: 20MB
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/rc_recruitment?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=Asia/Shanghai
-    username: ENC(root)
-    password: ENC(123456)
+    url: jdbc:mysql://localhost:3306/rc_recruitment?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=Asia/Shanghai
+    username: ENC(5Bq1eMn2YZ03ztWDa0CI2g==)
+    password: ENC(k4PvpuFPna9S6l55XV2BGgRvJP5oV9Tj)
   # redis配置
   redis:
     host: 127.0.0.1
