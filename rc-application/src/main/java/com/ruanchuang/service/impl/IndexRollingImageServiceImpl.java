@@ -96,7 +96,8 @@ public class IndexRollingImageServiceImpl extends ServiceImpl<IndexRollingImageM
             }
             List<String> images = this.lambdaQuery()
                     .eq(IndexRollingImage::getIsEnabled, Constants.INDEX_IMAGE_ENABLE)
-                    .select(IndexRollingImage::getUrl)
+                    .select(IndexRollingImage::getUrl,
+                            IndexRollingImage::getActivityId)
                     .list()
                     .stream()
                     .map(IndexRollingImage::getUrl)

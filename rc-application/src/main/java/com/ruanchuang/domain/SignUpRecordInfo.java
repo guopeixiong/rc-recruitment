@@ -40,6 +40,9 @@ public class SignUpRecordInfo implements Serializable {
     @ApiModelProperty("所填写模板id")
     private Long templateId;
 
+    @ApiModelProperty("模板名称")
+    private String templateName;
+
     @ApiModelProperty("流程id")
     private Long processId;
 

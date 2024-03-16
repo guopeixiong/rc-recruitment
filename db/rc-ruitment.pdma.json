@@ -4,7 +4,7 @@
   "avatar": "",
   "version": "4.6.2",
   "createdTime": "2023-7-27 19:51:30",
-  "updatedTime": "2024-1-28 22:46:17",
+  "updatedTime": "2024-3-16 21:01:51",
   "dbConns": [],
   "profile": {
     "default": {
@@ -2410,6 +2410,23 @@
           "id": "27E9CA68-C3B2-4124-80FB-8E7878C8C014"
         },
         {
+          "defKey": "template_name",
+          "defName": "报名表名称",
+          "comment": "",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "extProps": {},
+          "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
+          "id": "5F85AE10-F958-403B-BB29-442BBCB01BFC"
+        },
+        {
           "defKey": "process_id",
           "defName": "流程id",
           "comment": "",
@@ -3425,6 +3442,23 @@
           "extProps": {},
           "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
           "id": "D4E390FF-7A53-46AF-8BF7-C20C2E01F50D"
+        },
+        {
+          "defKey": "type",
+          "defName": "报名表累类型",
+          "comment": "0.招新1.活动",
+          "type": "int",
+          "len": 1,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "extProps": {},
+          "domain": "",
+          "id": "2CAAC224-16AE-43E8-820C-B469CAD046D0"
         },
         {
           "defKey": "is_enabled",
@@ -4815,6 +4849,23 @@
           "extProps": {},
           "domain": "",
           "id": "953BE291-C5C7-4350-AE65-F73B5394E92C"
+        },
+        {
+          "defKey": "activity_id",
+          "defName": "活动id",
+          "comment": "",
+          "type": "bigint",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "extProps": {},
+          "domain": "",
+          "id": "8C3F77EE-EE03-4E04-AE7C-B203D3F07241"
         },
         {
           "defKey": "remark",
@@ -6612,6 +6663,345 @@
           "extProps": {},
           "domain": "6BC8F04B-6CFA-4995-98D3-318F5CDD774E",
           "id": "B5513350-3932-4701-B067-EADD51FA6E30"
+        }
+      ],
+      "correlations": [],
+      "indexes": []
+    },
+    {
+      "id": "F097B70D-4CD0-4AC9-9C33-25841FBD4FA1",
+      "env": {
+        "base": {
+          "nameSpace": "",
+          "codeRoot": ""
+        }
+      },
+      "defKey": "activity_info",
+      "defName": "活动信息表",
+      "comment": "",
+      "properties": {
+        "partitioned by": "(date string)",
+        "row format delimited": "",
+        "fields terminated by ','": "",
+        "collection items terminated by '-'": "",
+        "map keys terminated by ':'": "",
+        "store as textfile;": ""
+      },
+      "nameTemplate": "{defKey}[{defName}]",
+      "notes": {},
+      "headers": [
+        {
+          "refKey": "hideInGraph",
+          "hideInGraph": true
+        },
+        {
+          "refKey": "defKey",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "defName",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "comment",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "primaryKey",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "notNull",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "domain",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "type",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "len",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "defaultValue",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "scale",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "refDict",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "isStandard",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "autoIncrement",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "uiHint",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "extProps",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "attr1",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "attr2",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "attr3",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "attr4",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "attr5",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "attr6",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "attr7",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "attr8",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "attr9",
+          "freeze": false,
+          "hideInGraph": true
+        }
+      ],
+      "fields": [
+        {
+          "defKey": "id",
+          "defName": "id",
+          "comment": "",
+          "type": "bigint",
+          "len": "",
+          "scale": "",
+          "primaryKey": true,
+          "notNull": true,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "domain": "",
+          "refDict": "",
+          "uiHint": "",
+          "id": "1A3E74A6-A072-48C1-857F-94467EA1A803"
+        },
+        {
+          "defKey": "name",
+          "defName": "活动名称",
+          "comment": "",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "extProps": {},
+          "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
+          "id": "DAAC7E21-A496-4F44-AFB9-AD20C614BE7D"
+        },
+        {
+          "defKey": "remark",
+          "defName": "备注",
+          "comment": "",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "extProps": {},
+          "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
+          "id": "43707F69-8FCC-4051-B414-2C402D6AB1C4"
+        },
+        {
+          "defKey": "template_id",
+          "defName": "报名表id",
+          "comment": "",
+          "type": "bigint",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "extProps": {},
+          "domain": "",
+          "id": "DCF43A57-AB41-4CB8-ABCB-9C3D99A5B0F2"
+        },
+        {
+          "defKey": "content",
+          "defName": "活动内容",
+          "comment": "",
+          "type": "text",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "extProps": {},
+          "domain": "",
+          "id": "575941E4-B9A3-4AA7-B6BE-F7363F5EB1E4"
+        },
+        {
+          "defKey": "create_by",
+          "defName": "创建人",
+          "comment": "",
+          "domain": "",
+          "type": "varchar",
+          "len": 32,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "uiHint": "",
+          "id": "3E9F9274-D2CE-4649-BDA1-472757A0ECCC"
+        },
+        {
+          "defKey": "create_time",
+          "defName": "创建时间",
+          "comment": "",
+          "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "uiHint": "",
+          "id": "1DFAB6F3-72C7-4F52-8E7E-06594CE1EE0E"
+        },
+        {
+          "defKey": "update_by",
+          "defName": "更新人",
+          "comment": "",
+          "domain": "",
+          "type": "varchar",
+          "len": 32,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "uiHint": "",
+          "id": "F8FE70E8-CA15-4C75-8E90-91AFA7C29012"
+        },
+        {
+          "defKey": "update_time",
+          "defName": "更新时间",
+          "comment": "",
+          "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "uiHint": "",
+          "id": "31ADA36D-06A5-4C7B-8E07-939DC93A98D6"
+        },
+        {
+          "defKey": "is_delete",
+          "defName": "是否删除",
+          "comment": "0.否 1.是",
+          "type": "int",
+          "len": 2,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": true,
+          "autoIncrement": false,
+          "defaultValue": "0",
+          "hideInGraph": false,
+          "refDict": "",
+          "extProps": {},
+          "domain": "",
+          "id": "2D055558-5F2D-491B-ABCF-51C7E3A1A697"
+        },
+        {
+          "defKey": "version",
+          "defName": "版本号",
+          "comment": "",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": true,
+          "autoIncrement": false,
+          "defaultValue": "0",
+          "hideInGraph": false,
+          "refDict": "",
+          "extProps": {},
+          "domain": "6BC8F04B-6CFA-4995-98D3-318F5CDD774E",
+          "id": "40206FCC-A75D-42BE-AE09-D370FB7BEF3F"
         }
       ],
       "correlations": [],

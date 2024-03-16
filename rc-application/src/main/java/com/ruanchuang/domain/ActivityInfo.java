@@ -7,23 +7,19 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * <p>
- * 首页轮播图管理表
- * </p>
- *
- * @author guopeixiong
- * @since 2023-08-01
+ * @Author guopeixiong
+ * @Date 2024/3/16
+ * @Email peixiongguo@163.com
  */
 @Getter
 @Setter
 @Accessors(chain = true)
-@TableName("index_rolling_image")
-@ApiModel(value = "IndexRollingImage对象", description = "首页轮播图管理表")
-public class IndexRollingImage implements Serializable {
+@TableName("activity_info")
+@ApiModel(value = "ActivityInfo对象", description = "活动信息表")
+public class ActivityInfo {
 
     private static final long serialVersionUID = 1L;
 
@@ -31,20 +27,17 @@ public class IndexRollingImage implements Serializable {
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
 
-    @ApiModelProperty("是否启用;0.否 1.是")
-    private Integer isEnabled;
+    @ApiModelProperty("活动名称")
+    private String name;
 
-    @ApiModelProperty("活动id")
-    private Long activityId;
+    @ApiModelProperty("活动内容")
+    private String content;
 
-    @ApiModelProperty("图片路径")
-    private String imagePath;
-
-    @ApiModelProperty("url")
-    private String url;
-
-    @ApiModelProperty("图片备注")
+    @ApiModelProperty("备注")
     private String remark;
+
+    @ApiModelProperty("报名表id")
+    private Long templateId;
 
     @ApiModelProperty("创建人")
     @TableField(fill = FieldFill.INSERT)
@@ -69,4 +62,6 @@ public class IndexRollingImage implements Serializable {
     @ApiModelProperty("版本号")
     @Version
     private Integer version;
+
+
 }

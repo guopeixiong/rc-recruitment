@@ -81,6 +81,7 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
             SignUpFormTemplate template = this.baseMapper.selectOne(
                     Wrappers.<SignUpFormTemplate>lambdaQuery()
                             .eq(SignUpFormTemplate::getIsEnabled, Constants.SIGN_UP_FORM_TEMPLATE_STATUS_ENABLE)
+                            .eq(SignUpFormTemplate::getType, Constants.SIGN_UP_FROM_TYPE_SIGN_UP)
                             .select(SignUpFormTemplate::getId)
                             .orderByDesc(SignUpFormTemplate::getCreateTime)
                             .last("limit 1")
@@ -107,7 +108,7 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
     @Override
     public void submitForm(List<SubmitFormDto> formDto) {
         Long templateId = formDto.get(0).getTemplateId();
-        SignUpFormTemplate template = this.baseMapper.selectOne(Wrappers.<SignUpFormTemplate>lambdaQuery().eq(SignUpFormTemplate::getId, templateId).select(SignUpFormTemplate::getId, SignUpFormTemplate::getProcessId));
+        SignUpFormTemplate template = this.baseMapper.selectOne(Wrappers.<SignUpFormTemplate>lambdaQuery().eq(SignUpFormTemplate::getId, templateId).select(SignUpFormTemplate::getId, SignUpFormTemplate::getProcessId, SignUpFormTemplate::getName));
         if (Objects.isNull(template)) {
             throw new ServiceException("表单不存在");
         }
@@ -144,6 +145,7 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
                 .setUserId(user.getId())
                 .setUserName(user.getFullName())
                 .setTemplateId(templateId)
+                .setTemplateName(template.getName())
                 .setProcessId(template.getProcessId())
                 .setCurrentProcessStatusId(signUpProcessService.getDefaultProcessStatusId(template.getProcessId()));
         // 保存答案

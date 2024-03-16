@@ -19,6 +19,16 @@ public interface Constants {
     Integer SIGN_UP_FORM_TEMPLATE_STATUS_DISABLE = 0;
 
     /**
+     * 报名表类型 报名
+     */
+    Integer SIGN_UP_FROM_TYPE_SIGN_UP = 0;
+
+    /**
+     * 报名表类型 活动
+     */
+    Integer SIGN_UP_FROM_TYPE_ACTIVITY = 1;
+
+    /**
      * 报名表问题类型 填空题
      */
     Integer SIGN_UP_FORM_QUESTION_TYPE_TEXT = 0;

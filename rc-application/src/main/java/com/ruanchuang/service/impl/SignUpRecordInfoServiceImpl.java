@@ -70,6 +70,7 @@ public class SignUpRecordInfoServiceImpl extends ServiceImpl<SignUpRecordInfoMap
                         SignUpRecordInfo::getTemplateId,
                         SignUpRecordInfo::getProcessId,
                         SignUpRecordInfo::getProcessEnd,
+                        SignUpRecordInfo::getTemplateName,
                         SignUpRecordInfo::getCurrentProcessStatusId)
                 .orderByDesc(SignUpRecordInfo::getCreateTime)
                 .page(new Page<>(baseQueryDto.getPageNum(), baseQueryDto.getPageSize()));
