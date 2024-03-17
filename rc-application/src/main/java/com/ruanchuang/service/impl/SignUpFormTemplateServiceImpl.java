@@ -401,6 +401,7 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
         }
         SignUpFormTemplate template = new SignUpFormTemplate()
                 .setName(addTemplateDto.getName())
+                .setType(addTemplateDto.getType())
                 .setProcessId(addTemplateDto.getProcessId());
         boolean success = this.save(template);
         if (!success) {

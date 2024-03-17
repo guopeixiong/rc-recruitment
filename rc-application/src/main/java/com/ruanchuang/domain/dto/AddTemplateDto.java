@@ -31,4 +31,7 @@ public class AddTemplateDto implements Serializable {
     @NotNull(message = "流程不能为空")
     private Long processId;
 
+    @ApiModelProperty("报名表类型")
+    private Integer type = 0;
+
 }

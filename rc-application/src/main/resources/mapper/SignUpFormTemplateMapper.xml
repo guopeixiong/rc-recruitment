@@ -3,7 +3,7 @@
 <mapper namespace="com.ruanchuang.mapper.SignUpFormTemplateMapper">
 
     <select id="selectFormList" resultType="com.ruanchuang.domain.vo.SignUpFormVo">
-        select a.id, a.name, a.is_enabled, a.create_by, a.create_time, a.update_by, a.update_time, b.id as process_id, b.name as process_name
+        select a.id, a.name, a.is_enabled, a.type, a.create_by, a.create_time, a.update_by, a.update_time, b.id as process_id, b.name as process_name
         from sign_up_form_template a
         left join sign_up_process b on a.process_id = b.id
         where a.is_delete = 0

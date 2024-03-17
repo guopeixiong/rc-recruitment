@@ -37,6 +37,9 @@ public class SignUpFormVo implements Serializable {
     @ApiModelProperty("是否启用")
     private Integer isEnabled;
 
+    @ApiModelProperty("类型")
+    private Integer type;
+
     @ApiModelProperty("创建人")
     @TableField(fill = FieldFill.INSERT)
     private String createBy;
