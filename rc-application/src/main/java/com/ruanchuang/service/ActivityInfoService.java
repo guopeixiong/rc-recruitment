@@ -9,4 +9,11 @@ import com.ruanchuang.domain.ActivityInfo;
  * @Email peixiongguo@163.com
  */
 public interface ActivityInfoService extends IService<ActivityInfo> {
+
+    /**
+     * 根据id查询活动信息
+     * @param id
+     * @return
+     */
+    ActivityInfo getActivity(Long id);
 }

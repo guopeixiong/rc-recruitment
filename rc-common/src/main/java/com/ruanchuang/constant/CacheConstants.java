@@ -82,4 +82,9 @@ public class CacheConstants {
      */
     public static final String INDEX_IMAGE_CACHE_KEY = "index_image_cache";
 
+    /**
+     * 活动信息缓存 redis key
+     */
+    public static final String ACTIVITY_INFO_CACHE_KEY = "activity_info_cache";
+
 }
