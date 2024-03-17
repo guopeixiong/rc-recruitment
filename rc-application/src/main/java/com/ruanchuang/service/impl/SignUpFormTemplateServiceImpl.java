@@ -71,12 +71,14 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
      */
     @Override
     public List<SignUpFormQuestion> getForm(Long id) {
-        if (redisTemplate.hasKey(CacheConstants.SIGN_UP_OFF)) {
+        String redisKey = CacheConstants.SIGN_UP_FORM_CACHE_KEY + (id == null ? "" : id.toString());
+        String offRedisKey = CacheConstants.SIGN_UP_OFF+ (id == null ? "" : id.toString());
+        if (redisTemplate.hasKey(offRedisKey)) {
             throw new ServiceException("暂未开放报名");
         }
         synchronized (this) {
-            if (redisTemplate.hasKey(CacheConstants.SIGN_UP_FORM_CACHE_KEY)) {
-                return redisTemplate.opsForList().range(CacheConstants.SIGN_UP_FORM_CACHE_KEY, 0, -1);
+            if (redisTemplate.hasKey(redisKey)) {
+                return redisTemplate.opsForList().range(redisKey, 0, -1);
             }
             SignUpFormTemplate template = this.baseMapper.selectOne(
                     Wrappers.<SignUpFormTemplate>lambdaQuery()
@@ -89,14 +91,14 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
             );
             if (template == null) {
                 log.error("系统中没有启动的模板");
-                redisTemplate.opsForValue().set(CacheConstants.SIGN_UP_OFF, Boolean.TRUE);
-                redisTemplate.expire(CacheConstants.SIGN_UP_OFF, 5, TimeUnit.MINUTES);
+                redisTemplate.opsForValue().set(offRedisKey, Boolean.TRUE);
+                redisTemplate.expire(offRedisKey, 5, TimeUnit.MINUTES);
                 throw new ServiceException("暂未开放报名");
             }
             List<SignUpFormQuestion> signUpForm = signUpFormQuestionService.selectQuestionsByTemplateId(template.getId());
-            redisTemplate.opsForList().rightPushAll(CacheConstants.SIGN_UP_FORM_CACHE_KEY, signUpForm);
+            redisTemplate.opsForList().rightPushAll(redisKey, signUpForm);
             // 只缓存五分钟, 五分钟后从数据库获取新数据
-            redisTemplate.expire(CacheConstants.SIGN_UP_FORM_CACHE_KEY, 5, TimeUnit.MINUTES);
+            redisTemplate.expire(redisKey, 5, TimeUnit.MINUTES);
             return signUpForm;
         }
     }

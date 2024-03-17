@@ -45,5 +45,5 @@ public interface IndexRollingImageService extends IService<IndexRollingImage> {
      * 获取首页轮播图
      * @return
      */
-    List<String> getIndexImage();
+    List<IndexRollingImage> getIndexImage();
 }

@@ -31,8 +31,8 @@ public class SignUpFormController {
 
     @ApiOperation("获取报名表接口")
     @RateLimiter(key = "getForm", count = 1000, message = "服务器限流, 请稍后再试")
-    @GetMapping("/getForm/{id}")
-    public CommonResult getForm(@PathVariable("id") Long id) {
+    @GetMapping("/getForm")
+    public CommonResult getForm(@RequestParam(value = "id", required = false) Long id) {
         return CommonResult.ok(signUpFormTemplateService.getForm(id));
     }
 

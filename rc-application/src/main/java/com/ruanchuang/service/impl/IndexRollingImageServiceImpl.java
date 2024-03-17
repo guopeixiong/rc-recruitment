@@ -1,5 +1,6 @@
 package com.ruanchuang.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruanchuang.constant.CacheConstants;
 import com.ruanchuang.domain.IndexRollingImage;
 import com.ruanchuang.enums.Constants;
@@ -7,7 +8,6 @@ import com.ruanchuang.exception.ServiceException;
 import com.ruanchuang.exception.SystemException;
 import com.ruanchuang.mapper.IndexRollingImageMapper;
 import com.ruanchuang.service.IndexRollingImageService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -86,23 +85,21 @@ public class IndexRollingImageServiceImpl extends ServiceImpl<IndexRollingImageM
      * @return
      */
     @Override
-    public List<String> getIndexImage() {
+    public List<IndexRollingImage> getIndexImage() {
         if (redisTemplate.hasKey(CacheConstants.INDEX_IMAGE_CACHE_KEY)) {
-            return (List<String>) redisTemplate.opsForValue().get(CacheConstants.INDEX_IMAGE_CACHE_KEY);
+            return redisTemplate.opsForList().range(CacheConstants.INDEX_IMAGE_CACHE_KEY, 0, -1);
         }
         synchronized (this) {
             if (redisTemplate.hasKey(CacheConstants.INDEX_IMAGE_CACHE_KEY)) {
-                return (List<String>) redisTemplate.opsForValue().get(CacheConstants.INDEX_IMAGE_CACHE_KEY);
+                return redisTemplate.opsForList().range(CacheConstants.INDEX_IMAGE_CACHE_KEY, 0, -1);
             }
-            List<String> images = this.lambdaQuery()
+            List<IndexRollingImage> images = this.lambdaQuery()
                     .eq(IndexRollingImage::getIsEnabled, Constants.INDEX_IMAGE_ENABLE)
                     .select(IndexRollingImage::getUrl,
                             IndexRollingImage::getActivityId)
-                    .list()
-                    .stream()
-                    .map(IndexRollingImage::getUrl)
-                    .collect(Collectors.toList());
-            redisTemplate.opsForValue().set(CacheConstants.INDEX_IMAGE_CACHE_KEY, images, 5, TimeUnit.MINUTES);
+                    .list();
+            redisTemplate.opsForList().rightPushAll(CacheConstants.INDEX_IMAGE_CACHE_KEY, images);
+            redisTemplate.expire(CacheConstants.INDEX_IMAGE_CACHE_KEY, 5, TimeUnit.MINUTES);
             return images;
         }
     }
