@@ -2,6 +2,7 @@ package com.ruanchuang.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruanchuang.domain.IndexRollingImage;
+import com.ruanchuang.domain.dto.ImageBindActivityDto;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -46,4 +47,10 @@ public interface IndexRollingImageService extends IService<IndexRollingImage> {
      * @return
      */
     List<IndexRollingImage> getIndexImage();
+
+    /**
+     * 绑定活动
+     * @param dto
+     */
+    void bindActivity(ImageBindActivityDto dto);
 }

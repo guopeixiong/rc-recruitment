@@ -3,6 +3,7 @@ package com.ruanchuang.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruanchuang.constant.CacheConstants;
 import com.ruanchuang.domain.IndexRollingImage;
+import com.ruanchuang.domain.dto.ImageBindActivityDto;
 import com.ruanchuang.enums.Constants;
 import com.ruanchuang.exception.ServiceException;
 import com.ruanchuang.exception.SystemException;
@@ -81,6 +82,21 @@ public class IndexRollingImageServiceImpl extends ServiceImpl<IndexRollingImageM
     }
 
     /**
+     * 绑定活动
+     * @param dto
+     */
+    @Override
+    public void bindActivity(ImageBindActivityDto dto) {
+        boolean success = this.lambdaUpdate()
+                .eq(IndexRollingImage::getId, dto.getId())
+                .set(IndexRollingImage::getActivityId, dto.getActivityId())
+                .update();
+        if (!success) {
+            throw new ServiceException("绑定活动失败");
+        }
+    }
+
+    /**
      * 获取首页轮播图
      * @return
      */
@@ -145,6 +161,7 @@ public class IndexRollingImageServiceImpl extends ServiceImpl<IndexRollingImageM
                 .select(IndexRollingImage::getId,
                         IndexRollingImage::getCreateTime,
                         IndexRollingImage::getUrl,
+                        IndexRollingImage::getActivityId,
                         IndexRollingImage::getIsEnabled,
                         IndexRollingImage::getRemark)
                 .list();

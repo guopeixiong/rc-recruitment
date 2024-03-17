@@ -2,9 +2,11 @@ package com.ruanchuang.controller.admin;
 
 import com.ruanchuang.annotation.Log;
 import com.ruanchuang.annotation.RepeatSubmit;
+import com.ruanchuang.domain.dto.ImageBindActivityDto;
 import com.ruanchuang.enums.BusinessType;
 import com.ruanchuang.enums.Constants;
 import com.ruanchuang.model.CommonResult;
+import com.ruanchuang.service.ActivityInfoService;
 import com.ruanchuang.service.IndexRollingImageService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,6 +28,9 @@ public class IndexImageController {
 
     @Autowired
     private IndexRollingImageService indexRollingImageService;
+
+    @Autowired
+    private ActivityInfoService activityInfoService;
 
     @ApiOperation("上传图片")
     @RepeatSubmit
@@ -56,6 +61,21 @@ public class IndexImageController {
     @DeleteMapping("/delete/{id}")
     public CommonResult deleteImage(@PathVariable("id") Long id) {
         indexRollingImageService.deleteImage(id);
+        return CommonResult.ok();
+    }
+
+    @ApiOperation("获取活动列表")
+    @GetMapping("/activityList")
+    public CommonResult activityList() {
+        return CommonResult.ok(activityInfoService.activityList());
+    }
+
+    @ApiOperation("绑定活动")
+    @PutMapping("/bindActivity")
+    @RepeatSubmit
+    @Log(title = "轮播图绑定活动", businessType = BusinessType.UPDATE, type = Constants.LOG_TYPE_ADMIN)
+    public CommonResult bindActivity(@RequestBody @Validated ImageBindActivityDto dto) {
+        indexRollingImageService.bindActivity(dto);
         return CommonResult.ok();
     }
 

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -48,5 +49,18 @@ public class ActivityInfoServiceImpl extends ServiceImpl<ActivityInfoMapper, Act
             redisTemplate.opsForValue().set(redisKey, activity, 5, TimeUnit.MINUTES);
             return activity;
         }
+    }
+
+    /**
+     * 查询活动列表
+     * @return
+     */
+    @Override
+    public List<ActivityInfo> activityList() {
+        return this.lambdaQuery()
+                .select(ActivityInfo::getId,
+                        ActivityInfo::getName)
+                .orderByDesc(ActivityInfo::getCreateTime)
+                .list();
     }
 }
