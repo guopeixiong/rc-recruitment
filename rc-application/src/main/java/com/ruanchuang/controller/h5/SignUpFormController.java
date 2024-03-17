@@ -4,7 +4,6 @@ import com.ruanchuang.annotation.Log;
 import com.ruanchuang.annotation.RateLimiter;
 import com.ruanchuang.annotation.RepeatSubmit;
 import com.ruanchuang.domain.dto.SubmitFormDto;
-import com.ruanchuang.domain.dto.UpdateSignUpFormDto;
 import com.ruanchuang.enums.BusinessType;
 import com.ruanchuang.model.CommonResult;
 import com.ruanchuang.service.SignUpFormTemplateService;
@@ -32,9 +31,9 @@ public class SignUpFormController {
 
     @ApiOperation("获取报名表接口")
     @RateLimiter(key = "getForm", count = 1000, message = "服务器限流, 请稍后再试")
-    @GetMapping("/getForm")
-    public CommonResult getForm() {
-        return CommonResult.ok(signUpFormTemplateService.getForm());
+    @GetMapping("/getForm/{id}")
+    public CommonResult getForm(@PathVariable("id") Long id) {
+        return CommonResult.ok(signUpFormTemplateService.getForm(id));
     }
 
     @ApiOperation("用户提交报名表")

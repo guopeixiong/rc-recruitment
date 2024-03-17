@@ -70,7 +70,7 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
      * @return
      */
     @Override
-    public List<SignUpFormQuestion> getForm() {
+    public List<SignUpFormQuestion> getForm(Long id) {
         if (redisTemplate.hasKey(CacheConstants.SIGN_UP_OFF)) {
             throw new ServiceException("暂未开放报名");
         }
@@ -80,8 +80,9 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
             }
             SignUpFormTemplate template = this.baseMapper.selectOne(
                     Wrappers.<SignUpFormTemplate>lambdaQuery()
+                            .eq(id != null, SignUpFormTemplate::getId, id)
                             .eq(SignUpFormTemplate::getIsEnabled, Constants.SIGN_UP_FORM_TEMPLATE_STATUS_ENABLE)
-                            .eq(SignUpFormTemplate::getType, Constants.SIGN_UP_FROM_TYPE_SIGN_UP)
+                            .eq(id == null, SignUpFormTemplate::getType, Constants.SIGN_UP_FROM_TYPE_SIGN_UP)
                             .select(SignUpFormTemplate::getId)
                             .orderByDesc(SignUpFormTemplate::getCreateTime)
                             .last("limit 1")

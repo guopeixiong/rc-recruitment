@@ -26,7 +26,7 @@ public interface SignUpFormTemplateService extends IService<SignUpFormTemplate> 
      * 获取报名表单
      * @return
      */
-    List<SignUpFormQuestion> getForm();
+    List<SignUpFormQuestion> getForm(Long id);
 
     /**
      * 提交报名表
