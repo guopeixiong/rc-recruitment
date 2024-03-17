@@ -97,4 +97,9 @@ public interface SignUpFormTemplateService extends IService<SignUpFormTemplate> 
      */
     List<SignUpFormTemplate> getList();
 
+    /**
+     * 获取报名表下拉框列表
+     * @return
+     */
+    List<SignUpFormTemplate> getSignUpTemplates();
 }

@@ -248,6 +248,21 @@ public class SignUpFormTemplateServiceImpl extends ServiceImpl<SignUpFormTemplat
     }
 
     /**
+     * 获取报名表下拉框列表
+     * @return
+     */
+    @Override
+    public List<SignUpFormTemplate> getSignUpTemplates() {
+        return this.lambdaQuery()
+                .eq(SignUpFormTemplate::getIsEnabled, Constants.SIGN_UP_PROCESS_STATUS_ENABLE)
+                .eq(SignUpFormTemplate::getType, Constants.SIGN_UP_FROM_TYPE_ACTIVITY)
+                .orderByDesc(SignUpFormTemplate::getCreateTime)
+                .select(SignUpFormTemplate::getId,
+                        SignUpFormTemplate::getName)
+                .list();
+    }
+
+    /**
      * 获取所有报名表
      * @return
      */
